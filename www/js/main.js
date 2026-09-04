@@ -11,7 +11,9 @@ import { playEffects, closeOverlay, showToast } from './ui/feedback.js';
 import { startOnboarding } from './ui/onboarding.js';
 import { openSettings } from './ui/settings.js';
 import { syncDailyReminder, shareText } from './platform/notifications.js';
+import { syncStatusBar } from './platform/statusbar.js';
 import { QUESTS } from './data/quests.js';
+
 
 let storage;
 let state;
@@ -40,6 +42,7 @@ function boot() {
   }
   i18n.setLang(state.lang);
   applyTheme(state.theme);
+  syncStatusBar(state.theme);
 
   if (!state.onboarded) {
     startOnboarding(state, (data) => {
@@ -47,6 +50,7 @@ function boot() {
       state = r.state;
       i18n.setLang(state.lang);
       applyTheme(state.theme);
+      syncStatusBar(state.theme);
       persist();
       render();
       playEffects(r.effects.filter((e) => e.type !== 'onboarded'));
@@ -132,7 +136,7 @@ async function dispatch(action, args = {}) {
     /* réglages */
     case 'setTheme':
       state = game.setTheme(state, args).state;
-      applyTheme(state.theme); persist(); render(); softRerenderSettings();
+      applyTheme(state.theme); syncStatusBar(state.theme); persist(); render(); softRerenderSettings();
       break;
     case 'setLang':
       state.lang = args.lang === 'en' ? 'en' : 'fr';
@@ -149,6 +153,12 @@ async function dispatch(action, args = {}) {
       const r = game.setNotifications(state, args);
       state = r.state; persist();
       syncDailyReminder(state);
+      break;
+    }
+    case 'renameHero': {
+      const r = game.renameHero(state, args);
+      state = r.state; persist(); render(); softRerenderSettings();
+      showToast(i18n.t('set_renamed'));
       break;
     }
     case 'exportSave':

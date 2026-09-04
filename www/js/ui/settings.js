@@ -37,6 +37,13 @@ export function openSettings({ getState, dispatch, close }) {
 
         <h3>${i18n.t('set_adventure')}</h3>
         <div class="set-row col">
+          <span>${i18n.t('set_hero_name')}</span>
+          <div class="set-name-row">
+            <input id="set-name" type="text" maxlength="24" value="${esc(s.name)}" data-set="name-input" />
+            <button class="btn ghost" data-set="rename">${i18n.t('set_rename')}</button>
+          </div>
+        </div>
+        <div class="set-row col">
           <span>${i18n.t('set_comfort')} — ${s.comfort}/5</span>
           <input type="range" min="1" max="5" step="1" value="${s.comfort}" data-set="comfort" />
         </div>
@@ -97,9 +104,14 @@ export function openSettings({ getState, dispatch, close }) {
       if (i >= 0) list.splice(i, 1);
       else if (list.length < 3) list.push(el.dataset.v);
       dispatch('setPrefFamilies', { prefFamilies: list });
-    } else if (k === 'export') dispatch('exportSave');
+    }     else if (k === 'export') dispatch('exportSave');
     else if (k === 'import') dispatch('importSave');
     else if (k === 'wipe') dispatch('wipe');
+    else if (k === 'rename') {
+      const input = $('#set-name');
+      const name = input ? input.value : '';
+      dispatch('renameHero', { name });
+    }
     if (['theme', 'lang', 'fam'].includes(k)) render();
   }
 

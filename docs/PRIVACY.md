@@ -37,7 +37,7 @@ moment. Effacer l’app ou les données de l’app les supprime aussi.
 |---|---|
 | Rappel quotidien | Notifications **locales** du système (Capacitor). Aucun push serveur. |
 | Défi d’ami | Partage de **texte** via la feuille de partage du système (SMS, messagerie…). Le contenu partagé ne passe pas par nos serveurs (il n’y en a pas). |
-| Polices web | Sur le build web, des polices peuvent être chargées depuis Google Fonts **si** le réseau est disponible. L’app reste jouable hors ligne avec les polices système. Sur Android empaqueté, le même comportement WebView s’applique tant que les polices ne sont pas embarquées. |
+| Polices | Embarquées dans l’app (pas de CDN externe). |
 
 ## Sauvegardes Android
 

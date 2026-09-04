@@ -246,3 +246,13 @@ test('finishOnboarding : refuse sans ack d’âge', () => {
   assert.equal(r.state.onboarded, false);
   assert.equal(r.state.ageAck, false);
 });
+
+test('renameHero : tronque et conserve un nom valide', () => {
+  let s = defaultState();
+  s.name = 'Old';
+  s = game.renameHero(s, { name: '  NouveauNomBeaucoupTropLongPourPasser  ' }).state;
+  assert.equal(s.name, 'NouveauNomBeaucoupTropLo');
+  assert.equal(s.name.length, 24);
+  s = game.renameHero(s, { name: '   ' }).state;
+  assert.equal(s.name, 'NouveauNomBeaucoupTropLo');
+});

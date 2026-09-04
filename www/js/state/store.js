@@ -125,10 +125,31 @@ export function exportState(state) {
 
 /** Import depuis une chaîne JSON. Renvoie l'état normalisé ou lève. */
 export function importState(text) {
-  const parsed = JSON.parse(text);
+  if (typeof text !== 'string' || !text.trim()) {
+    throw new Error('Sauvegarde invalide');
+  }
+  if (text.length > 2_000_000) {
+    throw new Error('Sauvegarde trop volumineuse');
+  }
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    throw new Error('Sauvegarde invalide');
+  }
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    throw new Error('Sauvegarde invalide');
+  }
   const s = normalize(parsed);
   if (!s.skills || typeof s.skills.social !== 'number') {
     throw new Error('Sauvegarde invalide');
   }
+  if (typeof s.name !== 'string') s.name = '';
+  s.name = s.name.trim().slice(0, 24);
+  if (!Array.isArray(s.journal)) s.journal = [];
+  if (!Array.isArray(s.inventory)) s.inventory = [];
+  if (!Array.isArray(s.titles)) s.titles = [];
+  s.journal = s.journal.slice(0, 500);
+  s.inventory = s.inventory.slice(0, 200);
   return s;
 }
