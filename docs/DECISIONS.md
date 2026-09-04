@@ -134,10 +134,13 @@ Périmètre conforme à `REVUE_CRITIQUE.md` §7 :
 
 **Post-V1 (démarré) :** générateur modulaire = templates + slots
 (`www/js/data/templates.js`, `slots.js`, `engine/generate.js`), mélangé au tirage.
-Toujours pas de générateur libre / LLM.
+Toujours pas de générateur libre / LLM.  
+**Carte abstraite** = onglet Monde, plateau symbolique (`data/world.js`,
+`engine/worldView.js`) — régions liées aux familles, pins = quêtes du jour /
+événement / souvenirs, portes de niveau, grotte mystère. Pas de géoloc.
 
-Hors V1 encore : Monde / carte, Inventaire « musée » complet, adaptatif
-« intelligent », multijoueur, art / son par thème, géoloc, météo.
+Hors V1 encore : Inventaire « musée » complet, adaptatif « intelligent »,
+multijoueur, art / son par thème, géoloc, météo.
 
 ---
 

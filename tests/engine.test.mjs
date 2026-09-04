@@ -12,11 +12,12 @@ import { THEME_KEYS } from '../www/js/data/themes.js';
 import { defaultState } from '../www/js/state/defaults.js';
 import { normalize, loadState, memoryStorage, importState, exportState } from '../www/js/state/store.js';
 import { drawDaily, wantsGentleSocial } from '../www/js/engine/draw.js';
-import {
-  expandTemplates, instantiateTemplate, fillBilingual, listTemplates, templateHistoryKey,
+import { expandTemplates, instantiateTemplate, fillBilingual, listTemplates, templateHistoryKey,
 } from '../www/js/engine/generate.js';
 import { SLOT_POOLS } from '../www/js/data/slots.js';
 import { QUEST_TEMPLATES } from '../www/js/data/templates.js';
+import { WORLD_REGIONS, WORLD_PATHS } from '../www/js/data/world.js';
+import { buildWorldView, regionStatus, mapPins } from '../www/js/engine/worldView.js';
 import { mulberry32 } from '../www/js/engine/rng.js';
 import {
   gainXp, gainSkills, bumpStreak, computeStyle, elanDuJour,
@@ -131,6 +132,49 @@ test('générateur : expand respecte plafond et cooldown template', () => {
   assert.ok(list.every((q) => q.audace <= 2));
   assert.ok(!list.some((q) => q.templateId === 'tpl_e_contrainte'));
   assert.ok(list.some((q) => q.generated));
+});
+
+test('carte : régions et chemins cohérents', () => {
+  const ids = new Set();
+  for (const r of WORLD_REGIONS) {
+    assert.ok(!ids.has(r.id), r.id);
+    ids.add(r.id);
+    assert.ok(bilingual(r.label) && bilingual(r.blurb), r.id);
+    assert.ok(r.x >= 0 && r.x <= 100 && r.y >= 0 && r.y <= 100, r.id);
+    if (r.kind === 'family') assert.ok(FAMILY_KEYS.includes(r.famille), r.id);
+  }
+  for (const [a, b] of WORLD_PATHS) {
+    assert.ok(ids.has(a) && ids.has(b), `${a}-${b}`);
+  }
+});
+
+test('carte : pins reflètent quêtes / événement / souvenirs', () => {
+  const s = defaultState();
+  s.level = 1;
+  s.quests = [
+    { id: 's_x', famille: 'social', status: 'proposed', text: { fr: 'A', en: 'A' }, xp: 10 },
+    { id: 'e_x', famille: 'exploration', status: 'done', text: { fr: 'B', en: 'B' }, xp: 20 },
+  ];
+  s.event = { id: 'ev_x', status: 'active', title: { fr: 'E', en: 'E' }, xp: 100 };
+  s.inventory = [{ item: { fr: '🔑', en: '🔑' }, date: '2026-09-04' }];
+  s.history.familleCompleted = { social: 2 };
+
+  assert.equal(regionStatus(WORLD_REGIONS.find((r) => r.id === 'foyer'), s), 'discovered');
+  assert.equal(regionStatus(WORLD_REGIONS.find((r) => r.id === 'social'), s), 'active');
+  assert.equal(regionStatus(WORLD_REGIONS.find((r) => r.id === 'exploration'), s), 'fog');
+  assert.equal(regionStatus(WORLD_REGIONS.find((r) => r.id === 'montagne'), s), 'locked');
+
+  s.level = 8;
+  assert.equal(regionStatus(WORLD_REGIONS.find((r) => r.id === 'montagne'), s), 'discovered');
+
+  const pins = mapPins(s);
+  assert.ok(pins.some((p) => p.kind === 'quest' && p.regionId === 'social'));
+  assert.ok(pins.some((p) => p.kind === 'event' && p.regionId === 'foyer'));
+  assert.ok(pins.some((p) => p.kind === 'souvenir'));
+
+  const view = buildWorldView(s);
+  assert.equal(view.heroRegionId, 'social');
+  assert.ok(view.stats.discovered >= 2);
 });
 
 test('événements : modèle bilingue', () => {

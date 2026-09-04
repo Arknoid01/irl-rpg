@@ -86,18 +86,25 @@ test('parcours complet dans le DOM', async () => {
   assert.equal(JSON.parse(window.localStorage.getItem('irlrpg_save_v2')).lang, 'en');
   await click('[data-action="setLang"][data-lang="fr"]');
 
-  // 5. Onglet Personnage
+  // 5. Onglet Monde (carte)
+  await click('[data-action="goto"][data-id="world"]');
+  assert.ok($('.world-map'), 'carte SVG');
+  assert.ok($$('.map-node').length >= 6, 'régions sur la carte');
+  await click('.map-node[data-id="foyer"]');
+  assert.ok($('.map-detail'), 'panneau détail région');
+
+  // 6. Onglet Personnage
   await click('[data-action="goto"][data-id="character"]');
   assert.ok($('.skills-grid'), 'grille de compétences');
   assert.match($('#root').textContent, /Testeur/);
 
-  // 6. Réglages
+  // 7. Réglages
   await click('[data-action="open-settings"]');
   assert.ok($('.sheet'), 'feuille de réglages');
   await click('[data-set="close"]');
   assert.equal($('#overlay').classList.contains('show'), false, 'réglages fermés');
 
-  // 7. Nouveau jour (re-tirage)
+  // 8. Nouveau jour (re-tirage)
   await click('[data-action="goto"][data-id="adventure"]');
   await click('[data-action="new-day"]');
   await tick();

@@ -5,6 +5,7 @@ import { i18n, detectLang } from './i18n/index.js';
 import { applyTheme } from './ui/theme.js';
 import { $ } from './ui/dom.js';
 import { renderAdventure } from './ui/screens/adventure.js';
+import { renderWorld, selectWorldRegion } from './ui/screens/world.js';
 import { renderJournal } from './ui/screens/journal.js';
 import { renderCharacter } from './ui/screens/character.js';
 import { playEffects, closeOverlay, showToast } from './ui/feedback.js';
@@ -22,12 +23,14 @@ let settingsOpen = false;
 
 const SCREENS = {
   adventure: renderAdventure,
+  world: renderWorld,
   journal: renderJournal,
   character: renderCharacter,
 };
 
 const NAV = [
   { id: 'adventure', icon: '⚔', key: 'nav_adventure' },
+  { id: 'world', icon: '🗺', key: 'nav_world' },
   { id: 'journal', icon: '✒', key: 'nav_journal' },
   { id: 'character', icon: '⚜', key: 'nav_character' },
 ];
@@ -93,6 +96,12 @@ async function dispatch(action, args = {}) {
   switch (action) {
     case 'goto':
       view = args.id || 'adventure';
+      render();
+      break;
+
+    case 'select-region':
+      selectWorldRegion(args.id);
+      view = 'world';
       render();
       break;
 
