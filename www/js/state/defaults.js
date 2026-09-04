@@ -11,7 +11,7 @@ export function defaultState() {
 
     name: '',
     lang: 'fr',            // 'fr' | 'en'
-    theme: 'cyberpunk',
+    theme: 'nordique',
     comfort: 3,            // 1..5 — plafond d'audace des quêtes proposées
     prefFamilies: [],      // familles mises en avant au tirage
 

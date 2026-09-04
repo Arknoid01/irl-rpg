@@ -5,29 +5,12 @@
 // Le vocabulaire de thème n'habille que des mots de saveur ; tout le texte de
 // sécurité / optionnalité reste identique quel que soit le thème.
 
-export const DEFAULT_THEME = 'cyberpunk';
+export const DEFAULT_THEME = 'nordique';
 
 export const THEMES = {
-  cyberpunk: {
-    label: 'Cyberpunk',
-    dot: 'linear-gradient(135deg,#ff2e9a,#00e5ff)',
-    companionLines: {
-      fr: [
-        'Ton IA compagnon scanne la ville. Nouvelles pistes détectées.',
-        'Signal reçu. Ton compagnon a repéré des opportunités dans le secteur.',
-        'Le réseau est calme. Ton compagnon te propose deux ou trois choses.',
-      ],
-      en: [
-        'Your AI companion scans the city. New leads detected.',
-        'Signal received. Your companion picked up opportunities in the sector.',
-        'The network is quiet. Your companion has two or three things for you.',
-      ],
-    },
-    xpSuffix: { fr: '// DATA', en: '// DATA' },
-  },
   nordique: {
     label: 'Fantasy nordique',
-    dot: 'linear-gradient(135deg,#c9a227,#3f5468)',
+    dot: 'linear-gradient(135deg,#c9a227,#3d6b58)',
     companionLines: {
       fr: [
         'Ton compagnon de route déplie la carte. De nouvelles pistes s’ouvrent, voyageur.',
@@ -58,6 +41,23 @@ export const THEMES = {
       ],
     },
     xpSuffix: { fr: '— le contrat est rempli', en: '— the contract is fulfilled' },
+  },
+  cyberpunk: {
+    label: 'Néon nocturne',
+    dot: 'linear-gradient(135deg,#ff2e9a,#00e5ff)',
+    companionLines: {
+      fr: [
+        'Ton compagnon scanne la ville. Nouvelles pistes détectées.',
+        'Signal reçu. Ton compagnon a repéré des opportunités dans le secteur.',
+        'Le réseau est calme. Ton compagnon te propose deux ou trois choses.',
+      ],
+      en: [
+        'Your companion scans the city. New leads detected.',
+        'Signal received. Your companion picked up opportunities in the sector.',
+        'The network is quiet. Your companion has two or three things for you.',
+      ],
+    },
+    xpSuffix: { fr: '— données', en: '— data' },
   },
 };
 

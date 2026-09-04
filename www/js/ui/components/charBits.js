@@ -58,10 +58,24 @@ export function styleHtml(state) {
 }
 
 export function inventoryHtml(state) {
-  if (!state.inventory.length) return `<p class="muted tiny">${i18n.t('no_inventory')}</p>`;
-  return `<div class="inv-grid">${state.inventory.slice().reverse().map((it) => `
-    <div class="inv-item"><div class="inv-icon">${esc(i18n.loc(it.item))}</div><div class="tiny muted">${it.date}</div></div>`).join('')}</div>`;
+  if (!state.inventory.length) {
+    return `<div class="inv-empty">
+      <div class="inv-empty-icon" aria-hidden="true">🎒</div>
+      <p class="muted tiny">${i18n.t('no_inventory')}</p>
+    </div>`;
+  }
+  return `<div class="inv-grid">${state.inventory.slice().reverse().map((it) => {
+    const label = i18n.loc(it.item);
+    const from = it.from ? i18n.loc(it.from) : '';
+    return `
+    <article class="inv-item">
+      <div class="inv-icon">${esc(label)}</div>
+      ${from ? `<div class="inv-from tiny muted">${i18n.t('inv_from')} ${esc(from)}</div>` : ''}
+      <div class="inv-date tiny muted">${esc(it.date || '')}</div>
+    </article>`;
+  }).join('')}</div>`;
 }
+
 
 export function statsHtml(state) {
   const h = state.history;

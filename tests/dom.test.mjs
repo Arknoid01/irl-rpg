@@ -16,6 +16,7 @@ global.document = window.document;
 global.localStorage = window.localStorage;
 global.Event = window.Event;
 global.MouseEvent = window.MouseEvent;
+global.getComputedStyle = window.getComputedStyle.bind(window);
 try { Object.defineProperty(globalThis, 'navigator', { value: window.navigator, configurable: true }); } catch { /* Node fournit déjà navigator */ }
 if (!window.matchMedia) window.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {} });
 

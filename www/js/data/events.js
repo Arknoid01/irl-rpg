@@ -65,4 +65,22 @@ export const EVENTS = [
     },
     item: { fr: '🎲 Dé partagé', en: '🎲 Shared die' },
   },
+  {
+    id: 'ev_cafe', xp: 190, minutes: 90,
+    title: { fr: 'Le comptoir inconnu', en: 'The unknown counter' },
+    text: {
+      fr: "Prends quelque chose à boire (ou à grignoter) dans un endroit où tu n'as jamais commandé.",
+      en: "Get a drink (or a snack) somewhere you've never ordered before.",
+    },
+    item: { fr: '☕ Ticket de comptoir', en: '☕ Counter ticket' },
+  },
+  {
+    id: 'ev_pierre', xp: 170, minutes: 45,
+    title: { fr: 'La pierre étrange', en: 'The strange stone' },
+    text: {
+      fr: "Trouve un caillou, une feuille ou un petit objet naturel qui te plaît — garde-le ou photographie-le.",
+      en: "Find a pebble, a leaf or a small natural object you like — keep it or photograph it.",
+    },
+    item: { fr: '🪨 Pierre étrange', en: '🪨 Strange stone' },
+  },
 ];

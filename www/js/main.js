@@ -190,7 +190,7 @@ function softRerenderSettings() {
 function topbarHtml() {
   return `
   <header class="topbar">
-    <div class="brand"><span class="glyph">◆</span> ${i18n.t('app_name')}</div>
+    <div class="brand"><span class="glyph" aria-hidden="true">•</span> ${i18n.t('app_name')}</div>
     <div class="topbar-actions">
       <div class="lang-toggle small">
         <button class="${state.lang === 'fr' ? 'active' : ''}" data-action="setLang" data-lang="fr">FR</button>

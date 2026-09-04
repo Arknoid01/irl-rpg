@@ -33,13 +33,14 @@ www/
 ├── index.html            coquille (charge base/themes/components.css + js/main.js)
 ├── manifest.webmanifest
 ├── styles/
-│   ├── themes.css         jeux de tokens par thème (cyberpunk / nordique / sombre)
+│   ├── themes.css         jeux de tokens (carnet + encre nordique / sombre / néon)
+
 │   ├── base.css           reset, layout, topbar, nav, boutons
 │   └── components.css     panneaux, cartes de quête, journal, overlay, level-up…
 └── js/
     ├── main.js            contrôleur : boot, dispatch, rendu de la coquille
     ├── i18n/              index.js (t / loc) + fr.js + en.js
-    ├── data/              taxonomy · quests (~70) · events · titles · themes
+    ├── data/              taxonomy · quests (~98) · events · titles · themes
     ├── state/             defaults.js (forme de sauvegarde) · store.js (persist + migrations)
     ├── engine/            dates · rng · draw (tirage quotidien) · progression · journal · game (orchestrateur) · philosophy
     ├── ui/                dom · theme · feedback · onboarding · settings

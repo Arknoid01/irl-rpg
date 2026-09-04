@@ -52,6 +52,12 @@ export const QUESTS = [
     text: { fr: "Montre deux options à quelqu'un (deux photos, deux trajets…) et demande : « Tu préfères lequel ? »", en: "Show someone two options (two photos, two routes…) and ask: “Which do you prefer?”" } },
   { id: 's_tenue', famille: 'social', xp: 80, effort: 'leger', registre: 'experience', audace: 2, contexte: [], skill_bonus: 'audace',
     text: { fr: "Porte aujourd'hui un vêtement que tu aimes mais que tu ne sors presque jamais.", en: "Wear something today that you love but almost never take out." } },
+  { id: 's_souvenir_partage', famille: 'social', xp: 100, effort: 'leger', registre: 'quete', audace: 2, contexte: [], defi_ami: true,
+    text: { fr: "Envoie à quelqu'un une vieille photo ou un souvenir partagé, sans attendre de réponse.", en: "Send someone an old photo or shared memory, without expecting a reply." } },
+  { id: 's_ecoute_active', famille: 'social', xp: 120, effort: 'moyen', registre: 'quete', audace: 2, contexte: ['presence_gens'], safe_fallback: FB_SOCIAL,
+    text: { fr: "Dans une conversation, pose deux questions de suite sans parler de toi.", en: "In a conversation, ask two questions in a row without talking about yourself." } },
+  { id: 's_inconnu_conseil', famille: 'social', xp: 150, effort: 'moyen', registre: 'quete', audace: 5, contexte: ['presence_gens', 'exterieur'], safe_fallback: FB_SOCIAL,
+    text: { fr: "Demande un conseil sincère à quelqu'un que tu ne connais pas (resto, livre, coin sympa…).", en: "Ask a stranger for a sincere tip (a restaurant, a book, a nice spot…)." } },
 
   // ─────────────── EXPLORATION ───────────────
   { id: 'e_autre_chemin', famille: 'exploration', xp: 80, effort: 'moyen', registre: 'quete', audace: 2, contexte: ['trajet', 'exterieur'], safe_fallback: FB_DEHORS,
@@ -78,6 +84,12 @@ export const QUESTS = [
     text: { fr: "Ce soir, fais un petit tour pour regarder comment ton quartier change avec la lumière.", en: "Tonight, take a short walk to watch how your neighbourhood changes with the light." } },
   { id: 'e_transport', famille: 'exploration', xp: 80, effort: 'moyen', registre: 'quete', audace: 2, contexte: ['trajet', 'exterieur'], safe_fallback: FB_DEHORS,
     text: { fr: "Descends un arrêt plus tôt (ou gare-toi plus loin) et finis à pied.", en: "Get off a stop early (or park further away) and finish on foot." } },
+  { id: 'e_toit_vue', famille: 'exploration', xp: 110, effort: 'moyen', registre: 'quete', audace: 3, contexte: ['exterieur'], safe_fallback: FB_DEHORS,
+    text: { fr: "Trouve un endroit en hauteur (escalier, pont, colline…) et regarde le quartier 3 minutes.", en: "Find a high spot (stairs, bridge, hill…) and watch the neighbourhood for 3 minutes." } },
+  { id: 'e_quartier_loin', famille: 'exploration', xp: 160, effort: 'consequent', registre: 'quete', audace: 4, contexte: ['exterieur'], safe_fallback: FB_DEHORS,
+    text: { fr: "Va dans un quartier de ta ville où tu ne vas presque jamais, même juste 20 minutes.", en: "Go to a part of your city you almost never visit, even just for 20 minutes." } },
+  { id: 'e_bibli', famille: 'exploration', xp: 100, effort: 'moyen', registre: 'quete', audace: 2, contexte: ['exterieur'], safe_fallback: FB_DEHORS,
+    text: { fr: "Entre dans une bibliothèque, une médiathèque ou un lieu culturel ouvert — même 5 minutes.", en: "Step into a library, media library or open cultural space — even for 5 minutes." } },
 
   // ─────────────── CURIOSITÉ ───────────────
   { id: 'c_jamais_remarque', famille: 'curiosite', xp: 90, effort: 'moyen', registre: 'quete', audace: 1, contexte: ['exterieur'], safe_fallback: FB_DEHORS,
@@ -104,6 +116,14 @@ export const QUESTS = [
     text: { fr: "Trouve le panneau le plus étrange de ton quartier.", en: "Find the strangest sign in your neighbourhood." } },
   { id: 'c_histoire_objet', famille: 'curiosite', xp: 80, effort: 'moyen', registre: 'quete', audace: 1, contexte: ['exterieur'], safe_fallback: FB_DEHORS,
     text: { fr: "Trouve un objet ou un lieu de ton quartier qui pourrait avoir une histoire, et imagine-la.", en: "Find an object or place nearby that could have a story, and imagine it." } },
+  { id: 'c_question_ouverte', famille: 'curiosite', xp: 70, effort: 'leger', registre: 'experience', audace: 1, contexte: [],
+    text: { fr: "Écris une question que tu te poses vraiment — sans chercher la réponse tout de suite.", en: "Write down a question you genuinely wonder about — without looking up the answer yet." } },
+  { id: 'c_son_inconnu', famille: 'curiosite', xp: 60, effort: 'leger', registre: 'experience', audace: 1, contexte: ['exterieur'], safe_fallback: FB_DEHORS,
+    text: { fr: "Ferme les yeux 30 secondes dehors et nomme trois sons que tu entends.", en: "Close your eyes outside for 30 seconds and name three sounds you hear." } },
+  { id: 'c_carte_mentale', famille: 'curiosite', xp: 90, effort: 'moyen', registre: 'quete', audace: 2, contexte: [],
+    text: { fr: "Dessine de mémoire le plan de ton trajet habituel — puis vérifie ce que tu as oublié.", en: "Draw your usual route from memory — then check what you forgot." } },
+  { id: 'c_musee_5', famille: 'curiosite', xp: 130, effort: 'consequent', registre: 'quete', audace: 3, contexte: ['exterieur'], safe_fallback: FB_DEHORS,
+    text: { fr: "Passe au moins 20 minutes dans un lieu d'exposition, une galerie ou un musée (même petit).", en: "Spend at least 20 minutes in an exhibition space, gallery or museum (even a small one)." } },
 
   // ─────────────── CRÉATION ───────────────
   { id: 'cr_cuisine', famille: 'creation', xp: 100, effort: 'consequent', registre: 'quete', audace: 2, contexte: [],
@@ -126,6 +146,14 @@ export const QUESTS = [
     text: { fr: "Place naturellement une expression inhabituelle dans une conversation aujourd'hui.", en: "Naturally slip an unusual phrase into a conversation today." } },
   { id: 'cr_objet_complique', famille: 'creation', xp: 60, effort: 'leger', registre: 'experience', audace: 1, contexte: ['exterieur'], safe_fallback: FB_DEHORS,
     text: { fr: "Trouve l'objet le plus inutilement compliqué de la rue et imagine qui l'a conçu.", en: "Find the most needlessly complicated object in the street and imagine who designed it." } },
+  { id: 'cr_haiku', famille: 'creation', xp: 70, effort: 'leger', registre: 'experience', audace: 1, contexte: [],
+    text: { fr: "Écris un tout petit poème (3 lignes) sur quelque chose que tu as vu aujourd'hui.", en: "Write a tiny poem (3 lines) about something you saw today." } },
+  { id: 'cr_photo_serie', famille: 'creation', xp: 90, effort: 'moyen', registre: 'quete', audace: 1, contexte: ['exterieur'], safe_fallback: FB_DEHORS,
+    text: { fr: "Prends trois photos d'un même thème (ombres, portes, vert…) — pas de personnes.", en: "Take three photos of one theme (shadows, doors, green…) — no people." } },
+  { id: 'cr_bricole', famille: 'creation', xp: 120, effort: 'consequent', registre: 'quete', audace: 2, contexte: ['domicile'], safe_fallback: FB_LATER,
+    text: { fr: "Répare, custom ou améliore un petit objet chez toi (même imparfaitement).", en: "Repair, customise or improve a small object at home (even imperfectly)." } },
+  { id: 'cr_chanson', famille: 'creation', xp: 80, effort: 'moyen', registre: 'experience', audace: 2, contexte: [],
+    text: { fr: "Apprends le refrain d'une chanson que tu ne connais pas encore.", en: "Learn the chorus of a song you don't know yet." } },
 
   // ─────────────── QUOTIDIEN (toujours avec une torsion) ───────────────
   { id: 'q_musique_range', famille: 'quotidien', xp: 60, effort: 'moyen', registre: 'quete', audace: 1, contexte: ['domicile'], safe_fallback: FB_LATER,
@@ -138,7 +166,7 @@ export const QUESTS = [
     text: { fr: "Ajoute un ingrédient inhabituel à un repas que tu fais souvent.", en: "Add an unusual ingredient to a meal you make often." } },
   { id: 'q_course_liste', famille: 'quotidien', xp: 80, effort: 'moyen', registre: 'quete', audace: 2, contexte: ['exterieur', 'commerce_ouvert'], safe_fallback: FB_DEHORS,
     text: { fr: "Fais une course que tu repoussais, et rentre par un chemin différent.", en: "Run an errand you'd been putting off, and come back a different way." } },
-  { id: 'q_matin_calme', famille: 'quotidien', xp: 60, effort: 'leger', registre: 'quete', audace: 1, contexte: ['moment:matin'],
+  { id: 'q_matin_calme', famille: 'quotidien', xp: 60, effort: 'leger', registre: 'quete', audace: 1, contexte: ['moment:matin'], safe_fallback: FB_LATER,
     text: { fr: "Ce matin, fais une seule chose à la fois pendant 15 minutes — pas de téléphone en parallèle.", en: "This morning, do one thing at a time for 15 minutes — no phone alongside." } },
   { id: 'q_objet_donne', famille: 'quotidien', xp: 60, effort: 'leger', registre: 'quete', audace: 1, contexte: ['domicile'], safe_fallback: FB_LATER,
     text: { fr: "Trouve un objet dont tu ne te sers plus et mets-le de côté pour le donner.", en: "Find something you no longer use and set it aside to give away." } },
@@ -146,8 +174,16 @@ export const QUESTS = [
     text: { fr: "Occupe-toi d'une plante, d'un espace ou d'un objet dont tu prends rarement soin.", en: "Take care of a plant, a space or an object you rarely tend to." } },
   { id: 'q_lit_bonus', famille: 'quotidien', xp: 40, effort: 'leger', registre: 'experience', audace: 1, contexte: ['domicile', 'moment:matin'], safe_fallback: FB_LATER,
     text: { fr: "Fais ton lit — et ajoute un petit détail agréable à ta chambre pendant que tu y es.", en: "Make your bed — and add one nice little detail to your room while you're at it." } },
-  { id: 'q_soir_demain', famille: 'quotidien', xp: 50, effort: 'leger', registre: 'quete', audace: 1, contexte: ['moment:soir'],
+  { id: 'q_soir_demain', famille: 'quotidien', xp: 50, effort: 'leger', registre: 'quete', audace: 1, contexte: ['moment:soir'], safe_fallback: FB_LATER,
     text: { fr: "Ce soir, prépare une seule chose pour te faciliter la matinée de demain.", en: "Tonight, prepare one thing to make tomorrow morning easier." } },
+  { id: 'q_eau_pause', famille: 'quotidien', xp: 40, effort: 'leger', registre: 'experience', audace: 1, contexte: [],
+    text: { fr: "Bois un grand verre d'eau — puis regarde par la fenêtre 60 secondes sans écran.", en: "Drink a big glass of water — then look out a window for 60 seconds with no screen." } },
+  { id: 'q_message_futur', famille: 'quotidien', xp: 70, effort: 'leger', registre: 'quete', audace: 1, contexte: [],
+    text: { fr: "Écris-toi un message pour dans une semaine (note, mail programmé…) et envoie-le.", en: "Write yourself a message for a week from now (note, scheduled mail…) and send it." } },
+  { id: 'q_marche_courses', famille: 'quotidien', xp: 90, effort: 'moyen', registre: 'quete', audace: 2, contexte: ['exterieur', 'commerce_ouvert'], safe_fallback: FB_DEHORS,
+    text: { fr: "Fais une course à pied (ou une partie) que tu ferais d'habitude en voiture / transport.", en: "Do an errand on foot (or part of it) that you'd usually do by car / transit." } },
+  { id: 'q_grand_menage_timer', famille: 'quotidien', xp: 110, effort: 'consequent', registre: 'quete', audace: 2, contexte: ['domicile'], safe_fallback: FB_LATER,
+    text: { fr: "Choisis une pièce et remets-y de l'ordre pendant exactement 25 minutes — chrono, puis stop.", en: "Pick a room and tidy it for exactly 25 minutes — timer on, then stop." } },
 
   // ─────────────── CHAOS ───────────────
   { id: 'ch_piece_chemin', famille: 'chaos', xp: 90, effort: 'leger', registre: 'quete', audace: 2, contexte: ['exterieur'], safe_fallback: FB_DEHORS,
@@ -178,6 +214,12 @@ export const QUESTS = [
     text: { fr: "Pendant 5 minutes, cherche trois objets ordinaires qui pourraient passer pour des artefacts extraterrestres.", en: "For 5 minutes, look for three ordinary objects that could pass as alien artefacts." } },
   { id: 'ch_ami_snack', famille: 'chaos', xp: 80, effort: 'leger', registre: 'quete', audace: 2, contexte: [], defi_ami: true,
     text: { fr: "Laisse un ami choisir ton prochain snack ou ta prochaine boisson.", en: "Let a friend choose your next snack or drink." } },
+  { id: 'ch_accent', famille: 'chaos', xp: 70, effort: 'leger', registre: 'experience', audace: 3, contexte: [],
+    text: { fr: "Pendant 10 minutes, parle (ou pense) avec un accent inventé — sans déranger personne.", en: "For 10 minutes, speak (or think) in a made-up accent — without bothering anyone." } },
+  { id: 'ch_mission_aleatoire', famille: 'chaos', xp: 100, effort: 'moyen', registre: 'quete', audace: 4, contexte: ['exterieur'], safe_fallback: FB_DEHORS,
+    text: { fr: "Lance un dé mental (1–6) : 1=assis 2 min, 2=photo ciel, 3=detour, 4=eau, 5=bonjour, 6=rien. Exécute.", en: "Roll a mental die (1–6): 1=sit 2 min, 2=sky photo, 3=detour, 4=water, 5=hello, 6=nothing. Do it." } },
+  { id: 'ch_roi_ombre', famille: 'chaos', xp: 80, effort: 'leger', registre: 'experience', audace: 2, contexte: ['exterieur'], safe_fallback: FB_DEHORS,
+    text: { fr: "Pendant 5 minutes, suis ton ombre comme si c'était ton guide officiel.", en: "For 5 minutes, follow your shadow as if it were your official guide." } },
 
   // ─────────────── QUÊTES CACHÉES ───────────────
   { id: 'h_gouter_inconnu', famille: 'curiosite', xp: 110, effort: 'moyen', registre: 'quete', audace: 3, poids: 'mystere', contexte: ['commerce_ouvert'], safe_fallback: FB_DEHORS, hidden: true,
@@ -192,6 +234,9 @@ export const QUESTS = [
   { id: 'h_objet_garde', famille: 'creation', xp: 120, effort: 'moyen', registre: 'quete', audace: 2, poids: 'mystere', contexte: [], hidden: true,
     text: { fr: "Fabrique ou choisis un petit objet à garder comme souvenir d'aujourd'hui.", en: "Make or pick a small object to keep as a memento of today." },
     fragment: { fr: "Cet objet ne vaut rien pour personne d'autre. Pour toi, il date d'aujourd'hui — c'est déjà quelque chose.", en: "This object is worth nothing to anyone else. To you, it's from today — that's already something." } },
+  { id: 'h_nuit_balade', famille: 'exploration', xp: 140, effort: 'moyen', registre: 'quete', audace: 4, poids: 'mystere', contexte: ['exterieur', 'moment:soir'], safe_fallback: FB_DEHORS, hidden: true,
+    text: { fr: "Sors 10 minutes après la tombée de la nuit (endroit que tu connais, sûr).", en: "Go out for 10 minutes after dark (somewhere you know, safely)." },
+    fragment: { fr: "La nuit transforme les mêmes rues. Tu as accepté de les revoir autrement.", en: "Night changes the same streets. You agreed to see them differently." } },
 ];
 
 /** Familles présentes dans la banque (pour l'onboarding). */

@@ -28,7 +28,7 @@ Empaquetage Android/iOS : `npm install && npx cap add android && npx cap sync`.
 | Plateforme : HTML/CSS/JS + Capacitor (D1) | ✅ |
 | Onboarding (langue, thème, prénom, confort, familles, rappel, **ack 16+**) | ✅ |
 | 3 onglets (Aventure / Journal / Personnage) + réglages, 3 thèmes | ✅ |
-| ~70 quêtes bilingues, tirage quotidien budgété, accepter/ignorer/valider | ✅ |
+| ~95 quêtes bilingues, tirage quotidien budgété, accepter/ignorer/valider | ✅ |
 | XP / niveau / 6 compétences / 12 titres / style / série sans coût | ✅ |
 | Journal (fragments + moments mémorables), événements | ✅ |
 | Défi d'ami = partage de texte (pas de classement) | ✅ |
@@ -50,6 +50,6 @@ Empaquetage Android/iOS : `npm install && npx cap add android && npx cap sync`.
 
 ## Reste ouvert
 
-Générateur modulaire de quêtes (post-V1) · pipeline de contenu pour étoffer la
-banque · équilibrage fin de la courbe d'XP et des paliers de titres · héberger
-`privacy.html` et coller l'URL dans la console store le jour de la soumission.
+Générateur modulaire de quêtes (post-V1) · équilibrage fin de la courbe d'XP
+et des paliers de titres · héberger `privacy.html` et coller l'URL dans la
+console store le jour de la soumission.

@@ -13,7 +13,7 @@ export function startOnboarding(initial, onComplete) {
     name: '',
     comfort: 3,
     prefFamilies: [],
-    theme: initial.theme || 'cyberpunk',
+    theme: initial.theme || 'nordique',
     lang: i18n.lang,
     notifications: { enabled: false, hour: 9 },
     ageAck: false,

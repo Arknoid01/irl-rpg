@@ -1,68 +1,94 @@
-/* Jeux de tokens par thème. Le gameplay ne dépend jamais de ces valeurs. */
+/* Base visuelle : carnet d'aventure (cuir sombre + scraps de parchemin).
+   Les thèmes ne changent que l'encre / les accents — jamais le gameplay. */
 
 :root {
-  --radius: 8px;
-  --panel-radius: 6px;
-  --maxw: 480px;
-  /* plancher d'accessibilité : ces valeurs ne sont jamais surchargées plus bas */
-  --min-text: 14px;
-}
-
-[data-theme="cyberpunk"] {
-  --bg: #060a10;
-  --bg-grad: radial-gradient(ellipse at 20% -10%, #0e2230 0%, #060a10 55%);
-  --panel: #0a121c;
-  --panel2: #0c1620;
-  --border: #1c3a4a;
-  --text: #dff4ff;
-  --text-dim: #8fb0be;
-  --accent: #ff2e9a;
-  --accent2: #00e5ff;
-  --gold: #f4d35e;
-  --danger: #ff5566;
-  --ok: #35e08e;
-  --font-display: 'Orbitron', system-ui, sans-serif;
-  --font-body: 'Share Tech Mono', ui-monospace, monospace;
-  --letter: 0.02em;
-  --panel-radius: 3px;
+  --maxw: 440px;
+  --min-text: 15px;
+  --radius: 14px;
+  --panel-radius: 18px;
+  --scrap-radius: 4px 18px 6px 16px / 16px 6px 18px 4px;
+  --font-brand: 'Caveat', 'Segoe Print', cursive;
+  --font-display: 'Libre Baskerville', Georgia, serif;
+  --font-body: 'Source Sans 3', 'Segoe UI', sans-serif;
+  --letter: 0.01em;
+  --paper: #f3ead7;
+  --paper2: #ebe0c8;
+  --ink: #2a2218;
+  --ink-dim: #6a5c4c;
+  --leather: #1a1511;
+  --leather2: #241c16;
+  --shadow-scrap: 0 10px 28px -12px rgba(0, 0, 0, .65), 0 2px 6px rgba(0, 0, 0, .25);
 }
 
 [data-theme="nordique"] {
-  --bg: #14120f;
-  --bg-grad: radial-gradient(ellipse at 50% -20%, #2a2318 0%, #14120f 60%);
-  --panel: #1e1a14;
-  --panel2: #241f18;
-  --border: #6a5730;
-  --text: #f1e6c9;
-  --text-dim: #c1ac86;
-  --accent: #8fb0c4;
-  --accent2: #d8b23c;
-  --gold: #d8b23c;
-  --danger: #c65b3e;
-  --ok: #7fae6d;
-  --font-display: 'Cinzel', Georgia, serif;
-  --font-body: 'EB Garamond', Georgia, serif;
-  --letter: 0.01em;
-  --panel-radius: 4px;
-  --min-text: 15px;
+  --bg: #17130f;
+  --bg-grad:
+    radial-gradient(ellipse at 30% 0%, #2c241a 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 100%, #1a2218 0%, transparent 45%);
+  --panel: var(--paper);
+  --panel2: var(--paper2);
+  --border: #cbb99a;
+  --text: var(--ink);
+  --text-dim: var(--ink-dim);
+  --text-on-dark: #f0e6d4;
+  --text-on-dark-dim: #b7a892;
+  --accent: #8b3a32;
+  --accent2: #3d6b58;
+  --gold: #b08a2e;
+  --danger: #9a3530;
+  --ok: #3f6b45;
+  --seal: #8b3a32;
+  --bar-xp: #4a7a9a;
+  --bar-elan: #3d6b58;
+  --nav-active: #d4b45a;
+  --theme-color: #17130f;
 }
 
 [data-theme="sombre"] {
-  --bg: #100d0c;
-  --bg-grad: radial-gradient(ellipse at 50% -10%, #211613 0%, #100d0c 60%);
-  --panel: #17110f;
-  --panel2: #1c1512;
-  --border: #4a4038;
-  --text: #e4d9c6;
-  --text-dim: #a99b8c;
-  --accent: #9a3535;
-  --accent2: #c9ccd2;
-  --gold: #c99a4a;
-  --danger: #b23b3b;
-  --ok: #7c9e70;
-  --font-display: 'Almendra SC', Georgia, serif;
-  --font-body: 'Eczar', Georgia, serif;
-  --letter: 0.015em;
-  --panel-radius: 2px;
-  --min-text: 15px;
+  --bg: #120e0d;
+  --bg-grad:
+    radial-gradient(ellipse at 40% -10%, #2a1816 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 80%, #1a1418 0%, transparent 40%);
+  --panel: #ebe3d2;
+  --panel2: #e2d8c4;
+  --border: #c4b49a;
+  --text: #241816;
+  --text-dim: #6e584c;
+  --text-on-dark: #e8ddd0;
+  --text-on-dark-dim: #a89486;
+  --accent: #7a2e2e;
+  --accent2: #8a8e96;
+  --gold: #c49a48;
+  --danger: #a03333;
+  --ok: #5a7350;
+  --seal: #7a2e2e;
+  --bar-xp: #6a7078;
+  --bar-elan: #7a2e2e;
+  --nav-active: #c49a48;
+  --theme-color: #120e0d;
+}
+
+/* « Cyber » = encre électrique sur le même carnet — plus de grille néon. */
+[data-theme="cyberpunk"] {
+  --bg: #0e1218;
+  --bg-grad:
+    radial-gradient(ellipse at 20% 0%, #1a2838 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 100%, #241828 0%, transparent 40%);
+  --panel: #eef2f6;
+  --panel2: #e4eaf0;
+  --border: #b8c4d0;
+  --text: #15202b;
+  --text-dim: #5a6a7a;
+  --text-on-dark: #dce8f2;
+  --text-on-dark-dim: #8fa3b5;
+  --accent: #c43a7a;
+  --accent2: #1a9bb8;
+  --gold: #c9a227;
+  --danger: #c44555;
+  --ok: #2f9e6e;
+  --seal: #c43a7a;
+  --bar-xp: #1a9bb8;
+  --bar-elan: #c43a7a;
+  --nav-active: #5ec8e8;
+  --theme-color: #0e1218;
 }

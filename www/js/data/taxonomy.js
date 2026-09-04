@@ -17,32 +17,32 @@ export const SKILL_KEYS = Object.keys(SKILLS);
 /** Les 6 familles de quêtes (écriture + tirage). */
 export const FAMILIES = {
   social: {
-    label: { fr: 'Social', en: 'Social' }, icon: '🤝', color: 'var(--accent)',
+    label: { fr: 'Social', en: 'Social' }, icon: '🤝', color: '#c9a227',
     desc: { fr: 'Une interaction humaine réelle, positive, naturelle.', en: 'A real, positive, natural human interaction.' },
     primary: 'social', secondary: 'audace', drawWeight: 25,
   },
   exploration: {
-    label: { fr: 'Exploration', en: 'Exploration' }, icon: '🧭', color: 'var(--gold)',
+    label: { fr: 'Exploration', en: 'Exploration' }, icon: '🧭', color: '#4a7a9a',
     desc: { fr: 'Découvrir son environnement, changer ses trajets.', en: 'Discover your surroundings, change your routes.' },
     primary: 'audace', secondary: 'curiosite', drawWeight: 20,
   },
   curiosite: {
-    label: { fr: 'Curiosité', en: 'Curiosity' }, icon: '🔭', color: 'var(--accent2)',
+    label: { fr: 'Curiosité', en: 'Curiosity' }, icon: '🔭', color: '#6b8f71',
     desc: { fr: 'Observer le monde autrement, apprendre, résoudre.', en: 'See the world differently, learn, solve.' },
     primary: 'curiosite', secondary: 'creativite', drawWeight: 15,
   },
   creation: {
-    label: { fr: 'Création', en: 'Creation' }, icon: '🎨', color: 'var(--accent2)',
+    label: { fr: 'Création', en: 'Creation' }, icon: '🎨', color: '#a67c52',
     desc: { fr: 'Fabriquer, dessiner, écrire, cuisiner, photographier.', en: 'Make, draw, write, cook, photograph.' },
     primary: 'creativite', secondary: 'curiosite', drawWeight: 10,
   },
   quotidien: {
-    label: { fr: 'Quotidien', en: 'Everyday' }, icon: '🧹', color: 'var(--accent2)',
+    label: { fr: 'Quotidien', en: 'Everyday' }, icon: '🧹', color: '#5a8f62',
     desc: { fr: 'La vie courante — toujours avec une petite torsion de jeu.', en: 'Everyday life — always with a small game twist.' },
     primary: 'discipline', secondary: null, drawWeight: 15,
   },
   chaos: {
-    label: { fr: 'Chaos', en: 'Chaos' }, icon: '😂', color: 'var(--danger)',
+    label: { fr: 'Chaos', en: 'Chaos' }, icon: '😂', color: '#a63d3d',
     desc: { fr: 'Une règle absurde et temporaire, le hasard aux commandes.', en: 'An absurd, temporary rule; chance in charge.' },
     primary: 'chaos', secondary: 'audace', drawWeight: 15,
   },

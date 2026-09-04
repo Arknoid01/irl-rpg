@@ -1,7 +1,7 @@
 // Persistance + migrations. Le stockage est injectable pour les tests.
 
 import { defaultState, SAVE_VERSION } from './defaults.js';
-import { THEME_KEYS } from '../data/themes.js';
+import { THEME_KEYS, DEFAULT_THEME } from '../data/themes.js';
 
 export const STORAGE_KEY = 'irlrpg_save_v2';
 const LEGACY_KEY_V1 = 'irlrpg_save_v1';
@@ -76,8 +76,8 @@ function migrateFromV1(raw) {
 export function normalize(state) {
   let s = deepMerge(defaultState(), state || {});
   if (!THEME_KEYS.includes(s.theme)) {
-    s.theme = THEME_MIGRATION[s.theme] || 'cyberpunk';
-    if (!THEME_KEYS.includes(s.theme)) s.theme = 'cyberpunk';
+    s.theme = THEME_MIGRATION[s.theme] || DEFAULT_THEME;
+    if (!THEME_KEYS.includes(s.theme)) s.theme = DEFAULT_THEME;
   }
   s.comfort = Math.min(5, Math.max(1, Math.round(s.comfort) || 3));
   if (s.lang !== 'fr' && s.lang !== 'en') s.lang = 'fr';
