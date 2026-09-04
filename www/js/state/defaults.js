@@ -40,6 +40,7 @@ export function defaultState() {
       totalCompleted: 0,
       daysPlayed: 0,
       bestStreak: 0,
+      recentEventIds: [],   // anti-répétition événements
     },
 
     seeds: { companion: 0 },

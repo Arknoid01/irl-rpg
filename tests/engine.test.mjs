@@ -18,6 +18,7 @@ import { SLOT_POOLS } from '../www/js/data/slots.js';
 import { QUEST_TEMPLATES } from '../www/js/data/templates.js';
 import { WORLD_REGIONS, WORLD_PATHS } from '../www/js/data/world.js';
 import { buildWorldView, regionStatus, mapPins } from '../www/js/engine/worldView.js';
+import { drawEvent, eventEligible, eventWeight, adaptiveFamilyBonus } from '../www/js/engine/events.js';
 import { mulberry32 } from '../www/js/engine/rng.js';
 import {
   gainXp, gainSkills, bumpStreak, computeStyle, elanDuJour,
@@ -155,7 +156,7 @@ test('carte : pins reflètent quêtes / événement / souvenirs', () => {
     { id: 's_x', famille: 'social', status: 'proposed', text: { fr: 'A', en: 'A' }, xp: 10 },
     { id: 'e_x', famille: 'exploration', status: 'done', text: { fr: 'B', en: 'B' }, xp: 20 },
   ];
-  s.event = { id: 'ev_x', status: 'active', title: { fr: 'E', en: 'E' }, xp: 100 };
+  s.event = { id: 'ev_x', status: 'active', title: { fr: 'E', en: 'E' }, xp: 100, famille: 'social' };
   s.inventory = [{ item: { fr: '🔑', en: '🔑' }, date: '2026-09-04' }];
   s.history.familleCompleted = { social: 2 };
 
@@ -169,7 +170,7 @@ test('carte : pins reflètent quêtes / événement / souvenirs', () => {
 
   const pins = mapPins(s);
   assert.ok(pins.some((p) => p.kind === 'quest' && p.regionId === 'social'));
-  assert.ok(pins.some((p) => p.kind === 'event' && p.regionId === 'foyer'));
+  assert.ok(pins.some((p) => p.kind === 'event' && p.regionId === 'social'));
   assert.ok(pins.some((p) => p.kind === 'souvenir'));
 
   const view = buildWorldView(s);
@@ -181,7 +182,46 @@ test('événements : modèle bilingue', () => {
   for (const e of EVENTS) {
     assert.ok(bilingual(e.title) && bilingual(e.text) && bilingual(e.item), e.id);
     assert.ok(e.xp > 0);
+    if (e.famille) assert.ok(FAMILY_KEYS.includes(e.famille), e.id);
+    if (e.moment) assert.ok(['matin', 'midi', 'soir'].includes(e.moment), e.id);
   }
+  assert.ok(EVENTS.length >= 20, `trop peu d’événements : ${EVENTS.length}`);
+});
+
+test('événements : éligibilité et tirage contextuel', () => {
+  const s = defaultState();
+  s.level = 1;
+  s.comfort = 2;
+  s.streak = 0;
+  const soft = EVENTS.find((e) => e.id === 'ev_doux');
+  const summit = EVENTS.find((e) => e.id === 'ev_sommet');
+  const serie = EVENTS.find((e) => e.id === 'ev_serie');
+  assert.equal(eventEligible(soft, s, new Date('2026-09-04T10:00:00')), true);
+  assert.equal(eventEligible(summit, s, new Date('2026-09-04T10:00:00')), false);
+  assert.equal(eventEligible(serie, s, new Date('2026-09-04T10:00:00')), false);
+
+  s.level = 10;
+  s.streak = 5;
+  s.comfort = 4;
+  assert.equal(eventEligible(summit, s, new Date('2026-09-04T10:00:00')), true);
+  assert.equal(eventEligible(serie, s, new Date('2026-09-04T10:00:00')), true);
+  assert.equal(eventEligible(soft, s, new Date('2026-09-04T10:00:00')), false);
+
+  s.history.recentEventIds = ['ev_porte'];
+  assert.equal(eventEligible(EVENTS.find((e) => e.id === 'ev_porte'), s), false);
+
+  s.history.familleCompleted = { social: 20, exploration: 0, curiosite: 0, creation: 0, quotidien: 0, chaos: 0 };
+  assert.ok(eventWeight(EVENTS.find((e) => e.id === 'ev_marchand'), s) >
+    eventWeight(EVENTS.find((e) => e.id === 'ev_visage'), s));
+
+  assert.ok(adaptiveFamilyBonus('exploration', s) > 0);
+  assert.ok(adaptiveFamilyBonus('social', s) < 0);
+
+  let hit = 0;
+  for (let i = 1; i <= 40; i++) {
+    if (drawEvent(s, { now: new Date('2026-09-04T10:00:00'), rng: mulberry32(i), chance: 1 })) hit += 1;
+  }
+  assert.ok(hit >= 30, `tirage trop rare : ${hit}/40`);
 });
 
 test('titres : compétences valides, bilingues', () => {

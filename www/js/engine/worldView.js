@@ -99,14 +99,19 @@ export function mapPins(state) {
     });
   }
 
-  if (state.event && state.event.status !== 'done') {
+  if (state.event && state.event.status !== 'done' && state.event.status !== 'dismissed') {
+    const fam = state.event.famille;
+    const regionId = fam
+      ? (WORLD_REGIONS.find((r) => r.famille === fam)?.id || 'foyer')
+      : 'foyer';
     pins.push({
       id: `event:${state.event.id}`,
       kind: 'event',
-      regionId: 'foyer',
+      regionId,
       status: state.event.status,
       label: state.event.title,
       xp: state.event.xp,
+      famille: fam || null,
     });
   }
 

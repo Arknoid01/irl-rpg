@@ -4,18 +4,18 @@
 // Mélange banque curée + quêtes générées (templates + slots).
 
 import { QUESTS } from '../data/quests.js';
-import { EVENTS } from '../data/events.js';
 import {
   FAMILIES, FAMILY_KEYS, EFFORT_POINTS, DAILY_EFFORT_BUDGET,
 } from '../data/taxonomy.js';
 import { dayPart } from './dates.js';
-import { weightedPick, shuffle, pick, defaultRng } from './rng.js';
+import { weightedPick, shuffle, defaultRng } from './rng.js';
 import { expandTemplates } from './generate.js';
+import { drawEvent, adaptiveFamilyBonus } from './events.js';
 
 const MIN_QUESTS = 3;
 const MAX_QUESTS = 4;
 const HIDDEN_SWAP_CHANCE = 0.25;
-const EVENT_CHANCE = 0.30;
+const EVENT_CHANCE = 0.32;
 const PREF_FAMILY_BONUS = 12;
 const RECENT_DONE_MEMORY = 56;
 
@@ -107,9 +107,10 @@ export function drawDaily(state, { now = new Date(), rng = defaultRng } = {}) {
     const weights = FAMILY_KEYS.map((fam) => {
       let w = FAMILIES[fam].drawWeight;
       if (state.prefFamilies.includes(fam)) w += PREF_FAMILY_BONUS;
+      w += adaptiveFamilyBonus(fam, state);
       if (fam === 'chaos' && (chaosStreak || (familleCount.chaos || 0) >= 1)) w = 0;
       if ((familleCount[fam] || 0) >= 2) w = 0;
-      return { value: fam, weight: w };
+      return { value: fam, weight: Math.max(0, w) };
     });
     if (weights.every((x) => x.weight <= 0)) break;
 
@@ -148,12 +149,10 @@ export function drawDaily(state, { now = new Date(), rng = defaultRng } = {}) {
     if (hiddenPool.length) chosen[idx] = { ...hiddenPool[0], status: 'proposed' };
   }
 
-  // 4. Événement (30 %), hors budget d'effort.
+  // 4. Événement contextuel (hors budget d'effort).
   let event = null;
-  if (rng() < EVENT_CHANCE) {
-    const ev = pick(shuffle(EVENTS, rng), rng);
-    if (ev) event = { ...ev, status: 'active' };
-  }
+  const drawn = drawEvent(state, { now, rng, chance: EVENT_CHANCE });
+  if (drawn) event = { ...drawn, status: 'active' };
 
   return { quests: chosen, event };
 }

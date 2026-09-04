@@ -11,6 +11,7 @@ import { todayStr } from './dates.js';
 import { addEntry, maybeMemorable, eventEntry } from './journal.js';
 import { defaultRng } from './rng.js';
 import { templateHistoryKey } from './generate.js';
+import { RECENT_EVENT_MEMORY } from './events.js';
 
 const RECENT_DONE_MEMORY = 56;
 const RECENT_FAMILLES_MEMORY = 12;
@@ -69,6 +70,11 @@ export function newDay(state, _args, ctx) {
   s.event = event;
   s.drawDate = today;
   s.history.daysPlayed += 1;
+  if (event && event.id) {
+    const recent = (s.history.recentEventIds || []).slice();
+    recent.push(event.id);
+    s.history.recentEventIds = recent.slice(-RECENT_EVENT_MEMORY);
+  }
 
   for (const q of quests) {
     if (q.famille === 'social' && !q.gentle) s.history.social.proposed += 1;
@@ -150,6 +156,11 @@ export function completeEvent(state, _args, ctx) {
   const today = todayStr(now);
 
   gainXp(s, effects, ev.xp);
+  if (ev.famille) {
+    gainSkills(s, effects, skillDeltasFor({ famille: ev.famille, xp: Math.round(ev.xp * 0.6) }));
+    checkTitles(s, effects);
+    s.history.familleCompleted[ev.famille] = (s.history.familleCompleted[ev.famille] || 0) + 1;
+  }
   bumpStreak(s, effects, today);
   s.inventory.push({ item: ev.item, date: today, from: ev.title });
   addEntry(s, { date: today, text: eventEntry(ev), kind: 'evenement' });
