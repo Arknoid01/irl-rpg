@@ -35,6 +35,7 @@ export default {
   q_accept: 'Accepter',
   q_leave: 'Laisser',
   q_done: 'J’ai réussi ✅',
+  q_stamp_done: 'Accompli',
   q_experience: 'expérience',
   q_effort: 'effort',
   q_effort_leger: 'léger',

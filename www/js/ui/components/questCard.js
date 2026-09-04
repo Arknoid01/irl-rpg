@@ -42,8 +42,14 @@ export function questCardHtml(quest, themeKey) {
     ? ` · <button class="linkbtn" data-action="share-quest" data-id="${quest.id}">${i18n.t('q_send_friend')}</button>`
     : '';
 
+  let stamp = '';
+  if (quest.status === 'done') {
+    stamp = `<span class="quest-stamp" aria-hidden="true">${i18n.t('q_stamp_done')}</span>`;
+  }
+
   return `
-  <article class="quest-card${poidsCls}" style="--fam-color:${fam.color}">
+  <article class="quest-card${poidsCls}${quest.status === 'done' ? ' done' : ''}" style="--fam-color:${fam.color}">
+    ${stamp}
     <div class="quest-top">
       <span class="quest-cat">${fam.icon} ${i18n.loc(fam.label)}</span>
       <span class="quest-xp">+${quest.xp} XP <span class="xp-suffix">${esc(i18n.loc(theme.xpSuffix))}</span></span>

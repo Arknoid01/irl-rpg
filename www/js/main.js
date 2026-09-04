@@ -28,8 +28,8 @@ const SCREENS = {
 
 const NAV = [
   { id: 'adventure', icon: '⚔', key: 'nav_adventure' },
-  { id: 'journal', icon: '📖', key: 'nav_journal' },
-  { id: 'character', icon: '👤', key: 'nav_character' },
+  { id: 'journal', icon: '✒', key: 'nav_journal' },
+  { id: 'character', icon: '⚜', key: 'nav_character' },
 ];
 
 /* ─────────────── boot ─────────────── */
@@ -221,8 +221,12 @@ function navHtml() {
 function render() {
   const screen = (SCREENS[view] || renderAdventure)(state);
   $('#root').innerHTML = `
-    ${topbarHtml()}
-    <main class="wrap">${screen}</main>
+    <div class="book">
+      <div class="page">
+        ${topbarHtml()}
+        <main class="wrap">${screen}</main>
+      </div>
+    </div>
     ${navHtml()}`;
   document.documentElement.lang = state.lang;
 }
