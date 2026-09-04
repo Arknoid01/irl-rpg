@@ -2,7 +2,13 @@
 *.swp
 node_modules/
 /build/
-/android/
-/ios/
 package-lock.json
 *.log
+
+# Capacitor natif : le dossier android/ (scaffold) est versionné ; son propre
+# android/.gitignore exclut build/, .gradle/, local.properties, les assets web
+# copiés et les fichiers générés. Après un clone : npm install && npx cap sync.
+/ios/
+android/app/release/
+*.keystore
+keystore.properties

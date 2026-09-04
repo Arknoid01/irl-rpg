@@ -4,12 +4,7 @@
   "webDir": "www",
   "plugins": {
     "LocalNotifications": {
-      "smallIcon": "ic_stat_icon",
       "iconColor": "#00E5FF"
-    },
-    "StatusBar": {
-      "style": "DARK",
-      "backgroundColor": "#060A10"
     }
   }
 }
