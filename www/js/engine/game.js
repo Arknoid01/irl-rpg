@@ -12,6 +12,9 @@ import { addEntry, maybeMemorable, eventEntry } from './journal.js';
 import { defaultRng } from './rng.js';
 import { templateHistoryKey } from './generate.js';
 import { RECENT_EVENT_MEMORY } from './events.js';
+import {
+  addLoot, lootFromEvent, lootFromHiddenQuest, milestoneLootForLevel,
+} from './inventory.js';
 
 const RECENT_DONE_MEMORY = 56;
 const RECENT_FAMILLES_MEMORY = 12;
@@ -28,6 +31,16 @@ function ctxDefaults(ctx = {}) {
 
 function findQuest(s, id) {
   return s.quests.find((q) => q.id === id);
+}
+
+function applyLevelLoot(s, effects, today) {
+  for (const fx of effects) {
+    if (fx.type !== 'levelup') continue;
+    const loot = milestoneLootForLevel(fx.level);
+    if (loot && addLoot(s, { ...loot, date: today })) {
+      effects.push({ type: 'loot', item: loot.item, kind: loot.kind });
+    }
+  }
 }
 
 /* ─────────────── Onboarding ─────────────── */
@@ -116,6 +129,7 @@ export function completeQuest(state, { id }, ctx) {
   gainXp(s, effects, q.xp);
   gainSkills(s, effects, skillDeltasFor(q));
   bumpStreak(s, effects, today);
+  applyLevelLoot(s, effects, today);
 
   // Historique
   s.history.totalCompleted += 1;
@@ -140,6 +154,11 @@ export function completeQuest(state, { id }, ctx) {
     effects.push({ type: 'moment', text: memo });
   }
 
+  if (q.hidden) {
+    const loot = lootFromHiddenQuest(q, today);
+    if (addLoot(s, loot)) effects.push({ type: 'loot', item: loot.item, kind: loot.kind });
+  }
+
   effects.push({ type: 'quest-done', xp: q.xp });
   return { state: s, effects };
 }
@@ -162,7 +181,10 @@ export function completeEvent(state, _args, ctx) {
     s.history.familleCompleted[ev.famille] = (s.history.familleCompleted[ev.famille] || 0) + 1;
   }
   bumpStreak(s, effects, today);
-  s.inventory.push({ item: ev.item, date: today, from: ev.title });
+  applyLevelLoot(s, effects, today);
+
+  const loot = lootFromEvent(ev, today);
+  addLoot(s, loot);
   addEntry(s, { date: today, text: eventEntry(ev), kind: 'evenement' });
 
   effects.push({ type: 'event-done', xp: ev.xp, item: ev.item });

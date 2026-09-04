@@ -19,6 +19,10 @@ import { QUEST_TEMPLATES } from '../www/js/data/templates.js';
 import { WORLD_REGIONS, WORLD_PATHS } from '../www/js/data/world.js';
 import { buildWorldView, regionStatus, mapPins } from '../www/js/engine/worldView.js';
 import { drawEvent, eventEligible, eventWeight, adaptiveFamilyBonus } from '../www/js/engine/events.js';
+import {
+  inferKind, normalizeLootEntry, buildMuseumView, lootFromEvent, milestoneLootForLevel, addLoot,
+} from '../www/js/engine/inventory.js';
+import { LOOT_KINDS, EVENT_LOOT_META } from '../www/js/data/loot.js';
 import { mulberry32 } from '../www/js/engine/rng.js';
 import {
   gainXp, gainSkills, bumpStreak, computeStyle, elanDuJour,
@@ -222,6 +226,36 @@ test('événements : éligibilité et tirage contextuel', () => {
     if (drawEvent(s, { now: new Date('2026-09-04T10:00:00'), rng: mulberry32(i), chance: 1 })) hit += 1;
   }
   assert.ok(hit >= 30, `tirage trop rare : ${hit}/40`);
+});
+
+test('musée : kinds, lore événements, jalons', () => {
+  assert.ok(Object.keys(LOOT_KINDS).length >= 5);
+  for (const id of Object.keys(EVENT_LOOT_META)) {
+    assert.ok(LOOT_KINDS[EVENT_LOOT_META[id].kind], id);
+    assert.ok(bilingual(EVENT_LOOT_META[id].lore), id);
+  }
+  const legacy = normalizeLootEntry({ item: { fr: '🗺️ Fragment de carte', en: '🗺️ Map fragment' }, date: '2026-01-01' });
+  assert.equal(legacy.kind, 'fragment');
+  assert.equal(inferKind({ item: { fr: '🏅 Médaille', en: '🏅 Medal' } }), 'collectible');
+
+  const s = defaultState();
+  const ev = EVENTS.find((e) => e.id === 'ev_porte');
+  const loot = lootFromEvent(ev, '2026-09-04');
+  assert.equal(loot.kind, 'fragment');
+  assert.ok(bilingual(loot.lore));
+  addLoot(s, loot);
+  assert.equal(s.inventory.length, 1);
+
+  const ms = milestoneLootForLevel(8);
+  assert.ok(ms && ms.kind === 'collectible');
+  addLoot(s, { ...ms, date: '2026-09-04' });
+  addLoot(s, { ...ms, date: '2026-09-04' }); // doublon id
+  assert.equal(s.inventory.length, 2);
+
+  const view = buildMuseumView(s);
+  assert.equal(view.total, 2);
+  assert.ok(view.counts.fragment >= 1);
+  assert.ok(view.counts.collectible >= 1);
 });
 
 test('titres : compétences valides, bilingues', () => {

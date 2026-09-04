@@ -14,6 +14,7 @@ import { openSettings } from './ui/settings.js';
 import { syncDailyReminder, shareText } from './platform/notifications.js';
 import { syncStatusBar } from './platform/statusbar.js';
 import { QUESTS } from './data/quests.js';
+import { setMuseumFilter, selectMuseumItem } from './ui/components/charBits.js';
 
 
 let storage;
@@ -102,6 +103,18 @@ async function dispatch(action, args = {}) {
     case 'select-region':
       selectWorldRegion(args.id);
       view = 'world';
+      render();
+      break;
+
+    case 'museum-filter':
+      setMuseumFilter(args.id || null);
+      view = 'character';
+      render();
+      break;
+
+    case 'select-loot':
+      selectMuseumItem(args.id);
+      view = 'character';
       render();
       break;
 

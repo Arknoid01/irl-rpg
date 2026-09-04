@@ -54,6 +54,7 @@ export function playEffects(effects) {
       case 'fragment': enqueueToast(i18n.t('toast_fragment')); break;
       case 'moment': enqueueToast(i18n.t('toast_moment')); break;
       case 'event-done': enqueueToast(i18n.t('toast_item', { item: i18n.loc(fx.item) })); break;
+      case 'loot': enqueueToast(i18n.t('toast_loot', { item: i18n.loc(fx.item) })); break;
       default: break;
     }
   }

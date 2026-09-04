@@ -26,10 +26,8 @@ export function renderCharacter(state) {
     <div class="section-label"><span>${i18n.t('titles')}</span></div>
     <section class="panel">${titlesHtml(state)}</section>
 
-    <div class="section-label"><span>${i18n.t('inventory')}</span></div>
-    ${state.inventory.length
-      ? inventoryHtml(state)
-      : `<section class="panel">${inventoryHtml(state)}</section>`}
+    <div class="section-label"><span>${i18n.t('museum')}</span></div>
+    ${inventoryHtml(state)}
 
     <div class="section-label"><span>${i18n.t('stats')}</span></div>
     <section class="panel">${statsHtml(state)}</section>

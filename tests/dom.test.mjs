@@ -93,10 +93,11 @@ test('parcours complet dans le DOM', async () => {
   await click('.map-node[data-id="foyer"]');
   assert.ok($('.map-detail'), 'panneau détail région');
 
-  // 6. Onglet Personnage
+  // 6. Onglet Personnage + musée
   await click('[data-action="goto"][data-id="character"]');
   assert.ok($('.skills-grid'), 'grille de compétences');
   assert.match($('#root').textContent, /Testeur/);
+  assert.ok($('.museum-empty, .museum-grid'), 'section musée');
 
   // 7. Réglages
   await click('[data-action="open-settings"]');

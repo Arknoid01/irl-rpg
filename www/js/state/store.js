@@ -2,6 +2,7 @@
 
 import { defaultState, SAVE_VERSION } from './defaults.js';
 import { THEME_KEYS, DEFAULT_THEME } from '../data/themes.js';
+import { normalizeInventory } from '../engine/inventory.js';
 
 export const STORAGE_KEY = 'irlrpg_save_v2';
 const LEGACY_KEY_V1 = 'irlrpg_save_v1';
@@ -83,6 +84,7 @@ export function normalize(state) {
   if (s.lang !== 'fr' && s.lang !== 'en') s.lang = 'fr';
   s.level = Math.max(1, Math.round(s.level) || 1);
   s.xp = Math.max(0, Math.round(s.xp) || 0);
+  s.inventory = normalizeInventory(s.inventory).slice(0, 200);
   s.version = SAVE_VERSION;
   return s;
 }
@@ -150,6 +152,6 @@ export function importState(text) {
   if (!Array.isArray(s.inventory)) s.inventory = [];
   if (!Array.isArray(s.titles)) s.titles = [];
   s.journal = s.journal.slice(0, 500);
-  s.inventory = s.inventory.slice(0, 200);
+  s.inventory = normalizeInventory(s.inventory).slice(0, 200);
   return s;
 }

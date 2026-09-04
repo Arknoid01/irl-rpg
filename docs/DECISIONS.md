@@ -139,10 +139,13 @@ Toujours pas de générateur libre / LLM.
 `engine/worldView.js`) — régions liées aux familles, pins = quêtes du jour /
 événement / souvenirs, portes de niveau, grotte mystère. Pas de géoloc.  
 **Événements contextuels** + tirage adaptatif léger (`engine/events.js`) —
-famille, moment, niveau / série / confort, anti-répétition.
+famille, moment, niveau / série / confort, anti-répétition.  
+**Inventaire = musée décoratif** (`data/loot.js`, `engine/inventory.js`) —
+catégories, lore, jalons de niveau, souvenirs de quêtes mystérieuses ;
+aucune économie / craft / équipement.
 
-Hors V1 encore : Inventaire « musée » complet, adaptatif « intelligent » poussé,
-multijoueur, art / son par thème, géoloc, météo.
+Hors V1 encore : adaptatif « intelligent » poussé, multijoueur, art / son par
+thème, géoloc, météo.
 
 ---
 

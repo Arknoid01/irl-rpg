@@ -127,6 +127,63 @@
 .inv-empty { text-align: center; padding: 18px 10px 8px; }
 .inv-empty-icon { font-size: 1.8rem; margin-bottom: 6px; opacity: .7; }
 
+.museum-intro { margin: 0 2px 10px; font-style: italic; }
+.museum-empty { text-align: center; padding: 22px 14px; }
+.museum-filters {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin: 0 0 12px;
+}
+.museum-filter {
+  font-family: var(--font-display);
+  font-size: .72rem;
+  font-style: italic;
+  border: 1px solid rgba(70, 45, 20, .22);
+  background: rgba(255,255,255,.22);
+  color: var(--ink-dim);
+  border-radius: 3px;
+  padding: 4px 9px;
+}
+.museum-filter.active {
+  border-color: var(--seal);
+  color: var(--ink);
+  background: color-mix(in srgb, var(--seal) 12%, transparent);
+}
+.museum-grid .museum-card {
+  cursor: pointer;
+  border: 1.5px solid rgba(70, 45, 20, .22);
+  border-radius: 3px 10px 4px 8px / 8px 4px 10px 3px;
+  background: rgba(255, 250, 235, .45);
+  color: inherit;
+  width: 100%;
+  font: inherit;
+  transition: border-color .15s ease, background .15s ease;
+}
+.museum-card.selected {
+  border-color: var(--seal);
+  background: color-mix(in srgb, var(--seal) 8%, rgba(255,250,235,.55));
+}
+.inv-glyph {
+  font-size: 1.55rem;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+.inv-kind { letter-spacing: .02em; }
+.museum-detail { margin-top: 12px; }
+.museum-detail-head {
+  display: flex; gap: 12px; align-items: flex-start; margin-bottom: 8px;
+}
+.museum-detail-glyph { font-size: 2rem; line-height: 1; }
+.museum-lore {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--ink-dim);
+  margin: 0 0 10px;
+  line-height: 1.45;
+}
+.museum-meta { margin-bottom: 6px; }
+.museum-deco { opacity: .7; }
+
 .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; }
 .stats-grid b { display: block; font-family: var(--font-display); font-size: 1.35rem; color: var(--gold); }
 .stats-grid span { font-size: .74rem; color: var(--text-dim); }
