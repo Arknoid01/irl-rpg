@@ -25,8 +25,8 @@ Trois problèmes structurels dominent tout le reste :
 3. **Vérification / enjeu social non tranchés** — le tout-confiance (solo) et les
    quêtes de groupe / défis d'amis / niveaux affichés se contredisent.
 
-Et une décision de fond absente : **Godot ou PWA ?** Le prototype HTML marche déjà
-très bien ; les specs supposent Godot sans le justifier.
+~~Et une décision de fond absente : **Godot ou PWA ?**~~ **Tranché 2026-09-04 :
+HTML/CSS/JS + Capacitor, pas de Godot.** Voir §5.
 
 ---
 
@@ -253,7 +253,7 @@ l'échelle.
 | 4.3 | **Carte du monde** (§8-9) : abstraite ou géolocalisée ? Style de carte par thème = encore 3× coût d'art. | Trancher : abstraite (plateau symbolique) au MVP, et le MVP ne la contient pas du tout (P1/P2). 2ᵉ plus gros poste de périmètre après les thèmes. |
 | 4.4 | **Inventaire = « musée »** (§13) : les objets font-ils quelque chose (déblocages cosmétiques, clés de carte) ou purement déco ? | Décider. Si déco : le dire, éviter d'impliquer un système de craft / économie. |
 | 4.5 | **Vocabulaire de thème vs sécurité** : Dark fantasy = « CONTRAT », ton gritty. La philosophie (jamais culpabiliser, toujours optionnel) doit survivre à **chaque** thème. | Règle : le vocabulaire de thème ne change que les mots de saveur ; tout le texte sécurité / optionnalité / « ignore si pas sûr » est **indépendant du thème** et toujours présent. |
-| 4.6 | **Scène de montée de niveau** (§24) + **animations avancées** (§23) : sans doute la justification de Godot. Mais implique que **chaque écran est dessiné à la main** (pas de widgets OS) × thèmes = énorme. | Rendre la décision consciente : voir §5. |
+| 4.6 | **Scène de montée de niveau** (§24) + **animations avancées** (§23). | Plateforme HTML+Capacitor (§5) : séquence CSS/JS soignée, pas de moteur. Garder ces moments simples et rares. |
 | 4.7 | **Accessibilité** : seulement des toggles (§16). Witcher/Almendra SC en petit = illisible. | Plancher de contraste + taille que les thèmes ne peuvent pas franchir. |
 | 4.8 | **Onboarding** : absent (voir §2). | — |
 | 4.9 | **Notifications** : case à cocher, aucune stratégie (voir §2). | — |
@@ -261,38 +261,43 @@ l'échelle.
 
 ---
 
-## 5. Décision de plateforme — Godot ou PWA ?
+## 5. Plateforme — TRANCHÉ : HTML + Capacitor
 
-Le prototype est en **HTML/CSS/JS** et fonctionne très bien (thèmes, save,
-tirage, toute la boucle) en ~30 Ko. Les specs supposent **Godot** sans le
-justifier.
+**Décision 2026-09-04 : app web (HTML/CSS/JS) empaquetée avec Capacitor. Pas de
+Godot.** Même approche que le projet Fableris (wrapper Capacitor, `www/` = l'app
+web, keystore propre).
 
-| Critère | Godot | PWA / web |
-|---|---|---|
-| Qualité d'animation / « game feel » (§23-24) | Fort | Correct (CSS/Canvas), plafond plus bas |
-| Notifications push natives | Oui (plugin) | Limitées (Android OK, iOS très limité) |
-| Offline | Oui | Oui (service worker) |
-| Présence store (visibilité, confiance) | Oui | Faible (installable mais pas « une app ») |
-| Vitesse de dev | Moyenne | **Rapide** (proto déjà à ~70 % du MVP) |
-| Un seul codebase mobile + desktop | Oui | Oui |
-| Coût | Nul (on-device) | Nul |
+Justification : la valeur du produit est la **boucle + la philosophie + le
+contenu**, pas un « game feel » animé de moteur de jeu. Le prototype le prouve —
+toute la boucle (thèmes, save, tirage, XP, journal) tient en ~30 Ko de web et est
+déjà à ~70 % du MVP.
 
-**La question réelle :** le « game feel » animé est-il **au cœur** du produit, ou
-un plus ? Si cœur → Godot. Si la valeur est la **boucle + la philosophie + le
-contenu** (ce que le proto suggère) → une PWA MVP peut sortir en une fraction du
-temps, puis Godot si la traction est là.
+| Critère | HTML + Capacitor |
+|---|---|
+| Vitesse de dev | Rapide — on continue le prototype |
+| Notifications locales natives | Oui (`@capacitor/local-notifications`) — l'app est on-device, pas besoin de push serveur |
+| Offline | Oui (tout embarqué, `localStorage` / SQLite Capacitor) |
+| Présence store | Oui (vraie app Android/iOS) |
+| Un seul codebase mobile + desktop/web | Oui |
+| Coût récurrent | Nul (zéro backend) |
+| Animations | CSS / transitions / petites libs — suffisant pour la scène de level-up et le feedback de validation |
 
-**Recommandation :** décision explicite à prendre maintenant, pas par défaut.
-Le prototype ayant déjà tranché « web » de fait, le chemin le moins risqué est :
-finir un MVP PWA, mesurer, puis réévaluer Godot pour la v2 « juicy ».
+Conséquences pour la suite :
+
+- Le « projet applicatif » = faire évoluer `prototype/` vers une vraie structure
+  d'app web (modules, build, assets), puis ajouter le wrapper Capacitor.
+- Notifications quotidiennes = `local-notifications` planifiées côté client.
+- Pas de scène de level-up « moteur de jeu » — une séquence CSS/JS soignée.
+- Ré-évaluer un moteur seulement si un jour le produit devient très « juicy » /
+  temps réel (pas au programme).
 
 ---
 
 ## 6. Décisions à trancher (avant de coder)
 
-1. **Taxonomie** unique (familles + matrice compétences) → `docs/TAXONOMIE.md`.
+1. ~~**Taxonomie** unique~~ → **fait** : `docs/TAXONOMIE.md` (2026-09-04).
 2. **Solo-first honor-system**, aucun classement compétitif ? (recommandé : oui)
-3. **Plateforme** : PWA d'abord ou Godot d'emblée ? (recommandé : PWA MVP)
+3. ~~**Plateforme**~~ → **tranché** : HTML + Capacitor (2026-09-04).
 4. **« Compagnon »** remplace « maître du jeu » ? (recommandé : oui)
 5. **« Énergie »** supprimée comme ressource ? (recommandé : oui)
 6. **Public / âge** : 16+ ? 18+ ? adaptation selon âge déclaré ?
@@ -329,7 +334,7 @@ supplémentaires, géolocalisation, météo, scène de level-up élaborée.
 **Écart depuis le prototype (déjà ~70 % du MVP) :**
 
 onboarding · écran Personnage plein · budget d'effort · curseur de confort ·
-notification native (→ PWA service worker ou Godot) · réécriture du nudge social ·
+notification quotidienne (→ `@capacitor/local-notifications`) · réécriture du nudge social ·
 tuning compétences → titres · volume de la banque de quêtes (18 → ~100) ·
 renommer les thèmes (marques) · champ `safe_fallback` dans le modèle de quête.
 
