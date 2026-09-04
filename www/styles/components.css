@@ -24,7 +24,9 @@
 .section-label {
   display: flex; align-items: center; justify-content: space-between;
   font-family: var(--font-display);
-  font-size: 1.05rem;
+  font-size: 1.2rem;
+  font-weight: 400;
+  font-style: italic;
   color: var(--ink);
   margin: 16px 2px 10px;
   padding-bottom: 4px;
@@ -45,18 +47,18 @@
 .companion-line {
   font-family: var(--font-display);
   font-style: italic;
-  font-size: 1rem;
+  font-size: 1.12rem;
   color: var(--ink-dim);
   border-left: 2px solid rgba(139, 58, 50, .45);
   padding: 2px 4px 2px 10px;
   margin: 10px 2px 12px;
-  line-height: 1.5;
+  line-height: 1.45;
 }
 
 /* ---------- Hero ---------- */
 .hero-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
-.hero-name { font-family: var(--font-display); font-size: 1.25rem; color: var(--text); }
-.hero-name.big { font-size: 1.55rem; }
+.hero-name { font-family: var(--font-display); font-size: 1.4rem; font-weight: 400; color: var(--text); }
+.hero-name.big { font-size: 1.75rem; }
 .hero-level { color: var(--text-dim); font-size: .9rem; }
 .hero-level b { color: var(--gold); font-family: var(--font-display); }
 
@@ -94,7 +96,7 @@
   background: color-mix(in srgb, var(--gold) 12%, transparent);
   border: 1px solid color-mix(in srgb, var(--gold) 45%, var(--border));
   color: color-mix(in srgb, var(--gold) 55%, var(--ink));
-  font-weight: 600;
+  font-weight: 400;
   font-family: var(--font-display);
 }
 
@@ -118,7 +120,7 @@
   line-height: 1.35;
   color: var(--text);
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 400;
 }
 .inv-from { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .inv-date { opacity: .75; }
@@ -147,17 +149,18 @@
   right: 10px;
   top: 50%;
   transform: translateY(-50%) rotate(-12deg);
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: .72rem;
-  letter-spacing: .12em;
-  text-transform: uppercase;
+  font-family: var(--font-brand);
+  font-weight: 400;
+  font-size: 1.35rem;
+  letter-spacing: .04em;
+  text-transform: none;
   color: var(--seal);
-  border: 2.5px solid var(--seal);
+  border: 2px solid var(--seal);
   border-radius: 4px;
-  padding: 6px 8px;
-  opacity: .82;
+  padding: 2px 10px 0;
+  opacity: .78;
   pointer-events: none;
+  line-height: 1.1;
 }
 
 @keyframes scrap-in {
@@ -177,13 +180,14 @@
 }
 .quest-xp {
   font-family: var(--font-display);
-  font-size: .78rem;
+  font-size: .85rem;
   color: var(--gold);
   white-space: nowrap;
-  font-weight: 700;
+  font-weight: 400;
+  font-style: italic;
 }
 .xp-suffix { opacity: .55; font-size: .88em; font-weight: 400; }
-.quest-text { font-size: 1.02rem; line-height: 1.5; margin: 4px 0 8px; color: var(--text); }
+.quest-text { font-size: 1.12rem; line-height: 1.45; margin: 4px 0 8px; color: var(--text); }
 .quest-text.muted { font-style: italic; color: var(--text-dim); }
 .quest-fallback {
   font-size: .8rem; color: var(--text-dim);

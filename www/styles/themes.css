@@ -2,18 +2,18 @@
 
 :root {
   --maxw: 440px;
-  --min-text: 15px;
+  --min-text: 16.5px;
   --radius: 14px;
   --panel-radius: 8px;
   --scrap-radius: 3px 10px 4px 8px / 8px 4px 10px 3px;
-  --font-brand: 'Caveat', 'Segoe Print', cursive;
-  --font-display: 'Libre Baskerville', Georgia, serif;
-  --font-body: 'Source Sans 3', 'Segoe UI', sans-serif;
-  --letter: 0.01em;
-  --paper: #f3ead7;
-  --paper2: #ebe0c8;
-  --ink: #1f1812;
-  --ink-dim: #564838;
+  --font-brand: 'Italianno', 'Segoe Script', cursive;
+  --font-display: 'Fondamento', 'Palatino Linotype', Palatino, serif;
+  --font-body: 'Cormorant Garamond', 'Palatino Linotype', Palatino, serif;
+  --letter: 0.015em;
+  --paper: #e8d9b8;
+  --paper2: #dcc9a0;
+  --ink: #2a1c10;
+  --ink-dim: #6a5238;
   --leather: #1a1511;
   --leather2: #241c16;
   --shadow-scrap: 0 1px 2px rgba(60, 35, 10, .08);
