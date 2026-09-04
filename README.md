@@ -25,6 +25,7 @@ Fableris.
 | Design gameplay (interactions, défis, générateur, sécurité) | Rédigé — `docs/IRL_RPG_interactions_defis.md` |
 | Spec UI/UX (navigation, thèmes, design system, priorités) | Rédigé — `docs/IRL_RPG_ui_ux_spec.md` |
 | Taxonomie canonique (familles, compétences, tags, modèle de quête) | `docs/TAXONOMIE.md` |
+| Journal de décisions (plateforme, compagnon, solo-first, élan du jour…) | `docs/DECISIONS.md` |
 | Revue critique des specs | `docs/REVUE_CRITIQUE.md` |
 | Prototype web fonctionnel | `prototype/irl-rpg-prototype.html` (autonome, `localStorage`) |
 | App HTML + Capacitor | Non démarrée |
@@ -32,10 +33,12 @@ Fableris.
 ## Prototype
 
 Ouvrir `prototype/irl-rpg-prototype.html` dans un navigateur. Couvre : accueil
-(personnage + quêtes du jour), journal, 3 thèmes, tirage quotidien, XP / niveau /
-compétences / titres, nudge social, quête cachée, événement aléatoire, sauvegarde
-locale.
+(personnage + quêtes du jour), journal, 3 thèmes (cyberpunk / fantasy nordique /
+dark fantasy), tirage quotidien, XP / niveau / compétences / titres, entrée
+sociale douce, quête cachée, événement aléatoire, sauvegarde locale.
 
 ## Prochaines étapes
 
-Voir `docs/REVUE_CRITIQUE.md` § « Décisions à trancher » et § « MVP réaliste ».
+Voir `docs/DECISIONS.md` (décisions tranchées) puis `docs/REVUE_CRITIQUE.md` §7
+« MVP réaliste » et §6 items encore ouverts (périmètre MVP à acter, générateur,
+objectif contenu).

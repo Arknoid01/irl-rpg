@@ -1,6 +1,11 @@
 # IRL RPG — UI / UX Specification
 
 > Direction artistique et architecture d'interface — version 1.0
+>
+> ⚠️ Décisions postérieures dans [`DECISIONS.md`](DECISIONS.md) (plateforme,
+> « compagnon », « élan du jour », social non compétitif) et périmètre MVP
+> resserré dans [`REVUE_CRITIQUE.md`](REVUE_CRITIQUE.md) §4 et §7 — ils font
+> autorité en cas de conflit.
 
 ---
 
@@ -28,10 +33,10 @@ L'application repose sur une navigation simple.
 Écran principal.
 
 Contient :
-- message du maître du jeu ;
+- message du compagnon ;
 - personnage ;
 - niveau / XP ;
-- énergie ;
+- élan du jour ;
 - quêtes du jour ;
 - événements ;
 - accès rapide à la carte.
@@ -97,7 +102,7 @@ C'est **l'écran le plus important de l'application**.
 
 Il doit immédiatement répondre à :
 
-> **« Qu'est-ce que mon maître du jeu me propose aujourd'hui ? »**
+> **« Qu'est-ce que mon compagnon me propose aujourd'hui ? »**
 
 ## Structure
 
@@ -113,13 +118,13 @@ Le header doit s'adapter au thème.
 
 ---
 
-## Bloc maître du jeu
+## Bloc compagnon
 
 Zone fortement mise en avant.
 
 Exemple :
 
-> **LE MAÎTRE DU JEU**
+> **TON COMPAGNON**
 >
 > « Une nouvelle journée commence.
 > Trois possibilités s'offrent à toi. »
@@ -129,7 +134,7 @@ Le bloc peut changer de présentation selon le thème.
 Cyberpunk :
 > `MISSION INCOMING`
 
-Fantasy :
+Fantasy nordique :
 > `UNE NOUVELLE QUÊTE VOUS ATTEND, VOYAGEUR`
 
 Dark fantasy :
@@ -139,7 +144,7 @@ Dark fantasy :
 
 # 4. Carte personnage compacte
 
-Sous le maître du jeu :
+Sous le bloc compagnon :
 
 **Yannick — Niveau 12**
 
@@ -504,7 +509,7 @@ Il modifie :
 - animations ;
 - sons éventuels ;
 - vocabulaire ;
-- présentation du maître du jeu ;
+- présentation du compagnon ;
 - transitions ;
 - boutons ;
 - illustrations.
@@ -546,7 +551,7 @@ Quête → Mission
 
 Objet → Item
 
-Maître du jeu → IA
+Compagnon → IA compagnon
 
 Carte → Réseau
 
@@ -593,7 +598,7 @@ Mission → Quête
 
 Objet → Relique / Objet
 
-Maître du jeu → Gardien / Conteur
+Compagnon → Guide / Compagnon de route
 
 Carte → Carte du royaume
 
@@ -634,7 +639,7 @@ Quête → Contrat
 
 Objet → Relique
 
-Maître du jeu → Conteur
+Compagnon → Voix / Présence
 
 Carte → Carte des terres
 
@@ -897,7 +902,7 @@ Cela crée presque un **créateur de version d'IRL RPG**.
 IRL RPG
 │
 ├── 🗺️ Aventure
-│   ├── Maître du jeu
+│   ├── Compagnon
 │   ├── Personnage
 │   ├── Quêtes
 │   └── Événements
@@ -938,7 +943,7 @@ IRL RPG
 
 - Aventure.
 - Quêtes.
-- Maître du jeu.
+- Compagnon.
 - Personnage compact.
 - XP / niveau.
 - Navigation.

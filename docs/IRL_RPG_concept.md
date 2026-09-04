@@ -1,16 +1,19 @@
 # IRL RPG — Ton personnage principal
 
+> ⚠️ Décisions postérieures à ce document dans [`DECISIONS.md`](DECISIONS.md) et
+> [`TAXONOMIE.md`](TAXONOMIE.md) — ils font autorité en cas de conflit.
+
 ## 1. Concept
 
 **IRL RPG** transforme la vie quotidienne du joueur en RPG.
 
 Le joueur est **le personnage principal**.
 
-L'application joue le rôle de **maître du jeu** : elle lui propose des quêtes adaptées à son profil, ses habitudes, ses envies et sa progression.
+L'application joue le rôle de **compagnon d'aventure** : elle lui propose des quêtes adaptées à son profil, ses habitudes, ses envies et sa progression, sans jamais lui donner d'ordre.
 
 L'objectif n'est pas de transformer la vie en liste de tâches, mais de créer une sensation d'aventure :
 
-> **« Et si ta vie quotidienne était un RPG dont l'application était le maître du jeu ? »**
+> **« Et si ta vie quotidienne était un RPG, et cette appli ton compagnon d'aventure ? »**
 
 ---
 
@@ -37,7 +40,7 @@ Chaque joueur possède une fiche de personnage.
 
 **Yannick — Niveau 12**
 
-- ❤️ Énergie : 72
+- ✨ Élan du jour : 60 % (quêtes du jour accomplies — purement indicatif, ne bloque rien ; cf. `DECISIONS.md` D5)
 - ⭐ XP : 1 240 / 1 500
 - 🔥 Série : 6 jours
 
@@ -246,29 +249,31 @@ La carte représente symboliquement **la progression réelle du joueur**.
 
 # 9. Quêtes de groupe
 
-Les amis deviennent eux aussi des personnages.
+> Révisé — cf. `DECISIONS.md` D3 : solo d'abord, **aucun classement ni
+> comparaison de niveau entre joueurs**. Le social est coopératif et expressif,
+> jamais compétitif. La version « présence partagée / +XP synchronisés » est
+> reportée à une éventuelle version majeure.
 
-### Exemple
+Les amis peuvent apparaître comme personnages (prénom, éventuellement style
+d'aventure) — **sans hiérarchie de niveau ni de score**.
 
-**👤 Yannick — Lv. 12**  
-**👤 Thomas — Lv. 9**  
-**👤 Julie — Lv. 14**
+### 🏹 Défi entre amis (MVP)
 
-Les joueurs peuvent créer des quêtes communes.
-
-### ⚔️ Quête de groupe
-
-> Tous les joueurs doivent être réunis au même endroit avant 20h.
-
-**Récompense : +500 XP chacun**
-
-### 🏹 Défi entre amis
-
-> Yannick choisit une quête pour Thomas.
+> Yannick choisit une quête pour Thomas et la lui envoie par message.
 >
 > Thomas choisit une quête pour Yannick.
 
-Cela permet de créer une dimension sociale sans transformer l'application en simple réseau social.
+Aucun compte partagé : chacun valide de son côté, pour le plaisir de se lancer des
+défis et de raconter (`interactions` §10).
+
+### ⚔️ Quête commune (MVP)
+
+> Le groupe se met d'accord sur une même quête (« ce week-end, chacun explore un
+> lieu inconnu et partage une photo »). Chacun la valide de son côté. Pas de
+> synchronisation, pas de score commun.
+
+Cela crée une dimension sociale sans transformer l'application en réseau social ni
+en course.
 
 ---
 
@@ -381,4 +386,4 @@ Le concept central reste extrêmement simple :
 
 > ## 🎮 Tu es le héros.
 > ## 🗺️ Le monde réel est ton terrain de jeu.
-> ## 🧙 L'application est ton maître du jeu.
+> ## 🧙 L'application est ton compagnon d'aventure.

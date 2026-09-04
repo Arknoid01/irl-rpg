@@ -1,6 +1,9 @@
 # IRL RPG — Système d'interactions & défis IRL
 
 > Direction gameplay — interactions sociales, défis amusants et micro-aventures du quotidien
+>
+> ⚠️ Les familles/catégories de ce document sont remplacées par
+> [`TAXONOMIE.md`](TAXONOMIE.md). Voir aussi [`DECISIONS.md`](DECISIONS.md).
 
 ---
 
@@ -280,7 +283,7 @@ Le jeu ne nécessite pas de compte partagé.
 
 Ou :
 
-> 😂 **Le maître du jeu**
+> 😂 **Le pote aux commandes**
 >
 > Laisse ton ami choisir ton prochain snack.
 
@@ -852,7 +855,7 @@ Cela peut devenir une entrée du journal.
 
 # 31. Interaction avec la narration
 
-Le maître du jeu peut réagir à certaines habitudes.
+Le compagnon peut réagir à certaines habitudes.
 
 ### Exemple
 
@@ -965,7 +968,7 @@ Faire regarder le monde autrement.
 
 Le système de quêtes doit donner l'impression que :
 
-> **Le maître du jeu regarde le monde avec toi et invente des petits défis.**
+> **Le compagnon regarde le monde avec toi et invente des petits défis.**
 
 Pas :
 

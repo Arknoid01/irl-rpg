@@ -16,17 +16,23 @@ Le concept est solide et **réellement différenciant** : la philosophie anti-cu
 Le prototype prouve que la boucle de base fonctionne et qu'un thème = jeu de tokens
 CSS suffit.
 
-Trois problèmes structurels dominent tout le reste :
+Trois problèmes structurels dominaient tout le reste — **deux tranchés le 2026-09-04**
+(cf. `DECISIONS.md`) :
 
-1. **Taxonomie éclatée** — 3 systèmes de catégories différents entre les docs, un
-   4ᵉ dans le prototype. À unifier avant toute écriture de contenu.
+1. ~~**Taxonomie éclatée**~~ → **résolu** : `TAXONOMIE.md` (6 familles / 6 compétences /
+   matrice / modèle de quête). Prototype réaligné.
 2. **Périmètre = jeu de 2-3 ans** décrit comme si tout était P0. Le MVP doit être
    brutalement réduit (thèmes, carte, générateur, adaptatif, multi = tout post-MVP).
-3. **Vérification / enjeu social non tranchés** — le tout-confiance (solo) et les
-   quêtes de groupe / défis d'amis / niveaux affichés se contredisent.
+   → cf. §7. **Reste à acter formellement.**
+3. ~~**Vérification / enjeu social**~~ → **tranché** (D3) : solo-first, honor-system,
+   aucun classement compétitif, social coopératif + expressif uniquement.
 
-~~Et une décision de fond absente : **Godot ou PWA ?**~~ **Tranché 2026-09-04 :
-HTML/CSS/JS + Capacitor, pas de Godot.** Voir §5.
+~~Décision de plateforme absente : **Godot ou PWA ?**~~ **Tranché** (D1) :
+HTML/CSS/JS + Capacitor, pas de Godot. Voir §5.
+
+Autres décisions appliquées le 2026-09-04 : « compagnon » remplace « maître du jeu »
+(D4) · « Énergie » supprimée comme ressource, remplacée par « Élan du jour » (D5).
+Reste ouvert : périmètre MVP à acter, public/âge (D6).
 
 ---
 
@@ -295,14 +301,16 @@ Conséquences pour la suite :
 
 ## 6. Décisions à trancher (avant de coder)
 
-1. ~~**Taxonomie** unique~~ → **fait** : `docs/TAXONOMIE.md` (2026-09-04).
-2. **Solo-first honor-system**, aucun classement compétitif ? (recommandé : oui)
-3. ~~**Plateforme**~~ → **tranché** : HTML + Capacitor (2026-09-04).
-4. **« Compagnon »** remplace « maître du jeu » ? (recommandé : oui)
-5. **« Énergie »** supprimée comme ressource ? (recommandé : oui)
-6. **Public / âge** : 16+ ? 18+ ? adaptation selon âge déclaré ?
+1. ~~**Taxonomie** unique~~ → **fait** : `TAXONOMIE.md` (D2, 2026-09-04).
+2. ~~**Solo-first honor-system**, aucun classement compétitif~~ → **tranché : oui** (D3, 2026-09-04).
+3. ~~**Plateforme**~~ → **tranché** : HTML + Capacitor (D1, 2026-09-04).
+4. ~~**« Compagnon »** remplace « maître du jeu »~~ → **tranché : oui** (D4, 2026-09-04).
+5. ~~**« Énergie »** supprimée comme ressource~~ → **tranché : oui**, remplacée par « Élan du jour » (D5, 2026-09-04).
+6. **Public / âge** : 16+ ? 18+ ? adaptation selon âge déclaré ? → hypothèse de travail **16+** (D6), à confirmer.
 7. **Générateur** : banque curée au MVP, générateur libre en P2 ? (recommandé : oui)
 8. **Objectif contenu MVP** : combien de quêtes, écrites par qui, relues comment ?
+
+Encore à acter : périmètre MVP (§7), items 7 et 8 ci-dessus.
 
 ---
 
@@ -342,8 +350,12 @@ renommer les thèmes (marques) · champ `safe_fallback` dans le modèle de quêt
 
 ## 8. À faire vite (sans décision de fond)
 
-- [ ] Renommer les thèmes du prototype : `skyrim` → `nordique`, `witcher` →
-      `sombre` (risque marque, §1.5).
-- [ ] Réécrire le nudge social en offre positive (§3.1).
-- [ ] Purger 2-3 quêtes « observation » borderline (§3.5).
-- [ ] Écrire `docs/TAXONOMIE.md` (§1.1).
+- [x] Renommer les thèmes du prototype : `skyrim` → `nordique`, `witcher` →
+      `sombre` (risque marque, §1.5). — *fait 2026-09-04*
+- [x] Réécrire le nudge social en offre positive (§3.1). — *fait : `wantsGentleSocial`,
+      texte neutre, plus de tag « ⚠️ Quête personnelle »*
+- [x] Écrire `docs/TAXONOMIE.md` (§1.1). — *fait 2026-09-04*
+- [x] Réaligner les familles du prototype sur `TAXONOMIE.md`
+      (`intelligence` → `curiosite`, ajout `creation`). — *fait 2026-09-04*
+- [ ] Purger / relire 2-3 quêtes « curiosité » borderline (§3.5) — le prototype
+      n'en contient plus de problématiques ; à garder en tête pour la vraie banque.

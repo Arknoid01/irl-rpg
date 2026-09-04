@@ -31,8 +31,8 @@
   --panel-radius: 2px;
 }
 
-/* ============ THEME: SKYRIM ============ */
-[data-theme="skyrim"]{
+/* ============ THEME: FANTASY NORDIQUE ============ */
+[data-theme="nordique"]{
   --bg: #14120f;
   --bg-grad: radial-gradient(ellipse at 50% -20%, #2a2318 0%, #14120f 60%);
   --panel: #1e1a14;
@@ -50,8 +50,8 @@
   --panel-radius: 3px;
 }
 
-/* ============ THEME: WITCHER ============ */
-[data-theme="witcher"]{
+/* ============ THEME: DARK FANTASY ============ */
+[data-theme="sombre"]{
   --bg: #100d0c;
   --bg-grad: radial-gradient(ellipse at 50% -10%, #211613 0%, #100d0c 60%);
   --panel: #17110f;
@@ -109,8 +109,8 @@ body{
 .theme-dot:hover{ transform: translateY(-1px); }
 .theme-dot.active{ opacity: 1; border-color: var(--accent2); }
 .theme-dot[data-t="cyberpunk"]{ background: linear-gradient(135deg,#ff2e9a,#00e5ff); }
-.theme-dot[data-t="skyrim"]{ background: linear-gradient(135deg,#c9a227,#3f5468); }
-.theme-dot[data-t="witcher"]{ background: linear-gradient(135deg,#7a1f1f,#b8bcc2); }
+.theme-dot[data-t="nordique"]{ background: linear-gradient(135deg,#c9a227,#3f5468); }
+.theme-dot[data-t="sombre"]{ background: linear-gradient(135deg,#7a1f1f,#b8bcc2); }
 
 /* ---------- Panel base, reskinned per theme ---------- */
 .panel{
@@ -128,17 +128,17 @@ body{
     linear-gradient(180deg, var(--panel), var(--panel2));
   box-shadow: 0 0 0 1px rgba(0,229,255,0.08), 0 0 18px -6px rgba(255,46,154,0.25);
 }
-[data-theme="skyrim"] .panel{
+[data-theme="nordique"] .panel{
   background: linear-gradient(180deg, var(--panel), var(--panel2));
   box-shadow: inset 0 0 0 1px rgba(201,162,39,0.12), 0 6px 16px -8px rgba(0,0,0,0.6);
   border-width: 2px;
 }
-[data-theme="skyrim"] .panel::before{
+[data-theme="nordique"] .panel::before{
   content:""; position:absolute; left:14px; right:14px; top:8px; height:1px;
   background: linear-gradient(90deg, transparent, var(--gold), transparent);
   opacity:0.5;
 }
-[data-theme="witcher"] .panel{
+[data-theme="sombre"] .panel{
   background: linear-gradient(180deg, var(--panel), var(--panel2));
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%);
   box-shadow: inset 0 0 0 1px rgba(184,188,194,0.06), 0 8px 18px -10px rgba(0,0,0,0.7);
@@ -153,8 +153,8 @@ body{
   display:flex; align-items:center; gap:6px;
 }
 [data-theme="cyberpunk"] .panel-title{ color: var(--accent2); text-transform: uppercase; font-size: 11px; }
-[data-theme="skyrim"] .panel-title{ color: var(--gold); font-size: 13px; }
-[data-theme="witcher"] .panel-title{ color: var(--gold); font-size: 12px; }
+[data-theme="nordique"] .panel-title{ color: var(--gold); font-size: 13px; }
+[data-theme="sombre"] .panel-title{ color: var(--gold); font-size: 12px; }
 
 /* ---------- Character sheet ---------- */
 .char-head{ display:flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px;}
@@ -194,7 +194,7 @@ body{
   display:flex; align-items:center; justify-content: space-between;
 }
 [data-theme="cyberpunk"] .section-label{ text-transform: uppercase; color: var(--accent2); font-size: 11px;}
-[data-theme="skyrim"] .section-label,[data-theme="witcher"] .section-label{ color: var(--gold); font-size: 13px; }
+[data-theme="nordique"] .section-label,[data-theme="sombre"] .section-label{ color: var(--gold); font-size: 13px; }
 
 .refresh-btn{
   background: none; border: 1px solid var(--border); color: var(--text-dim);
@@ -231,10 +231,10 @@ body{
 }
 .btn:active{ transform: scale(0.97); }
 .btn.primary{ background: var(--accent2); color: var(--bg); border-color: var(--accent2); font-weight: 600; }
-[data-theme="skyrim"] .btn.primary, [data-theme="witcher"] .btn.primary{ background: var(--gold); color: #1a1408; }
+[data-theme="nordique"] .btn.primary, [data-theme="sombre"] .btn.primary{ background: var(--gold); color: #1a1408; }
 .btn.ghost{ color: var(--text-dim); }
 .btn.done{ background: var(--accent); color: #fff; border-color: var(--accent); }
-[data-theme="skyrim"] .btn.done, [data-theme="witcher"] .btn.done{ background: var(--danger); color: #f2e9da; border-color: var(--danger);}
+[data-theme="nordique"] .btn.done, [data-theme="sombre"] .btn.done{ background: var(--danger); color: #f2e9da; border-color: var(--danger);}
 
 .empty-state{
   text-align:center; padding: 26px 10px; color: var(--text-dim); font-size: 13px;
@@ -279,7 +279,7 @@ body{
 }
 .tab .ic{ display:block; font-size:16px; margin-bottom:2px; }
 .tab.active{ color: var(--accent2); }
-[data-theme="skyrim"] .tab.active, [data-theme="witcher"] .tab.active{ color: var(--gold); }
+[data-theme="nordique"] .tab.active, [data-theme="sombre"] .tab.active{ color: var(--gold); }
 
 .view{ display:none; }
 .view.active{ display:block; }
@@ -297,8 +297,8 @@ body{
     <div class="brand"><span class="glyph">◆</span><span id="brandLabel">IRL RPG</span></div>
     <div class="theme-picker">
       <button class="theme-dot" data-t="cyberpunk" title="Cyberpunk"></button>
-      <button class="theme-dot" data-t="skyrim" title="Skyrim"></button>
-      <button class="theme-dot" data-t="witcher" title="Witcher"></button>
+      <button class="theme-dot" data-t="nordique" title="Fantasy nordique"></button>
+      <button class="theme-dot" data-t="sombre" title="Dark fantasy"></button>
     </div>
   </div>
 
@@ -319,7 +319,7 @@ body{
       </div>
 
       <div class="bar-row">
-        <div class="bar-label"><span>Énergie du jour</span><span id="enLabel">0%</span></div>
+        <div class="bar-label"><span>Élan du jour</span><span id="enLabel">0%</span></div>
         <div class="bar-track"><div class="bar-fill energy" id="enBar" style="width:0%"></div></div>
       </div>
 
@@ -361,16 +361,18 @@ body{
 ========================================================= */
 const THEMES = {
   cyberpunk: { name: "Cyberpunk", companion: "Ton IA compagnon scanne la ville. Nouvelles missions détectées." },
-  skyrim:    { name: "Skyrim", companion: "Ton compagnon de route consulte la carte. De nouvelles quêtes t'attendent, voyageur." },
-  witcher:   { name: "Witcher", companion: "Ton médaillon frémit légèrement. De nouveaux contrats sont à prendre." }
+  nordique:    { name: "Fantasy nordique", companion: "Ton compagnon de route consulte la carte. De nouvelles quêtes t'attendent, voyageur." },
+  sombre:   { name: "Dark fantasy", companion: "Une présence discrète t'accompagne. De nouveaux contrats sont à prendre." }
 };
 
+// Familles canoniques — cf. docs/TAXONOMIE.md
 const CAT_META = {
-  quotidien:    { label: "Quotidien",    icon: "🏠", color: "var(--accent2)" },
-  exploration:  { label: "Exploration",  icon: "🌎", color: "var(--gold)" },
-  social:       { label: "Social",       icon: "🤝", color: "var(--accent)" },
-  intelligence: { label: "Intelligence", icon: "🧠", color: "var(--accent2)" },
-  chaos:        { label: "Chaos",        icon: "😂", color: "var(--danger)" }
+  social:      { label: "Social",      icon: "🤝", color: "var(--accent)" },
+  exploration: { label: "Exploration", icon: "🧭", color: "var(--gold)" },
+  curiosite:   { label: "Curiosité",   icon: "🔭", color: "var(--accent2)" },
+  creation:    { label: "Création",    icon: "🎨", color: "var(--accent2)" },
+  quotidien:   { label: "Quotidien",   icon: "🧹", color: "var(--accent2)" },
+  chaos:       { label: "Chaos",       icon: "😂", color: "var(--danger)" }
 };
 
 const SKILL_META = {
@@ -403,22 +405,25 @@ const QUESTS = [
   { id:"s7", cat:"social", text:"Appelle en vocal (pas en texto) quelqu'un que tu apprécies.", xp:130, skill:"social" },
   { id:"s8", cat:"social", text:"Propose spontanément à quelqu'un de manger ou boire un verre ensemble.", xp:140, skill:"social" },
 
-  // ---- QUOTIDIEN ----
-  { id:"q1", cat:"quotidien", text:"Range un espace qui te dérange depuis un moment.", xp:50, skill:"discipline" },
-  { id:"q2", cat:"quotidien", text:"Cuisine quelque chose que tu n'as jamais essayé.", xp:80, skill:"creativite" },
-  { id:"q3", cat:"quotidien", text:"Termine une petite tâche que tu repousses depuis 24h.", xp:50, skill:"discipline" },
-  { id:"q4", cat:"quotidien", text:"Fais ton lit et range ta chambre avant midi.", xp:40, skill:"discipline" },
+  // ---- QUOTIDIEN (toujours avec une torsion) ----
+  { id:"q1", cat:"quotidien", text:"Range un espace qui te dérange — mais tu t'arrêtes dès que 2 morceaux de musique sont passés.", xp:50, skill:"discipline" },
+  { id:"q3", cat:"quotidien", text:"Termine une petite tâche que tu repousses depuis 24h, chrono en main.", xp:50, skill:"discipline" },
+  { id:"q4", cat:"quotidien", text:"Choisis au hasard une zone de chez toi et remets-y de l'ordre pendant 5 minutes, pas plus.", xp:40, skill:"discipline" },
+
+  // ---- CRÉATION ----
+  { id:"cr1", cat:"creation", text:"Cuisine quelque chose que tu n'as jamais essayé.", xp:80, skill:"creativite" },
+  { id:"cr2", cat:"creation", text:"Photographie quelque chose d'étrange sur ton trajet.", xp:70, skill:"creativite" },
+  { id:"cr3", cat:"creation", text:"Dessine pendant 2 minutes quelque chose que tu vois là, maintenant.", xp:60, skill:"creativite" },
 
   // ---- EXPLORATION ----
   { id:"e1", cat:"exploration", text:"Prends un chemin différent pour rentrer chez toi.", xp:80, skill:"audace" },
   { id:"e2", cat:"exploration", text:"Découvre un commerce dans lequel tu n'es jamais entré.", xp:100, skill:"curiosite" },
-  { id:"e3", cat:"exploration", text:"Photographie quelque chose d'étrange sur ton trajet.", xp:70, skill:"creativite" },
   { id:"e4", cat:"exploration", text:"Va dans un endroit à moins de 20 minutes que tu n'as jamais visité.", xp:120, skill:"audace" },
 
-  // ---- INTELLIGENCE ----
-  { id:"i1", cat:"intelligence", text:"Apprends quelque chose de nouveau pendant 15 minutes.", xp:70, skill:"curiosite" },
-  { id:"i2", cat:"intelligence", text:"Regarde une conférence ou une vidéo qui t'apprend un vrai truc.", xp:70, skill:"curiosite" },
-  { id:"i3", cat:"intelligence", text:"Résous une énigme ou un puzzle.", xp:60, skill:"curiosite" },
+  // ---- CURIOSITÉ (observation + apprentissage) ----
+  { id:"i1", cat:"curiosite", text:"Apprends quelque chose de nouveau pendant 15 minutes.", xp:70, skill:"curiosite" },
+  { id:"i2", cat:"curiosite", text:"Trouve trois choses que tu n'avais jamais remarquées dans ton quartier.", xp:70, skill:"curiosite" },
+  { id:"i3", cat:"curiosite", text:"Résous une énigme ou un puzzle.", xp:60, skill:"curiosite" },
 
   // ---- CHAOS ----
   { id:"c1", cat:"chaos", text:"Lance une pièce : face, tu prends un chemin différent pour rentrer.", xp:100, skill:"chaos" },
@@ -470,7 +475,11 @@ function loadState(){
     const raw = localStorage.getItem(SAVE_KEY);
     if(!raw) return defaultState();
     const parsed = JSON.parse(raw);
-    return Object.assign(defaultState(), parsed);
+    const s = Object.assign(defaultState(), parsed);
+    const themeMigration = { skyrim: "nordique", witcher: "sombre" };
+    if(themeMigration[s.theme]) s.theme = themeMigration[s.theme];
+    if(!THEMES[s.theme]) s.theme = "cyberpunk";
+    return s;
   }catch(e){ return defaultState(); }
 }
 
@@ -493,7 +502,9 @@ function pickRandom(arr, n, excludeIds){
   return picked;
 }
 
-function socialNeedsNudge(){
+// Propose une entrée sociale plus douce quand les quêtes sociales récentes n'ont
+// pas accroché — c'est une rampe d'accès plus facile, jamais un constat d'évitement.
+function wantsGentleSocial(){
   const h = state.history.social;
   return h.proposed >= 3 && h.skipped >= 2 && h.completed === 0;
 }
@@ -502,12 +513,12 @@ function drawDailyQuests(){
   const chosen = [];
   const usedIds = [];
 
-  if(socialNeedsNudge()){
+  if(wantsGentleSocial()){
     chosen.push({
-      id: "nudge_" + Date.now(),
+      id: "gentle_" + Date.now(),
       cat: "social",
-      text: "Tu évites les interactions sociales depuis plusieurs jours. Aujourd'hui, demande simplement à quelqu'un : « Comment se passe ta journée ? »",
-      xp: 250, skill:"social", special:true
+      text: "Une mini-interaction toute simple, si l'envie te prend : demande à quelqu'un « Comment se passe ta journée ? »",
+      xp: 120, skill:"social", gentle:true
     });
   } else {
     const socialPicks = pickRandom(QUESTS.filter(q=>q.cat==="social"), 2, usedIds);
