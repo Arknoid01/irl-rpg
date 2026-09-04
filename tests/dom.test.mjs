@@ -86,7 +86,9 @@ test('parcours complet dans le DOM', async () => {
   assert.equal(JSON.parse(window.localStorage.getItem('irlrpg_save_v2')).lang, 'en');
   await click('[data-action="setLang"][data-lang="fr"]');
 
-  // 5. Onglet Monde (carte)
+  // 5b. Journal vivant
+  await click('[data-action="goto"][data-id="journal"]');
+  assert.ok($('.journal-chapter'), 'chapitre journal');
   await click('[data-action="goto"][data-id="world"]');
   assert.ok($('.world-map'), 'carte SVG');
   assert.ok($$('.map-node').length >= 6, 'régions sur la carte');

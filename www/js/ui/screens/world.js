@@ -52,7 +52,7 @@ function mapSvg(view) {
     }).join('');
 
     return `
-      <g class="map-node status-${r.status}${isSel ? ' selected' : ''}${isHero ? ' hero-here' : ''}"
+      <g class="map-node status-${r.status}${isSel ? ' selected' : ''}${isHero ? ' hero-here' : ''}${r.justRevealed ? ' just-revealed' : ''}"
          data-action="select-region" data-id="${r.id}" role="button" tabindex="0">
         <circle class="map-halo" cx="${r.x}" cy="${r.y}" r="11" style="--node-glow:${glow}%; --node-color:${fill}" />
         <circle class="map-disc" cx="${r.x}" cy="${r.y}" r="7.2" style="--node-color:${fill}" />

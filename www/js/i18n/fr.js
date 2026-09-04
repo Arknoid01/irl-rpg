@@ -78,9 +78,11 @@ export default {
   stat_best_streak: 'Meilleure série',
 
   journal_title: 'Journal d’aventure',
-  journal_empty: 'Ton journal est encore vierge. Chaque quête peut y laisser une trace.',
+  journal_empty: 'Ton journal est encore vierge. Chaque quête, découverte ou niveau peut y laisser une trace.',
   journal_today: 'Aujourd’hui',
   journal_yesterday: 'Hier',
+  journal_this_week: 'Cette semaine',
+  journal_older: 'Plus tôt',
   journal_days_ago: 'Il y a {n} jours',
 
   toast_xp: '+{n} XP',
@@ -90,6 +92,7 @@ export default {
   toast_moment: '📖 Moment mémorable enregistré',
   toast_item: 'Objet obtenu : {item}',
   toast_loot: 'Vitrine : {item}',
+  toast_region: 'Carte : brume levée',
   levelup_title: 'Niveau supérieur',
   levelup_sub: 'Une page se tourne dans ton grimoire.',
   levelup_close: 'Continuer',

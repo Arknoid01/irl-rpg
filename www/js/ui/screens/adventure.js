@@ -1,4 +1,4 @@
-import { companionLineFor } from '../../data/themes.js';
+import { companionLineForState } from '../../engine/companion.js';
 import { i18n } from '../../i18n/index.js';
 import { esc } from '../dom.js';
 import { heroCardHtml } from '../components/charBits.js';
@@ -7,7 +7,7 @@ import { eventCardHtml } from '../components/eventCard.js';
 import { elanDuJour } from '../../engine/progression.js';
 
 export function renderAdventure(state) {
-  const line = companionLineFor(state.theme, state.lang, state.seeds.companion || 0);
+  const line = companionLineForState(state, state.lang || i18n.lang);
 
   const active = state.quests.filter((q) => q.status === 'proposed' || q.status === 'accepted');
   const done = state.quests.filter((q) => q.status === 'done');

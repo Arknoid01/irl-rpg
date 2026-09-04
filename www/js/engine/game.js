@@ -8,13 +8,16 @@ import {
 } from './progression.js';
 import { skillDeltasFor } from '../data/taxonomy.js';
 import { todayStr } from './dates.js';
-import { addEntry, maybeMemorable, eventEntry } from './journal.js';
+import {
+  addEntry, maybeMemorable, eventEntry, levelChapterEntry, regionRevealEntry,
+} from './journal.js';
 import { defaultRng } from './rng.js';
 import { templateHistoryKey } from './generate.js';
 import { RECENT_EVENT_MEMORY } from './events.js';
 import {
   addLoot, lootFromEvent, lootFromHiddenQuest, milestoneLootForLevel,
 } from './inventory.js';
+import { syncRegionUnlocks } from './worldView.js';
 
 const RECENT_DONE_MEMORY = 56;
 const RECENT_FAMILLES_MEMORY = 12;
@@ -40,6 +43,17 @@ function applyLevelLoot(s, effects, today) {
     if (loot && addLoot(s, { ...loot, date: today })) {
       effects.push({ type: 'loot', item: loot.item, kind: loot.kind });
     }
+    addEntry(s, { date: today, text: levelChapterEntry(fx.level), kind: 'chapitre' });
+    effects.push({ type: 'chapter', level: fx.level });
+  }
+}
+
+function applyRegionReveals(s, effects, today) {
+  const newly = syncRegionUnlocks(s);
+  for (const r of newly) {
+    if (r.id === 'foyer') continue;
+    addEntry(s, { date: today, text: regionRevealEntry(r.label), kind: 'decouverte' });
+    effects.push({ type: 'region', id: r.id, label: r.label });
   }
 }
 
@@ -87,6 +101,11 @@ export function newDay(state, _args, ctx) {
     const recent = (s.history.recentEventIds || []).slice();
     recent.push(event.id);
     s.history.recentEventIds = recent.slice(-RECENT_EVENT_MEMORY);
+  }
+  // Foyer toujours connu ; sync sans spam journal au new day
+  syncRegionUnlocks(s);
+  if (!(s.history.regionsUnlocked || []).includes('foyer')) {
+    s.history.regionsUnlocked = ['foyer', ...(s.history.regionsUnlocked || [])];
   }
 
   for (const q of quests) {
@@ -159,6 +178,8 @@ export function completeQuest(state, { id }, ctx) {
     if (addLoot(s, loot)) effects.push({ type: 'loot', item: loot.item, kind: loot.kind });
   }
 
+  applyRegionReveals(s, effects, today);
+
   effects.push({ type: 'quest-done', xp: q.xp });
   return { state: s, effects };
 }
@@ -186,6 +207,7 @@ export function completeEvent(state, _args, ctx) {
   const loot = lootFromEvent(ev, today);
   addLoot(s, loot);
   addEntry(s, { date: today, text: eventEntry(ev), kind: 'evenement' });
+  applyRegionReveals(s, effects, today);
 
   effects.push({ type: 'event-done', xp: ev.xp, item: ev.item });
   return { state: s, effects };

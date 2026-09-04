@@ -144,6 +144,7 @@ export function heroRegionId(state) {
  */
 export function buildWorldView(state) {
   const pins = mapPins(state);
+  const fresh = new Set(state.history?.regionsFresh || []);
   const regions = WORLD_REGIONS.map((r) => {
     const status = regionStatus(r, state);
     const regionPins = pins.filter((p) => p.regionId === r.id);
@@ -155,6 +156,7 @@ export function buildWorldView(state) {
       color: r.famille && FAMILIES[r.famille] ? FAMILIES[r.famille].color : null,
       pins: regionPins,
       unlockHint: unlockHint(r, state),
+      justRevealed: fresh.has(r.id),
     };
   });
 
@@ -170,6 +172,34 @@ export function buildWorldView(state) {
       locked: regions.filter((r) => r.status === 'locked').length,
     },
   };
+}
+
+/**
+ * Met à jour regionsUnlocked / regionsFresh selon l’état courant.
+ * @returns {object[]} régions nouvellement révélées (objets WORLD_REGIONS)
+ */
+export function syncRegionUnlocks(state) {
+  if (!state.history.regionsUnlocked) state.history.regionsUnlocked = [];
+  if (!state.history.regionsFresh) state.history.regionsFresh = [];
+  const known = new Set(state.history.regionsUnlocked);
+  const newly = [];
+  for (const r of WORLD_REGIONS) {
+    const st = regionStatus(r, state);
+    if (st === 'discovered' || st === 'active') {
+      if (!known.has(r.id)) {
+        known.add(r.id);
+        newly.push(r);
+        state.history.regionsFresh.push(r.id);
+      }
+    }
+  }
+  state.history.regionsUnlocked = [...known];
+  state.history.regionsFresh = state.history.regionsFresh.slice(-8);
+  return newly;
+}
+
+export function clearRegionFresh(state) {
+  if (state.history) state.history.regionsFresh = [];
 }
 
 function unlockHint(region, state) {

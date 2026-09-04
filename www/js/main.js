@@ -15,6 +15,7 @@ import { syncDailyReminder, shareText } from './platform/notifications.js';
 import { syncStatusBar } from './platform/statusbar.js';
 import { QUESTS } from './data/quests.js';
 import { setMuseumFilter, selectMuseumItem } from './ui/components/charBits.js';
+import { clearRegionFresh } from './engine/worldView.js';
 
 
 let storage;
@@ -95,10 +96,16 @@ function apply(result) {
 
 async function dispatch(action, args = {}) {
   switch (action) {
-    case 'goto':
-      view = args.id || 'adventure';
+    case 'goto': {
+      const next = args.id || 'adventure';
+      if (view === 'world' && next !== 'world' && state.history?.regionsFresh?.length) {
+        clearRegionFresh(state);
+        persist();
+      }
+      view = next;
       render();
       break;
+    }
 
     case 'select-region':
       selectWorldRegion(args.id);

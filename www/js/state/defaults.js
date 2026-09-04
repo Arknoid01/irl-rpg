@@ -41,6 +41,8 @@ export function defaultState() {
       daysPlayed: 0,
       bestStreak: 0,
       recentEventIds: [],   // anti-répétition événements
+      regionsUnlocked: [],  // ids de régions découvertes
+      regionsFresh: [],     // révélations récentes (compagnon / anim)
     },
 
     seeds: { companion: 0 },

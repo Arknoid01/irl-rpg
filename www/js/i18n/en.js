@@ -78,9 +78,11 @@ export default {
   stat_best_streak: 'Best streak',
 
   journal_title: 'Adventure journal',
-  journal_empty: 'Your journal is still blank. Every quest can leave a trace.',
+  journal_empty: 'Your journal is still blank. Quests, discoveries and levels can leave a trace.',
   journal_today: 'Today',
   journal_yesterday: 'Yesterday',
+  journal_this_week: 'This week',
+  journal_older: 'Earlier',
   journal_days_ago: '{n} days ago',
 
   toast_xp: '+{n} XP',
@@ -90,6 +92,7 @@ export default {
   toast_moment: '📖 Memorable moment saved',
   toast_item: 'Item obtained: {item}',
   toast_loot: 'Display case: {item}',
+  toast_region: 'Map: fog lifted',
   levelup_title: 'Level up',
   levelup_sub: 'A page turns in your grimoire.',
   levelup_close: 'Continue',

@@ -23,6 +23,8 @@ import {
   inferKind, normalizeLootEntry, buildMuseumView, lootFromEvent, milestoneLootForLevel, addLoot,
 } from '../www/js/engine/inventory.js';
 import { LOOT_KINDS, EVENT_LOOT_META } from '../www/js/data/loot.js';
+import { buildJournalTimeline, chapterForLevel } from '../www/js/engine/journal.js';
+import { companionLineForState } from '../www/js/engine/companion.js';
 import { mulberry32 } from '../www/js/engine/rng.js';
 import {
   gainXp, gainSkills, bumpStreak, computeStyle, elanDuJour,
@@ -256,6 +258,44 @@ test('musée : kinds, lore événements, jalons', () => {
   assert.equal(view.total, 2);
   assert.ok(view.counts.fragment >= 1);
   assert.ok(view.counts.collectible >= 1);
+});
+
+test('journal : timeline et chapitres', () => {
+  const ch = chapterForLevel(1);
+  assert.equal(ch.id, 'prologue');
+  assert.ok(bilingual(ch.label));
+  assert.equal(chapterForLevel(8).id, 'ch3');
+
+  const s = defaultState();
+  s.level = 4;
+  s.journal = [
+    { date: '2026-09-04', text: { fr: 'A', en: 'A' }, kind: 'moment' },
+    { date: '2026-09-03', text: { fr: 'B', en: 'B' }, kind: 'fragment' },
+    { date: '2026-08-20', text: { fr: 'C', en: 'C' }, kind: 'evenement' },
+  ];
+  const tl = buildJournalTimeline(s, new Date('2026-09-04T12:00:00'));
+  assert.equal(tl.chapter.id, 'ch1');
+  assert.ok(tl.sections.some((sec) => sec.id === 'today'));
+  assert.ok(tl.sections.some((sec) => sec.id === 'yesterday'));
+});
+
+test('compagnon : répliques contextuelles', () => {
+  const s = defaultState();
+  s.theme = 'nordique';
+  s.lang = 'fr';
+  const empty = companionLineForState(s, 'fr');
+  assert.ok(typeof empty === 'string' && empty.length > 10);
+
+  s.quests = [
+    { id: 'a', status: 'done', famille: 'social', text: { fr: 'x', en: 'x' }, xp: 10 },
+  ];
+  const done = companionLineForState(s, 'fr');
+  assert.match(done, /pages|obligatoire|suffi|journal/i);
+
+  s.quests = [{ id: 'a', status: 'proposed', famille: 'social', text: { fr: 'x', en: 'x' }, xp: 10 }];
+  s.streak = 6;
+  const streak = companionLineForState(s, 'fr');
+  assert.match(streak, /série|feu|grimoire|braise|rythme/i);
 });
 
 test('titres : compétences valides, bilingues', () => {
