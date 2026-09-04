@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IRL RPG — Privacy / Confidentialité</title>
+  <style>
+    :root { color-scheme: light dark; --fg: #e8eef5; --muted: #9aa8b8; --bg: #0f1419; --card: #1a222c; --accent: #5ec8ff; }
+    @media (prefers-color-scheme: light) {
+      :root { --fg: #15202b; --muted: #5a6a7a; --bg: #f4f7fa; --card: #fff; --accent: #0a6ea8; }
+    }
+    body { margin: 0; font: 1rem/1.55 system-ui, sans-serif; background: var(--bg); color: var(--fg); }
+    main { max-width: 40rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.6rem; margin: 0 0 .25rem; }
+    h2 { font-size: 1.1rem; margin: 1.75rem 0 .5rem; }
+    .muted { color: var(--muted); font-size: .9rem; }
+    .card { background: var(--card); border-radius: 12px; padding: 1rem 1.1rem; margin: 1rem 0; }
+    .lang { display: flex; gap: .5rem; margin: 1rem 0 1.5rem; }
+    .lang button { border: 1px solid var(--muted); background: transparent; color: var(--fg); border-radius: 999px; padding: .35rem .9rem; cursor: pointer; }
+    .lang button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+    a { color: var(--accent); }
+    ul { padding-left: 1.2rem; }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>IRL RPG</h1>
+    <p class="muted" id="updated">Updated / Mise à jour : 2026-09-04 · 16+</p>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" id="btn-fr" aria-pressed="true">FR</button>
+      <button type="button" id="btn-en" aria-pressed="false">EN</button>
+    </div>
+
+    <article id="fr">
+      <div class="card">
+        <strong>En bref :</strong> tout reste sur ton appareil. Pas de compte, pas de serveur de jeu, pas de pub, pas d’analytics.
+      </div>
+      <h2>Données stockées</h2>
+      <p>Uniquement en local : prénom de héros, préférences, progression, journal, acquittement d’âge 16+. Export / import / effacement depuis les réglages de l’app.</p>
+      <h2>Ce que l’app ne fait pas</h2>
+      <ul>
+        <li>Collecte vers un serveur IRL RPG</li>
+        <li>Vente ou partage de données à des tiers</li>
+        <li>Compte, tracking publicitaire, géolocalisation (V1)</li>
+      </ul>
+      <h2>Options système</h2>
+      <p>Rappels = notifications locales. Défis d’amis = partage de texte via ton système. Polices web optionnelles (Google Fonts) si réseau — le jeu fonctionne hors ligne sans elles.</p>
+      <h2>Enfants</h2>
+      <p>Application classée <strong>16+</strong>, non destinée aux moins de 16 ans.</p>
+      <p class="muted">Texte canonique : dépôt du projet, fichier <code>docs/PRIVACY.md</code>.</p>
+    </article>
+
+    <article id="en" hidden>
+      <div class="card">
+        <strong>In short:</strong> everything stays on your device. No account, no game server, no ads, no analytics.
+      </div>
+      <h2>Data stored</h2>
+      <p>Local only: hero name, preferences, progress, journal, 16+ age acknowledgement. Export / import / erase from in-app settings.</p>
+      <h2>What the app does not do</h2>
+      <ul>
+        <li>Send data to an IRL RPG server</li>
+        <li>Sell or share data with third parties</li>
+        <li>Accounts, ad tracking, geolocation (V1)</li>
+      </ul>
+      <h2>System features</h2>
+      <p>Reminders use local notifications. Friend challenges use your system share sheet (plain text). Optional web fonts (Google Fonts) when online — the game works offline without them.</p>
+      <h2>Children</h2>
+      <p>Rated <strong>16+</strong>; not intended for anyone under 16.</p>
+      <p class="muted">Canonical text: project repo, <code>docs/PRIVACY.md</code>.</p>
+    </article>
+  </main>
+  <script>
+    const fr = document.getElementById('fr');
+    const en = document.getElementById('en');
+    const btnFr = document.getElementById('btn-fr');
+    const btnEn = document.getElementById('btn-en');
+    function setLang(lang) {
+      const isFr = lang === 'fr';
+      fr.hidden = !isFr; en.hidden = isFr;
+      btnFr.setAttribute('aria-pressed', String(isFr));
+      btnEn.setAttribute('aria-pressed', String(!isFr));
+      document.documentElement.lang = lang;
+    }
+    btnFr.onclick = () => setLang('fr');
+    btnEn.onclick = () => setLang('en');
+    if ((navigator.language || '').toLowerCase().startsWith('en')) setLang('en');
+  </script>
+</body>
+</html>

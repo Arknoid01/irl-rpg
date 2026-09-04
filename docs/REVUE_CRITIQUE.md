@@ -32,7 +32,8 @@ HTML/CSS/JS + Capacitor, pas de Godot. Voir §5.
 
 Autres décisions appliquées le 2026-09-04 : « compagnon » remplace « maître du jeu »
 (D4) · « Énergie » supprimée comme ressource, remplacée par « Élan du jour » (D5).
-Reste ouvert : périmètre MVP à acter, public/âge (D6).
+Reste ouvert à l'époque : périmètre MVP (depuis **livré**, voir §7) · public/âge
+→ **tranché 16+** (D6, gate onboarding + `docs/STORE.md` / `docs/PRIVACY.md`).
 
 ---
 
@@ -306,11 +307,11 @@ Conséquences pour la suite :
 3. ~~**Plateforme**~~ → **tranché** : HTML + Capacitor (D1, 2026-09-04).
 4. ~~**« Compagnon »** remplace « maître du jeu »~~ → **tranché : oui** (D4, 2026-09-04).
 5. ~~**« Énergie »** supprimée comme ressource~~ → **tranché : oui**, remplacée par « Élan du jour » (D5, 2026-09-04).
-6. **Public / âge** : 16+ ? 18+ ? adaptation selon âge déclaré ? → hypothèse de travail **16+** (D6), à confirmer.
+6. **Public / âge** : ~~16+ ?~~ → **tranché 16+** (D6), gate onboarding + fiche store.
 7. **Générateur** : banque curée au MVP, générateur libre en P2 ? (recommandé : oui)
 8. **Objectif contenu MVP** : combien de quêtes, écrites par qui, relues comment ?
 
-Encore à acter : périmètre MVP (§7), items 7 et 8 ci-dessus.
+Encore à acter historiquement : items 7 et 8 (contenu). Périmètre MVP livré (§7).
 
 ---
 
@@ -332,10 +333,11 @@ Les specs décrivent un jeu de 2-3 ans. P0 doit être impitoyable.
 - XP / niveau / 6 compétences / titres
 - Journal : fragments narratifs + « moments mémorables »
 - 1 type d'événement aléatoire
-- Onboarding : prénom, curseur de confort, pitch philosophie
+- Onboarding : prénom, curseur de confort, pitch philosophie, **acquittement 16+**
 - 1 notification quotidienne (douce, opt-in)
 - Sauvegarde on-device + export / import
 - Checklist de conformité philosophie appliquée à chaque écran
+- Confidentialité / store : `docs/PRIVACY.md`, `docs/STORE.md`, `www/privacy.html`
 
 **Hors MVP (P1 / P2) :**
 

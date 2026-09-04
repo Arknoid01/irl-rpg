@@ -120,7 +120,7 @@ Application jouable de bout en bout dans `www/` (voir `www/README.md`).
 Périmètre conforme à `REVUE_CRITIQUE.md` §7 :
 
 - 3 onglets (Aventure / Journal / Personnage) + réglages ; 3 thèmes en tokens
-- Onboarding (langue, thème, prénom, curseur de confort, familles, rappel)
+- Onboarding (langue, thème, prénom, curseur de confort, familles, rappel, ack 16+)
 - Banque de ~70 quêtes bilingues + tags `effort` / `registre` / `safe_fallback` ;
   pas de générateur libre
 - Tirage quotidien budgété en effort, accepter / ignorer / valider
@@ -129,22 +129,31 @@ Périmètre conforme à `REVUE_CRITIQUE.md` §7 :
 - Défi d'ami = partage de texte (Web Share / Capacitor Share), aucun classement
 - Sauvegarde on-device + export / import + migration depuis le prototype
 - Rappel quotidien via `@capacitor/local-notifications` (repli web propre)
-- Tests : `node --test` (moteur + DOM jsdom) + simulation 45–90 jours
+- Classement **16+** (D6) + docs privacy / store
+- Tests : `node --test` (moteur + DOM jsdom) + simulation 45–90 jours + CI
 
 Hors V1, inchangé : Monde / carte, Inventaire complet, générateur modulaire,
 adaptatif « intelligent », multijoueur, art / son par thème, géoloc, météo.
 
 ---
 
-## D6 — Public / âge : à confirmer (hypothèse : 16+)
+## D6 — Public / âge : **16+** (2026-09-04)
 
-**Non tranché.** Hypothèse de travail : **16+**.
+**Tranché : classement 16+.**
 
 Raisonnement : le contenu est majoritairement bénin, mais certaines quêtes
 (« engage la conversation avec un inconnu », « entre dans un commerce inconnu »,
 « prends un chemin différent ») demandent un minimum d'autonomie et de jugement.
-18+ semble excessif ; sans âge du tout, le classement store et la responsabilité
-posent problème.
+18+ serait excessif ; sans âge déclaré, classement store et responsabilité
+posent problème. Pas d'adaptation du pool selon un âge déclaré en V1 (complexité
+inutile) — un seul pool, gate d'âge à l'onboarding.
 
-À décider : 16+ ferme, ou 18+, ou adaptation du pool de quêtes selon un âge
-déclaré à l'onboarding. Impacte le classement store et les mentions légales.
+**Conséquences :**
+
+- Onboarding : texte explicite + case à cocher obligatoire « J'ai 16 ans ou plus »
+  (`ageAck` dans la sauvegarde). Sans ack, l'aventure ne démarre pas.
+- Stores : déclarer **16+** / IARC équivalent (voir `docs/STORE.md`).
+- Mentions : réglages « À propos » + `docs/PRIVACY.md` / `www/privacy.html`.
+
+Ce n'est **pas** une vérification d'identité — déclaration honorable, comme le
+reste du jeu (D3).

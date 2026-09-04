@@ -36,11 +36,15 @@ export function finishOnboarding(state, args, ctx) {
   s.comfort = Math.min(5, Math.max(1, Math.round(args.comfort) || 3));
   s.prefFamilies = Array.isArray(args.prefFamilies) ? args.prefFamilies.slice(0, 3) : [];
   if (args.theme) s.theme = args.theme;
+  if (args.lang === 'fr' || args.lang === 'en') s.lang = args.lang;
   s.notifications = {
     enabled: !!(args.notifications && args.notifications.enabled),
     hour: Math.min(22, Math.max(6, (args.notifications && args.notifications.hour) || 9)),
   };
-  s.ageAck = true;
+  s.ageAck = !!args.ageAck;
+  if (!s.ageAck) {
+    return { state: clone(state), effects: [] };
+  }
   s.onboarded = true;
   const r = newDay(s, {}, ctx);
   return { state: r.state, effects: [{ type: 'onboarded' }, ...r.effects] };

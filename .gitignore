@@ -2,7 +2,6 @@
 *.swp
 node_modules/
 /build/
-package-lock.json
 *.log
 
 # Capacitor natif : le dossier android/ (scaffold) est versionné ; son propre

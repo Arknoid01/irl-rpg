@@ -64,6 +64,10 @@ export function openSettings({ getState, dispatch, close }) {
           <button class="btn ghost" data-set="import">${i18n.t('set_import')}</button>
           <button class="btn danger" data-set="wipe">${i18n.t('set_wipe')}</button>
         </div>
+
+        <h3>${i18n.t('set_about')}</h3>
+        <p class="tiny muted">${i18n.t('set_age_rating')}</p>
+        <p class="tiny muted">${i18n.t('set_privacy_body')}</p>
         <p class="tiny muted">${esc(s.name)} · ${i18n.t('level')} ${s.level}</p>
         <button class="btn primary full" data-set="close">${i18n.t('set_close')}</button>
       </div>`;

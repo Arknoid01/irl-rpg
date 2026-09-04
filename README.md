@@ -26,7 +26,7 @@ Empaquetage Android/iOS : `npm install && npx cap add android && npx cap sync`.
 | Élément | État |
 |---|---|
 | Plateforme : HTML/CSS/JS + Capacitor (D1) | ✅ |
-| Onboarding (langue, thème, prénom, confort, familles, rappel) | ✅ |
+| Onboarding (langue, thème, prénom, confort, familles, rappel, **ack 16+**) | ✅ |
 | 3 onglets (Aventure / Journal / Personnage) + réglages, 3 thèmes | ✅ |
 | ~70 quêtes bilingues, tirage quotidien budgété, accepter/ignorer/valider | ✅ |
 | XP / niveau / 6 compétences / 12 titres / style / série sans coût | ✅ |
@@ -42,12 +42,14 @@ Empaquetage Android/iOS : `npm install && npx cap add android && npx cap sync`.
 |---|---|
 | `docs/DECISIONS.md` | Décisions tranchées (fait autorité en cas de conflit) |
 | `docs/TAXONOMIE.md` | Familles, compétences, matrice, modèle de quête |
+| `docs/PRIVACY.md` · `www/privacy.html` | Confidentialité (on-device, 16+) |
+| `docs/STORE.md` | Checklist publication Play / App Store |
 | `docs/REVUE_CRITIQUE.md` | Revue critique des specs + périmètre MVP |
 | `docs/IRL_RPG_concept.md` · `_interactions_defis.md` · `_ui_ux_spec.md` | Specs d'origine |
 | `prototype/irl-rpg-prototype.html` | Prototype initial (conservé pour référence) |
 
 ## Reste ouvert
 
-Confirmer le classement d'âge (hypothèse 16+, `DECISIONS.md` D6) · générateur
-modulaire de quêtes (post-V1) · pipeline de contenu pour étoffer la banque ·
-équilibrage fin de la courbe d'XP et des paliers de titres.
+Générateur modulaire de quêtes (post-V1) · pipeline de contenu pour étoffer la
+banque · équilibrage fin de la courbe d'XP et des paliers de titres · héberger
+`privacy.html` et coller l'URL dans la console store le jour de la soumission.

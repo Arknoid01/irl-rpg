@@ -16,6 +16,7 @@ export function startOnboarding(initial, onComplete) {
     theme: initial.theme || 'cyberpunk',
     lang: i18n.lang,
     notifications: { enabled: false, hour: 9 },
+    ageAck: false,
   };
   let step = 0;
 
@@ -34,10 +35,14 @@ export function startOnboarding(initial, onComplete) {
         <h2>${i18n.t('ob_welcome_title')}</h2>
         <p>${i18n.t('ob_welcome_body')}</p>
         <p class="tiny muted">${i18n.t('ob_age')}</p>
+        <label class="switch-row age-ack">
+          <input id="ob-age" type="checkbox" ${data.ageAck ? 'checked' : ''} />
+          <span>${i18n.t('ob_age_ack')}</span>
+        </label>
         <div class="theme-choose">${THEME_KEYS.map((k) => `
           <button class="theme-dot${k === data.theme ? ' active' : ''}" style="background:${THEMES[k].dot}"
             data-ob="theme" data-v="${k}" title="${THEMES[k].label}"></button>`).join('')}</div>
-        <button class="btn primary full" data-ob="next">${i18n.t('ob_next')}</button>`;
+        <button class="btn primary full" data-ob="next" ${data.ageAck ? '' : 'disabled'}>${i18n.t('ob_next')}</button>`;
     }
     if (name === 'name') {
       return `
@@ -101,6 +106,7 @@ export function startOnboarding(initial, onComplete) {
   function captureInputs() {
     const n = $('#ob-name'); if (n) data.name = n.value;
     const c = $('#ob-comfort'); if (c) data.comfort = Number(c.value);
+    const a = $('#ob-age'); if (a) data.ageAck = a.checked;
     const nt = $('#ob-notif'); if (nt) data.notifications.enabled = nt.checked;
     const h = $('#ob-hour'); if (h) data.notifications.hour = Number(h.value);
   }
@@ -108,6 +114,7 @@ export function startOnboarding(initial, onComplete) {
   function onClick(e) {
     const b = e.target.closest('[data-ob]');
     if (!b) return;
+    if (b.disabled) return;
     const act = b.dataset.ob;
     captureInputs();
     if (act === 'lang') {
@@ -121,17 +128,29 @@ export function startOnboarding(initial, onComplete) {
       else if (data.prefFamilies.length < 3) data.prefFamilies.push(f);
       render();
     } else if (act === 'next') {
+      if (step === 0 && !data.ageAck) return;
       step = Math.min(STEPS.length - 1, step + 1); render();
     } else if (act === 'back') {
       step = Math.max(0, step - 1); render();
     } else if (act === 'finish') {
+      if (!data.ageAck) return;
       ov.removeEventListener('click', onClick);
+      ov.removeEventListener('change', onChange);
       ov.classList.remove('show');
       ov.innerHTML = '';
       onComplete(data);
     }
   }
 
+  function onChange(e) {
+    if (e.target && e.target.id === 'ob-age') {
+      data.ageAck = e.target.checked;
+      const next = ov.querySelector('[data-ob="next"]');
+      if (next) next.disabled = !data.ageAck;
+    }
+  }
+
   ov.addEventListener('click', onClick);
+  ov.addEventListener('change', onChange);
   render();
 }

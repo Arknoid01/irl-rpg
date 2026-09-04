@@ -206,7 +206,7 @@ test('export / import : aller-retour', () => {
 
 test('ignorer une quête ne coûte rien', () => {
   const ctx = { now: new Date('2026-09-04T10:00:00'), rng: mulberry32(42) };
-  let s = game.finishOnboarding(defaultState(), { name: 'P', comfort: 3 }, ctx).state;
+  let s = game.finishOnboarding(defaultState(), { name: 'P', comfort: 3, ageAck: true }, ctx).state;
   const before = structuredClone(s);
   const q = s.quests[0];
   s = game.ignoreQuest(s, { id: q.id }).state;
@@ -217,7 +217,7 @@ test('ignorer une quête ne coûte rien', () => {
 
 test('compléter une quête : aucune pénalité, XP en hausse', () => {
   const ctx = { now: new Date('2026-09-04T10:00:00'), rng: mulberry32(7) };
-  let s = game.finishOnboarding(defaultState(), { name: 'P', comfort: 5 }, ctx).state;
+  let s = game.finishOnboarding(defaultState(), { name: 'P', comfort: 5, ageAck: true }, ctx).state;
   const q = s.quests.find((x) => !x.hidden) || s.quests[0];
   const before = structuredClone(s);
   s = game.acceptQuest(s, { id: q.id }).state;
@@ -231,10 +231,18 @@ test('compléter une quête : aucune pénalité, XP en hausse', () => {
 test('finishOnboarding : produit une journée jouable', () => {
   const ctx = { now: new Date('2026-09-04T09:00:00'), rng: mulberry32(3) };
   const r = game.finishOnboarding(defaultState(), {
-    name: 'Yannick', comfort: 3, prefFamilies: ['social', 'exploration'],
+    name: 'Yannick', comfort: 3, prefFamilies: ['social', 'exploration'], ageAck: true,
   }, ctx);
   assert.equal(r.state.onboarded, true);
+  assert.equal(r.state.ageAck, true);
   assert.ok(r.state.quests.length >= 1);
   assert.equal(r.state.drawDate, '2026-09-04');
   assert.equal(elanDuJour(r.state), 0);
+});
+
+test('finishOnboarding : refuse sans ack d’âge', () => {
+  const ctx = { now: new Date('2026-09-04T09:00:00'), rng: mulberry32(3) };
+  const r = game.finishOnboarding(defaultState(), { name: 'X', ageAck: false }, ctx);
+  assert.equal(r.state.onboarded, false);
+  assert.equal(r.state.ageAck, false);
 });

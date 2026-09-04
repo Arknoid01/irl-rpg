@@ -36,7 +36,14 @@ test('parcours complet dans le DOM', async () => {
   assert.ok($('#overlay').classList.contains('show'), 'overlay onboarding');
   assert.ok($('.onboarding'), 'écran onboarding');
 
-  // welcome -> name
+  // welcome -> name (âge 16+ obligatoire)
+  const age = $('#ob-age');
+  assert.ok(age, 'case âge');
+  assert.ok($('[data-ob="next"]').disabled, 'Continuer bloqué sans ack âge');
+  age.checked = true;
+  age.dispatchEvent(new window.Event('change', { bubbles: true }));
+  await tick();
+  assert.equal($('[data-ob="next"]').disabled, false, 'Continuer débloqué');
   await click('[data-ob="next"]');
   $('#ob-name').value = 'Testeur';
   await click('[data-ob="next"]');

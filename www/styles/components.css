@@ -175,8 +175,11 @@ input[type="range"] { width: 100%; accent-color: var(--accent2); margin: 12px 0 
 .fam-pill.active { border-color: var(--accent2); color: var(--text); background: rgba(0,229,255,.08); }
 
 .switch-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 10px 0; }
-.switch-row input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--accent2); }
+.switch-row.age-ack { align-items: flex-start; text-align: left; }
+.switch-row.age-ack span { flex: 1; font-size: .88rem; }
+.switch-row input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--accent2); flex-shrink: 0; }
 .switch-row input[type="number"] { width: 70px; }
+.btn:disabled, .btn[disabled] { opacity: .4; pointer-events: none; }
 
 .sheet-head { display: flex; justify-content: space-between; align-items: center; }
 .set-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 10px 0; }

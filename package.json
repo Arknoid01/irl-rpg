@@ -6,13 +6,14 @@
   "private": true,
   "scripts": {
     "serve": "python3 -m http.server 8123 --directory www",
-    "test": "node --test tests/",
+    "test": "node --test tests/engine.test.mjs tests/dom.test.mjs",
     "sim": "node tests/simulate.mjs",
     "cap:add:android": "cap add android",
     "cap:sync": "cap sync"
   },
   "devDependencies": {
-    "@capacitor/cli": "^8.3.4"
+    "@capacitor/cli": "^8.3.4",
+    "jsdom": "^30.0.1"
   },
   "dependencies": {
     "@capacitor/core": "^8.3.4",

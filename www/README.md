@@ -22,7 +22,9 @@ npm run sim            # simulation d'une partie de 45 jours + vérif des invari
 node tests/simulate.mjs 90 777   # N jours, seed
 ```
 
-`tests/dom.test.mjs` nécessite `jsdom` (`npm i -D jsdom`).
+`tests/dom.test.mjs` nécessite `jsdom` (déclaré en `devDependency` : `npm ci`).
+
+CI GitHub Actions : `.github/workflows/ci.yml` (`npm ci` · `npm test` · `npm run sim`).
 
 ## Structure
 

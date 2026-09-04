@@ -44,7 +44,7 @@ i18n.setLang(SEED % 2 ? 'fr' : 'en');
 
 step('onboarding', () => game.finishOnboarding(state, {
   name: 'Sim', comfort: 3, prefFamilies: ['social', 'exploration', 'chaos'],
-  notifications: { enabled: true, hour: 9 },
+  notifications: { enabled: true, hour: 9 }, ageAck: true,
 }, dCtx('2026-09-04')));
 
 let completedTotal = 0;
