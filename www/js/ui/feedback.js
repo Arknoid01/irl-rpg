@@ -25,14 +25,24 @@ function enqueueToast(msg) {
   step();
 }
 
-export function levelUpOverlay(level) {
+/**
+ * Overlay level-up style grimoire.
+ * @param {number} level
+ * @param {{ lootLabel?: string }=} opts
+ */
+export function levelUpOverlay(level, opts = {}) {
   const ov = $('#overlay');
   if (!ov) return;
+  const lootLine = opts.lootLabel
+    ? `<p class="levelup-loot">${i18n.t('levelup_loot', { item: opts.lootLabel })}</p>`
+    : '';
   ov.innerHTML = `
     <div class="levelup" role="dialog" aria-live="assertive">
+      <div class="levelup-seal" aria-hidden="true">✦</div>
       <div class="levelup-kicker">${i18n.t('levelup_title')}</div>
       <div class="levelup-number">${level}</div>
       <div class="levelup-sub">${i18n.t('levelup_sub')}</div>
+      ${lootLine}
       <button class="btn primary" data-action="close-overlay">${i18n.t('levelup_close')}</button>
     </div>`;
   ov.classList.add('show');
@@ -46,6 +56,7 @@ export function closeOverlay() {
 /** Joue une liste d'effets renvoyée par le moteur. */
 export function playEffects(effects) {
   let lastLevel = null;
+  let lootAtLevel = null;
   for (const fx of effects || []) {
     switch (fx.type) {
       case 'xp': enqueueToast(i18n.t('toast_xp', { n: fx.amount })); break;
@@ -54,9 +65,14 @@ export function playEffects(effects) {
       case 'fragment': enqueueToast(i18n.t('toast_fragment')); break;
       case 'moment': enqueueToast(i18n.t('toast_moment')); break;
       case 'event-done': enqueueToast(i18n.t('toast_item', { item: i18n.loc(fx.item) })); break;
-      case 'loot': enqueueToast(i18n.t('toast_loot', { item: i18n.loc(fx.item) })); break;
+      case 'loot':
+        enqueueToast(i18n.t('toast_loot', { item: i18n.loc(fx.item) }));
+        if (lastLevel != null) lootAtLevel = i18n.loc(fx.item);
+        break;
       default: break;
     }
   }
-  if (lastLevel != null) setTimeout(() => levelUpOverlay(lastLevel), 600);
+  if (lastLevel != null) {
+    setTimeout(() => levelUpOverlay(lastLevel, { lootLabel: lootAtLevel || undefined }), 600);
+  }
 }

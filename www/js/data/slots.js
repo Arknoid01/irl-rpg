@@ -101,4 +101,30 @@ export const SLOT_POOLS = {
     { fr: 'le nom d’une constellation ou d’une plante', en: 'the name of a constellation or a plant' },
     { fr: 'une technique de 2 minutes (nœud, pli, astuce)', en: 'a 2-minute skill (knot, fold, tip)' },
   ],
+
+  contrainte_sociale: [
+    { fr: 'sans parler de toi', en: 'without talking about yourself' },
+    { fr: 'en souriant vraiment', en: 'while smiling for real' },
+    { fr: 'en une seule phrase', en: 'in a single sentence' },
+    { fr: 'sans regarder ton téléphone juste après', en: 'without checking your phone right after' },
+    { fr: 'en gardant le contact des yeux une seconde de plus', en: 'holding eye contact one second longer' },
+  ],
+
+  objet_nature: [
+    { fr: 'une feuille', en: 'a leaf' },
+    { fr: 'un caillou', en: 'a pebble' },
+    { fr: 'une brindille', en: 'a twig' },
+    { fr: 'une plume', en: 'a feather' },
+    { fr: 'un pétale', en: 'a petal' },
+    { fr: 'un bout d’écorce', en: 'a scrap of bark' },
+  ],
+
+  odeur: [
+    { fr: 'le café', en: 'coffee' },
+    { fr: 'la pluie', en: 'rain' },
+    { fr: 'le pain', en: 'bread' },
+    { fr: 'le savon', en: 'soap' },
+    { fr: 'le bois', en: 'wood' },
+    { fr: 'les fleurs', en: 'flowers' },
+  ],
 };

@@ -313,6 +313,176 @@ export const QUEST_TEMPLATES = [
       en: "A simple gesture, a new face. Stories sometimes keep so little — and that’s enough.",
     },
   },
+
+  // ── Extensions (variété post-V1) ──
+  {
+    id: 'tpl_s_contrainte',
+    famille: 'social', xp: 100, effort: 'leger', registre: 'quete', audace: 2,
+    contexte: ['presence_gens'], safe_fallback: FB_SOCIAL, defi_ami: true,
+    slots: { geste: 'geste_social', contrainte: 'contrainte_sociale' },
+    text: {
+      fr: "Offre {geste} — {contrainte}.",
+      en: "Offer {geste} — {contrainte}.",
+    },
+  },
+  {
+    id: 'tpl_s_message',
+    famille: 'social', xp: 90, effort: 'leger', registre: 'quete', audace: 1,
+    contexte: [], defi_ami: true,
+    slots: { n: 'nombre_petit' },
+    text: {
+      fr: "Envoie un message sincère de {n} phrases max à quelqu’un — sans attendre de réponse.",
+      en: "Send a sincere message of {n} sentences max to someone — without expecting a reply.",
+    },
+  },
+  {
+    id: 'tpl_e_nature',
+    famille: 'exploration', xp: 80, effort: 'leger', registre: 'experience', audace: 1,
+    contexte: ['exterieur'], safe_fallback: FB_DEHORS,
+    slots: { objet: 'objet_nature', duree: 'duree_courte' },
+    text: {
+      fr: "Dehors, {duree} minutes : trouve {objet} qui te plaît — photographie ou garde.",
+      en: "Outside, {duree} minutes: find {objet} you like — photograph or keep it.",
+    },
+  },
+  {
+    id: 'tpl_e_ombre',
+    famille: 'exploration', xp: 90, effort: 'moyen', registre: 'quete', audace: 2,
+    contexte: ['exterieur', 'trajet'], safe_fallback: FB_DEHORS,
+    slots: { duree: 'duree_courte' },
+    text: {
+      fr: "Pendant {duree} minutes de marche, suis les zones d’ombre (ou de soleil) autant que possible.",
+      en: "For {duree} minutes of walking, follow shade (or sun) as much as you can.",
+    },
+  },
+  {
+    id: 'tpl_e_fenetre',
+    famille: 'exploration', xp: 70, effort: 'leger', registre: 'experience', audace: 1,
+    contexte: ['exterieur'], safe_fallback: FB_DEHORS,
+    slots: { n: 'nombre_petit', couleur: 'couleur' },
+    text: {
+      fr: "Repère {n} fenêtres {couleur} (ou quasi) que tu n’avais jamais remarquées.",
+      en: "Spot {n} {couleur} (or nearly) windows you’d never noticed.",
+    },
+  },
+  {
+    id: 'tpl_cu_odeur',
+    famille: 'curiosite', xp: 70, effort: 'leger', registre: 'experience', audace: 1,
+    contexte: [],
+    slots: { odeur: 'odeur', duree: 'duree_courte' },
+    text: {
+      fr: "Pendant {duree} minutes, cherche à sentir clairement {odeur} — dehors ou dedans.",
+      en: "For {duree} minutes, try to clearly smell {odeur} — outside or in.",
+    },
+  },
+  {
+    id: 'tpl_cu_nature_compter',
+    famille: 'curiosite', xp: 80, effort: 'leger', registre: 'quete', audace: 1,
+    contexte: ['exterieur'], safe_fallback: FB_DEHORS,
+    slots: { objet: 'objet_nature', n: 'nombre_moyen' },
+    text: {
+      fr: "Compte jusqu’à {n} fois {objet} (ou équivalent) sur ton chemin.",
+      en: "Count up to {n} instances of {objet} (or similar) on your way.",
+    },
+  },
+  {
+    id: 'tpl_cu_fenetre',
+    famille: 'curiosite', xp: 90, effort: 'leger', registre: 'quete', audace: 1,
+    contexte: [],
+    slots: { duree: 'duree_courte' },
+    text: {
+      fr: "Choisis une fenêtre (ou une vue) et observe-la {duree} minutes sans téléphone.",
+      en: "Pick a window (or a view) and watch it for {duree} minutes with no phone.",
+    },
+  },
+  {
+    id: 'tpl_cr_nature',
+    famille: 'creation', xp: 100, effort: 'moyen', registre: 'quete', audace: 1,
+    contexte: [],
+    slots: { objet: 'objet_nature', medium: 'medium_crea' },
+    text: {
+      fr: "À partir de {objet} (réel ou imaginé), produis {medium}.",
+      en: "From {objet} (real or imagined), produce {medium}.",
+    },
+  },
+  {
+    id: 'tpl_cr_couleur_scene',
+    famille: 'creation', xp: 90, effort: 'leger', registre: 'quete', audace: 1,
+    contexte: [],
+    slots: { couleur: 'couleur', n: 'nombre_petit' },
+    text: {
+      fr: "Écris {n} phrases qui décrivent une scène entièrement teintée de {couleur}.",
+      en: "Write {n} sentences describing a scene entirely tinted {couleur}.",
+    },
+  },
+  {
+    id: 'tpl_q_odeur',
+    famille: 'quotidien', xp: 70, effort: 'leger', registre: 'quete', audace: 1,
+    contexte: [],
+    slots: { tache: 'tache_maison', odeur: 'odeur' },
+    text: {
+      fr: "Mission sensorielle : pendant que tu ranges {tache}, note si tu sens {odeur} — sinon invente où tu l’as senti récemment.",
+      en: "Sensory mission: while tidying {tache}, notice if you smell {odeur} — if not, invent where you last smelled it.",
+    },
+  },
+  {
+    id: 'tpl_q_soir',
+    famille: 'quotidien', xp: 80, effort: 'leger', registre: 'quete', audace: 1,
+    contexte: ['moment:soir'],
+    slots: { duree: 'duree_courte', tache: 'tache_maison' },
+    text: {
+      fr: "Ce soir, {duree} minutes chrono : une vraie petite mission sur {tache} avant de décrocher.",
+      en: "Tonight, {duree}-minute timer: one real little mission on {tache} before you log off.",
+    },
+  },
+  {
+    id: 'tpl_ch_nature',
+    famille: 'chaos', xp: 70, effort: 'leger', registre: 'experience', audace: 1,
+    contexte: ['exterieur'], safe_fallback: FB_DEHORS,
+    slots: { objet: 'objet_nature', duree: 'duree_courte' },
+    text: {
+      fr: "Pendant {duree} minutes, décide que {objet} est un artefact royal — traite-le avec respect.",
+      en: "For {duree} minutes, decide {objet} is a royal artefact — treat it with respect.",
+    },
+  },
+  {
+    id: 'tpl_ch_social_absurde',
+    famille: 'chaos', xp: 90, effort: 'leger', registre: 'quete', audace: 2,
+    contexte: [],
+    slots: { duree: 'duree_courte', regle: 'regle_absurde' },
+    text: {
+      fr: "{duree} minutes en mode agent : {regle} — sans embêter personne.",
+      en: "{duree} minutes in agent mode: {regle} — without bothering anyone.",
+    },
+  },
+  {
+    id: 'tpl_h_atelier',
+    famille: 'creation', xp: 120, effort: 'moyen', registre: 'quete', audace: 2,
+    poids: 'mystere', contexte: [], hidden: true,
+    slots: { medium: 'medium_crea', objet: 'objet_quotidien' },
+    text: {
+      fr: "Fabrique {medium} qui « capture » {objet} d’aujourd’hui.",
+      en: "Make {medium} that “captures” today’s {objet}.",
+    },
+    fragment: {
+      fr: "Tu as transformé un rien en trace. Le musée de ton aventure s’enrichit d’une page.",
+      en: "You turned nothing into a trace. Your adventure museum gains a page.",
+    },
+  },
+  {
+    id: 'tpl_h_sentier',
+    famille: 'exploration', xp: 130, effort: 'moyen', registre: 'quete', audace: 3,
+    poids: 'mystere', contexte: ['exterieur'], safe_fallback: FB_DEHORS, hidden: true,
+    slots: { duree: 'duree_courte', contrainte: 'contrainte_marche' },
+    text: {
+      fr: "Sentier secret : {duree} min dehors — {contrainte}.",
+      en: "Secret path: {duree} min outside — {contrainte}.",
+    },
+    fragment: {
+      fr: "Tu as emprunté un chemin qui n’existait que pour toi. La carte s’en souvient.",
+      en: "You took a path that existed only for you. The map remembers.",
+    },
+  },
 ];
 
 export { FB_SOCIAL, FB_DEHORS, FB_LATER };

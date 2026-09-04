@@ -49,6 +49,15 @@ export const LOOT_KIND_KEYS = Object.keys(LOOT_KINDS);
 
 /** Reliques de niveau (portes de la carte). */
 export const MILESTONE_LOOT = {
+  3: {
+    kind: 'collectible',
+    item: { fr: '📗 Signet des premiers pas', en: '📗 First-steps bookmark' },
+    lore: {
+      fr: 'Trois niveaux. Le livre commence vraiment. Ce signet ne sert qu’à marquer le moment.',
+      en: 'Three levels. The book truly begins. This bookmark only marks the moment.',
+    },
+    from: { fr: 'Niveau 3', en: 'Level 3' },
+  },
   5: {
     kind: 'collectible',
     item: { fr: '🏅 Médaille des cinq feux', en: '🏅 Medal of five fires' },
@@ -66,6 +75,15 @@ export const MILESTONE_LOOT = {
       en: 'The mountain on your map opened. This shard opens no real door — only the vista.',
     },
     from: { fr: 'Niveau 8 — Crête', en: 'Level 8 — Ridge' },
+  },
+  12: {
+    kind: 'collectible',
+    item: { fr: '🕯 Chandelle de la douzième veille', en: '🕯 Candle of the twelfth watch' },
+    lore: {
+      fr: 'Assez de veilles pour que le grimoire sente la cire. Toujours décoratif — toujours à toi.',
+      en: 'Enough watches for the grimoire to smell of wax. Still decorative — still yours.',
+    },
+    from: { fr: 'Niveau 12', en: 'Level 12' },
   },
   15: {
     kind: 'collectible',
@@ -246,6 +264,76 @@ export const EVENT_LOOT_META = {
     lore: {
       fr: 'Une graine de seuil. Pas besoin de forcer la porte — l’entrouvrir suffit.',
       en: 'A threshold seed. No need to force the door — leaving it ajar is enough.',
+    },
+  },
+  ev_atelier_minute: {
+    kind: 'objet',
+    lore: {
+      fr: 'Dix minutes de fil. Le résultat est secondaire — le geste reste.',
+      en: 'Ten minutes of thread. The result is secondary — the gesture remains.',
+    },
+  },
+  ev_recette: {
+    kind: 'souvenir',
+    lore: {
+      fr: 'Une cuillère qui a goûté quelque chose de nouveau. Même imparfait.',
+      en: 'A spoon that tasted something new. Even imperfect.',
+    },
+  },
+  ev_photo_absurde: {
+    kind: 'souvenir',
+    lore: {
+      fr: 'Un négatif digne d’un portrait royal pour un objet banal.',
+      en: 'A negative fit for a royal portrait of a mundane object.',
+    },
+  },
+  ev_lit_range: {
+    kind: 'objet',
+    lore: {
+      fr: 'Le camp est prêt. La route peut attendre — le lit, non.',
+      en: 'Camp is ready. The road can wait — the bed cannot.',
+    },
+  },
+  ev_inbox_zero: {
+    kind: 'relic',
+    lore: {
+      fr: 'Trois messages, un cachet. La boîte n’est pas vide — elle est bornée.',
+      en: 'Three messages, one seal. The inbox isn’t empty — it’s bounded.',
+    },
+  },
+  ev_pas_chausson: {
+    kind: 'objet',
+    lore: {
+      fr: 'Estampillé par cinq minutes de mission domestique.',
+      en: 'Stamped by five minutes of domestic mission.',
+    },
+  },
+  ev_miroir: {
+    kind: 'relic',
+    lore: {
+      fr: 'Ton reflet a écouté. C’est déjà une conversation.',
+      en: 'Your reflection listened. That’s already a conversation.',
+    },
+  },
+  ev_nom_secret: {
+    kind: 'fragment',
+    lore: {
+      fr: 'Classifié ridicule. L’activité banale a eu droit à un dossier.',
+      en: 'Ridiculously classified. The mundane activity got a file.',
+    },
+  },
+  ev_ombre_guide: {
+    kind: 'fragment',
+    lore: {
+      fr: 'L’ombre mène parfois mieux que la carte.',
+      en: 'Shadow sometimes leads better than the map.',
+    },
+  },
+  ev_chapitre_3: {
+    kind: 'collectible',
+    lore: {
+      fr: 'Trois phrases pour le chapitre III. Le grimoire s’épaissit.',
+      en: 'Three sentences for chapter III. The grimoire thickens.',
     },
   },
 };

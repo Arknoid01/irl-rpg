@@ -27,12 +27,21 @@ export function startOnboarding(initial, onComplete) {
     </div>`;
   }
 
+  function chapterMark() {
+    const roman = ['I', 'II', 'III', 'IV', 'V'];
+    return `<div class="ob-chapter">
+      <span class="ob-chapter-ribbon">${roman[step]} / V</span>
+      <p class="ob-companion">${i18n.t('ob_chapter_' + STEPS[step])}</p>
+    </div>`;
+  }
+
   function stepHtml() {
     const name = STEPS[step];
     if (name === 'welcome') {
       return `
         ${langToggle()}
-        <h2>${i18n.t('ob_welcome_title')}</h2>
+        ${chapterMark()}
+        <h2 class="ob-title">${i18n.t('ob_welcome_title')}</h2>
         <p>${i18n.t('ob_welcome_body')}</p>
         <p class="tiny muted">${i18n.t('ob_age')}</p>
         <label class="switch-row age-ack">
@@ -46,7 +55,8 @@ export function startOnboarding(initial, onComplete) {
     }
     if (name === 'name') {
       return `
-        <h2>${i18n.t('ob_name_title')}</h2>
+        ${chapterMark()}
+        <h2 class="ob-title">${i18n.t('ob_name_title')}</h2>
         <input id="ob-name" type="text" maxlength="24" placeholder="${i18n.t('ob_name_ph')}" value="${esc(data.name)}" />
         <div class="ob-nav">
           <button class="btn ghost" data-ob="back">${i18n.t('ob_back')}</button>
@@ -55,7 +65,8 @@ export function startOnboarding(initial, onComplete) {
     }
     if (name === 'comfort') {
       return `
-        <h2>${i18n.t('ob_comfort_title')}</h2>
+        ${chapterMark()}
+        <h2 class="ob-title">${i18n.t('ob_comfort_title')}</h2>
         <p class="muted">${i18n.t('ob_comfort_body')}</p>
         <input id="ob-comfort" type="range" min="1" max="5" step="1" value="${data.comfort}" />
         <div class="range-ends"><span>${i18n.t('ob_comfort_1')}</span><span>${i18n.t('ob_comfort_5')}</span></div>
@@ -66,7 +77,8 @@ export function startOnboarding(initial, onComplete) {
     }
     if (name === 'families') {
       return `
-        <h2>${i18n.t('ob_families_title')}</h2>
+        ${chapterMark()}
+        <h2 class="ob-title">${i18n.t('ob_families_title')}</h2>
         <p class="muted">${i18n.t('ob_families_body')}</p>
         <div class="fam-choose">${PREFERABLE_FAMILIES.map((f) => `
           <button class="fam-pill${data.prefFamilies.includes(f) ? ' active' : ''}" data-ob="fam" data-v="${f}">
@@ -78,7 +90,8 @@ export function startOnboarding(initial, onComplete) {
     }
     // notif
     return `
-      <h2>${i18n.t('ob_notif_title')}</h2>
+      ${chapterMark()}
+      <h2 class="ob-title">${i18n.t('ob_notif_title')}</h2>
       <p class="muted">${i18n.t('ob_notif_body')}</p>
       <label class="switch-row">
         <input id="ob-notif" type="checkbox" ${data.notifications.enabled ? 'checked' : ''} />
@@ -95,7 +108,7 @@ export function startOnboarding(initial, onComplete) {
   }
 
   function render() {
-    ov.innerHTML = `<div class="onboarding"><div class="ob-progress">${
+    ov.innerHTML = `<div class="onboarding ob-folio"><div class="ob-progress" aria-hidden="true">${
       STEPS.map((_, i) => `<i class="${i <= step ? 'on' : ''}"></i>`).join('')
     }</div>${stepHtml()}</div>`;
     ov.classList.add('show');

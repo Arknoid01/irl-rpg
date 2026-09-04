@@ -106,7 +106,7 @@ test('templates : slots et texte cohérents', () => {
     if (needsFallback) assert.ok(bilingual(t.safe_fallback), `${t.id} safe_fallback`);
     if (t.hidden) assert.ok(bilingual(t.fragment), `${t.id} fragment`);
   }
-  assert.ok(listTemplates().length >= 20, 'pas assez de templates');
+  assert.ok(listTemplates().length >= 38, 'pas assez de templates');
 });
 
 test('générateur : instance bilingue déterministe par seed', () => {
@@ -189,7 +189,7 @@ test('événements : modèle bilingue', () => {
     if (e.famille) assert.ok(FAMILY_KEYS.includes(e.famille), e.id);
     if (e.moment) assert.ok(['matin', 'midi', 'soir'].includes(e.moment), e.id);
   }
-  assert.ok(EVENTS.length >= 20, `trop peu d’événements : ${EVENTS.length}`);
+  assert.ok(EVENTS.length >= 30, `trop peu d’événements : ${EVENTS.length}`);
 });
 
 test('événements : éligibilité et tirage contextuel', () => {

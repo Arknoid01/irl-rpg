@@ -77,10 +77,13 @@ export function drawDaily(state, { now = new Date(), rng = defaultRng } = {}) {
     if (q.templateId && chosen.some((c) => c.templateId === q.templateId)) return false;
     if ((familleCount[q.famille] || 0) >= 2) return false;
     if (q.effort === 'consequent' && consequentUsed) return false;
-    if (
-      effortUsed + EFFORT_POINTS[q.effort] > DAILY_EFFORT_BUDGET &&
-      chosen.length >= MIN_QUESTS
-    ) return false;
+    const next = effortUsed + EFFORT_POINTS[q.effort];
+    if (next > DAILY_EFFORT_BUDGET) {
+      if (chosen.length >= MIN_QUESTS) return false;
+      // Remplir le minimum : au plus +1 pt de dépassement, et plutôt léger.
+      if (next > DAILY_EFFORT_BUDGET + 1) return false;
+      if (q.effort === 'consequent') return false;
+    }
     return true;
   };
   const add = (q) => {
@@ -122,27 +125,31 @@ export function drawDaily(state, { now = new Date(), rng = defaultRng } = {}) {
   }
 
   // 3. Quête cachée à la place d'un créneau non-social (25 %),
-  //    sans casser les invariants (≤1 conséquent, ≤2 par famille).
+  //    sans casser les invariants (≤1 conséquent, ≤2 par famille, budget).
   if (rng() < HIDDEN_SWAP_CHANCE && chosen.length) {
     let idx = chosen.length - 1;
     for (let i = chosen.length - 1; i >= 0; i--) {
       if (chosen[i].famille !== 'social') { idx = i; break; }
     }
     const rest = chosen.filter((_, i) => i !== idx);
+    const restEffort = rest.reduce((s, c) => s + EFFORT_POINTS[c.effort], 0);
     const consequentElsewhere = rest.some((c) => c.effort === 'consequent');
     const famCount = (fam) => rest.filter((c) => c.famille === fam).length;
+    const fitsBudget = (q) => restEffort + EFFORT_POINTS[q.effort] <= DAILY_EFFORT_BUDGET + 1;
 
     const curatedHidden = QUESTS.filter(
       (q) => q.hidden && q.audace <= ceiling &&
         !recentDone.has(q.id) && !chosen.some((c) => c.id === q.id) &&
         !(q.effort === 'consequent' && consequentElsewhere) &&
         famCount(q.famille) < 2 &&
+        fitsBudget(q) &&
         !(q.famille === 'chaos' && rest.some((c) => c.famille === 'chaos')),
     );
     const genHidden = expandTemplates({ ceiling, part, recentDone, rng, hidden: true }).filter(
       (q) => !chosen.some((c) => c.id === q.id || (q.templateId && c.templateId === q.templateId)) &&
         !(q.effort === 'consequent' && consequentElsewhere) &&
         famCount(q.famille) < 2 &&
+        fitsBudget(q) &&
         !(q.famille === 'chaos' && rest.some((c) => c.famille === 'chaos')),
     );
     const hiddenPool = shuffle(curatedHidden.concat(genHidden), rng);

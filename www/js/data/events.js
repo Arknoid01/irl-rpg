@@ -239,4 +239,96 @@ export const EVENTS = [
     },
     item: { fr: '🌱 Graine de seuil', en: '🌱 Threshold seed' },
   },
+
+  // ── Extensions variété ──
+  {
+    id: 'ev_atelier_minute', famille: 'creation', xp: 200, minutes: 45, weight: 8,
+    title: { fr: 'L’atelier minute', en: 'The one-minute workshop' },
+    text: {
+      fr: "Chronomètre 10 minutes : fabrique ou arrange quelque chose de petit — même bancal.",
+      en: "Set a 10-minute timer: make or arrange something small — even crooked.",
+    },
+    item: { fr: '🧵 Bobine d’atelier', en: '🧵 Workshop spool' },
+  },
+  {
+    id: 'ev_recette', famille: 'creation', xp: 220, minutes: 120, weight: 7,
+    title: { fr: 'La recette improvisée', en: 'The improvised recipe' },
+    text: {
+      fr: "Cuisine ou assemble un truc que tu n’as jamais fait exactement comme ça — même simple.",
+      en: "Cook or assemble something you’ve never made exactly that way — even simple.",
+    },
+    item: { fr: '🥄 Cuillère annotée', en: '🥄 Annotated spoon' },
+  },
+  {
+    id: 'ev_photo_absurde', famille: 'creation', xp: 180, minutes: 40, weight: 8,
+    title: { fr: 'Le cliché absurde', en: 'The absurd shot' },
+    text: {
+      fr: "Prends une photo volontairement ratée d’un objet ordinaire — et donne-lui un titre noble.",
+      en: "Take a deliberately bad photo of an ordinary object — and give it a noble title.",
+    },
+    item: { fr: '📷 Négatif plié', en: '📷 Folded negative' },
+  },
+  {
+    id: 'ev_lit_range', famille: 'quotidien', xp: 160, minutes: 20, weight: 9, moment: 'matin',
+    title: { fr: 'Le campement du matin', en: 'Morning campsite' },
+    text: {
+      fr: "Ce matin, range ton lit (ou ton coin nuit) comme si tu préparais un camp avant la route.",
+      en: "This morning, make your bed (or night corner) as if preparing camp before the road.",
+    },
+    item: { fr: '🛏 Drap de route', en: '🛏 Road sheet' },
+  },
+  {
+    id: 'ev_inbox_zero', famille: 'quotidien', xp: 190, minutes: 45, weight: 7,
+    title: { fr: 'La quête des trois messages', en: 'The three-message quest' },
+    text: {
+      fr: "Traite exactement trois messages / notifs en attente — pas plus, pas moins — puis stop.",
+      en: "Handle exactly three waiting messages / notifications — no more, no less — then stop.",
+    },
+    item: { fr: '✉ Cachet « trois »', en: '✉ Seal of three' },
+  },
+  {
+    id: 'ev_pas_chausson', famille: 'quotidien', xp: 150, minutes: 30, weight: 8,
+    title: { fr: 'Les chaussons d’aventure', en: 'Adventure slippers' },
+    text: {
+      fr: "Fais une petite tâche ménagère en te chronométrant comme une mission (5 minutes max).",
+      en: "Do a small chore on a timer like a mission (5 minutes max).",
+    },
+    item: { fr: '🧦 Chausson estampillé', en: '🧦 Stamped slipper' },
+  },
+  {
+    id: 'ev_miroir', famille: 'chaos', xp: 180, minutes: 30, weight: 8,
+    title: { fr: 'Le miroir complice', en: 'The accomplice mirror' },
+    text: {
+      fr: "Pendant 5 minutes, parle à ton reflet comme à un compagnon d’aventure (même tout bas).",
+      en: "For 5 minutes, talk to your reflection like an adventure companion (even quietly).",
+    },
+    item: { fr: '🪞 Éclat de miroir', en: '🪞 Mirror shard' },
+  },
+  {
+    id: 'ev_nom_secret', famille: 'chaos', xp: 170, minutes: 60, weight: 8,
+    title: { fr: 'Le nom de code', en: 'The codename' },
+    text: {
+      fr: "Donne un nom de code ridicule à ta prochaine activité banale — et utilise-le mentalement jusqu’à la fin.",
+      en: "Give a ridiculous codename to your next mundane activity — and use it mentally until you’re done.",
+    },
+    item: { fr: '🗂 Fiche classifiée', en: '🗂 Classified card' },
+  },
+  {
+    id: 'ev_ombre_guide', famille: 'chaos', xp: 190, minutes: 40, weight: 7,
+    title: { fr: 'Le guide d’ombre', en: 'The shadow guide' },
+    text: {
+      fr: "Dehors ou près d’une fenêtre : suis ton ombre 5 minutes comme un éclaireur officiel.",
+      en: "Outside or by a window: follow your shadow for 5 minutes as an official scout.",
+    },
+    item: { fr: '🕯 Flamme d’ombre', en: '🕯 Shadow flame' },
+  },
+  {
+    id: 'ev_chapitre_3', famille: 'curiosite', xp: 200, minutes: 30, weight: 6, minLevel: 3,
+    title: { fr: 'Le troisième chapitre', en: 'The third chapter' },
+    text: {
+      fr: "Tu as déjà tourné des pages. Note en 3 phrases ce que ton aventure a changé depuis le début.",
+      en: "You’ve already turned pages. Note in 3 sentences what your adventure has changed since the start.",
+    },
+    item: { fr: '📗 Signet du chapitre III', en: '📗 Chapter III bookmark' },
+  },
 ];

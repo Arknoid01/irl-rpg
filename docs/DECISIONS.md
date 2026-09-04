@@ -141,8 +141,9 @@ Toujours pas de générateur libre / LLM.
 **Événements contextuels** + tirage adaptatif léger (`engine/events.js`) —
 famille, moment, niveau / série / confort, anti-répétition.  
 **Inventaire = musée décoratif** (`data/loot.js`, `engine/inventory.js`) —
-catégories, lore, jalons de niveau, souvenirs de quêtes mystérieuses ;
-aucune économie / craft / équipement.
+catégories, lore, jalons ; aucune économie / craft.  
+**Contenu enrichi + UX grimoire** : ~40 templates, ~34 événements + lore musée,
+jalons 3/5/8/12/15 ; level-up et onboarding habillés en feuillets de livre.
 
 Hors V1 encore : adaptatif « intelligent » poussé, multijoueur, art / son par
 thème, géoloc, météo.
