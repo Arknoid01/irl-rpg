@@ -6,7 +6,8 @@
 //   hidden, fragment{fr,en}.
 //
 // Règle : toute quête `quotidien` a une torsion de jeu. Toute quête avec
-// `contexte` non vide a un `safe_fallback`. `params` : post-V1.
+// `contexte` non vide a un `safe_fallback`.
+// Variantes générées : voir data/templates.js + engine/generate.js.
 
 const FB_SOCIAL = {
   fr: "Si l'occasion ne se présente pas naturellement, garde l'intention — validable dès qu'elle se présente.",

@@ -10,8 +10,9 @@ import { skillDeltasFor } from '../data/taxonomy.js';
 import { todayStr } from './dates.js';
 import { addEntry, maybeMemorable, eventEntry } from './journal.js';
 import { defaultRng } from './rng.js';
+import { templateHistoryKey } from './generate.js';
 
-const RECENT_DONE_MEMORY = 40;
+const RECENT_DONE_MEMORY = 56;
 const RECENT_FAMILLES_MEMORY = 12;
 
 function clone(state) {
@@ -117,6 +118,7 @@ export function completeQuest(state, { id }, ctx) {
   s.history.recentFamilles = s.history.recentFamilles.slice(-RECENT_FAMILLES_MEMORY);
   if (!q.gentle) {
     s.history.completedQuestIds.push(q.id);
+    if (q.templateId) s.history.completedQuestIds.push(templateHistoryKey(q.templateId));
     s.history.completedQuestIds = s.history.completedQuestIds.slice(-RECENT_DONE_MEMORY);
   }
   if (q.famille === 'social') s.history.social.completed += 1;

@@ -132,8 +132,12 @@ Périmètre conforme à `REVUE_CRITIQUE.md` §7 :
 - Classement **16+** (D6) + docs privacy / store
 - Tests : `node --test` (moteur + DOM jsdom) + simulation 45–90 jours + CI
 
-Hors V1, inchangé : Monde / carte, Inventaire complet, générateur modulaire,
-adaptatif « intelligent », multijoueur, art / son par thème, géoloc, météo.
+**Post-V1 (démarré) :** générateur modulaire = templates + slots
+(`www/js/data/templates.js`, `slots.js`, `engine/generate.js`), mélangé au tirage.
+Toujours pas de générateur libre / LLM.
+
+Hors V1 encore : Monde / carte, Inventaire « musée » complet, adaptatif
+« intelligent », multijoueur, art / son par thème, géoloc, météo.
 
 ---
 

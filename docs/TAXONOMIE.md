@@ -145,7 +145,7 @@ le futur mais ignoré par le tirage MVP.
 `true` = peut être proposée dans le flux « choisis une quête pour un pote »
 (texto manuel, aucun compte partagé — cf. `interactions` §10).
 
-### 5.6 `params` — créneaux paramétriques
+### 5.6 `params` — créneaux paramétriques + générateur
 
 `null`, ou un objet dont chaque clé est un slot du texte :
 
@@ -154,8 +154,10 @@ le futur mais ignoré par le tirage MVP.
 ```
 
 Le texte contient alors `{duree}`, `{couleur}`. Le tirage choisit une valeur.
-**Pas de générateur libre au MVP** — juste ces créneaux sur des quêtes écrites à
-la main.
+
+**Générateur modulaire (post-V1, livré) :** templates dans `www/js/data/templates.js`
++ pools `slots.js`, instanciés par `engine/generate.js` et mélangés à la banque
+curée au tirage. **Pas de générateur libre / LLM.**
 
 ### 5.7 `safe_fallback` — repli sécurité (obligatoire si `contexte` ≠ [])
 

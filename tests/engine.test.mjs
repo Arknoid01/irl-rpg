@@ -12,6 +12,11 @@ import { THEME_KEYS } from '../www/js/data/themes.js';
 import { defaultState } from '../www/js/state/defaults.js';
 import { normalize, loadState, memoryStorage, importState, exportState } from '../www/js/state/store.js';
 import { drawDaily, wantsGentleSocial } from '../www/js/engine/draw.js';
+import {
+  expandTemplates, instantiateTemplate, fillBilingual, listTemplates, templateHistoryKey,
+} from '../www/js/engine/generate.js';
+import { SLOT_POOLS } from '../www/js/data/slots.js';
+import { QUEST_TEMPLATES } from '../www/js/data/templates.js';
 import { mulberry32 } from '../www/js/engine/rng.js';
 import {
   gainXp, gainSkills, bumpStreak, computeStyle, elanDuJour,
@@ -68,6 +73,64 @@ test('quêtes : intégrité du modèle', () => {
     if (q.hidden) assert.ok(bilingual(q.fragment), `${q.id} fragment`);
   }
   assert.ok(QUESTS.length >= 90, `banque trop petite : ${QUESTS.length}`);
+});
+
+test('templates : slots et texte cohérents', () => {
+  const ids = new Set();
+  for (const t of QUEST_TEMPLATES) {
+    assert.ok(!ids.has(t.id), `template dupliqué : ${t.id}`);
+    ids.add(t.id);
+    assert.ok(FAMILY_KEYS.includes(t.famille), `${t.id} famille`);
+    assert.ok(t.effort in EFFORT_POINTS, `${t.id} effort`);
+    assert.ok(bilingual(t.text), `${t.id} text`);
+    const slotsInText = new Set();
+    for (const lang of ['fr', 'en']) {
+      for (const m of t.text[lang].matchAll(/\{([a-zA-Z_][a-zA-Z0-9_]*)\}/g)) {
+        slotsInText.add(m[1]);
+      }
+    }
+    for (const key of slotsInText) {
+      assert.ok(t.slots && t.slots[key], `${t.id} slot manquant : ${key}`);
+    }
+    for (const [name, poolKey] of Object.entries(t.slots || {})) {
+      assert.ok(SLOT_POOLS[poolKey]?.length, `${t.id} pool ${poolKey}`);
+      assert.ok(slotsInText.has(name), `${t.id} slot inutilisé : ${name}`);
+    }
+    const needsFallback = (t.contexte || []).some((c) => !c.startsWith('moment:'));
+    if (needsFallback) assert.ok(bilingual(t.safe_fallback), `${t.id} safe_fallback`);
+    if (t.hidden) assert.ok(bilingual(t.fragment), `${t.id} fragment`);
+  }
+  assert.ok(listTemplates().length >= 20, 'pas assez de templates');
+});
+
+test('générateur : instance bilingue déterministe par seed', () => {
+  const tpl = QUEST_TEMPLATES.find((t) => t.id === 'tpl_e_expedition');
+  const a = instantiateTemplate(tpl, mulberry32(42));
+  const b = instantiateTemplate(tpl, mulberry32(42));
+  assert.equal(a.id, b.id);
+  assert.equal(a.templateId, 'tpl_e_expedition');
+  assert.equal(a.generated, true);
+  assert.ok(bilingual(a.text));
+  assert.ok(!/\{[a-zA-Z_]/.test(a.text.fr), `placeholder restant : ${a.text.fr}`);
+  assert.ok(!/\{[a-zA-Z_]/.test(a.text.en), `placeholder restant : ${a.text.en}`);
+
+  const filled = fillBilingual(
+    { fr: 'Marche {duree} min ({couleur}).', en: 'Walk {duree} min ({couleur}).' },
+    { duree: 5, couleur: { fr: 'rouge', en: 'red' } },
+  );
+  assert.equal(filled.fr, 'Marche 5 min (rouge).');
+  assert.equal(filled.en, 'Walk 5 min (red).');
+});
+
+test('générateur : expand respecte plafond et cooldown template', () => {
+  const rng = mulberry32(7);
+  const recentDone = new Set([templateHistoryKey('tpl_e_contrainte')]);
+  const list = expandTemplates({
+    ceiling: 2, part: 'jour', recentDone, rng, hidden: false,
+  });
+  assert.ok(list.every((q) => q.audace <= 2));
+  assert.ok(!list.some((q) => q.templateId === 'tpl_e_contrainte'));
+  assert.ok(list.some((q) => q.generated));
 });
 
 test('événements : modèle bilingue', () => {

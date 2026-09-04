@@ -1,6 +1,7 @@
 // Tirage quotidien — cf. docs/TAXONOMIE.md §7.
 // Renvoie { quests, event } sans muter l'état ; le bookkeeping (historique,
 // drawDate) est appliqué par game.newDay().
+// Mélange banque curée + quêtes générées (templates + slots).
 
 import { QUESTS } from '../data/quests.js';
 import { EVENTS } from '../data/events.js';
@@ -9,13 +10,14 @@ import {
 } from '../data/taxonomy.js';
 import { dayPart } from './dates.js';
 import { weightedPick, shuffle, pick, defaultRng } from './rng.js';
+import { expandTemplates } from './generate.js';
 
 const MIN_QUESTS = 3;
 const MAX_QUESTS = 4;
 const HIDDEN_SWAP_CHANCE = 0.25;
 const EVENT_CHANCE = 0.30;
 const PREF_FAMILY_BONUS = 12;
-const RECENT_DONE_MEMORY = 40;
+const RECENT_DONE_MEMORY = 56;
 
 /** Entrée sociale plus douce quand les quêtes sociales n'accrochent pas. */
 export function wantsGentleSocial(state) {
@@ -56,9 +58,11 @@ export function drawDaily(state, { now = new Date(), rng = defaultRng } = {}) {
   const recentDone = new Set(state.history.completedQuestIds.slice(-RECENT_DONE_MEMORY));
   const ceiling = Math.min(5, state.comfort + 1);
 
-  const eligible = QUESTS.filter(
+  const curated = QUESTS.filter(
     (q) => !q.hidden && q.audace <= ceiling && momentOk(q, part),
   );
+  const generated = expandTemplates({ ceiling, part, recentDone, rng, hidden: false });
+  const eligible = curated.concat(generated);
   const fresh = eligible.filter((q) => !recentDone.has(q.id));
   const base = fresh.length >= 10 ? fresh : eligible;
   const poolFor = (fam) => shuffle(base.filter((q) => q.famille === fam), rng);
@@ -70,6 +74,7 @@ export function drawDaily(state, { now = new Date(), rng = defaultRng } = {}) {
 
   const canAdd = (q) => {
     if (chosen.some((c) => c.id === q.id)) return false;
+    if (q.templateId && chosen.some((c) => c.templateId === q.templateId)) return false;
     if ((familleCount[q.famille] || 0) >= 2) return false;
     if (q.effort === 'consequent' && consequentUsed) return false;
     if (
@@ -126,16 +131,20 @@ export function drawDaily(state, { now = new Date(), rng = defaultRng } = {}) {
     const consequentElsewhere = rest.some((c) => c.effort === 'consequent');
     const famCount = (fam) => rest.filter((c) => c.famille === fam).length;
 
-    const hiddenPool = shuffle(
-      QUESTS.filter(
-        (q) => q.hidden && q.audace <= ceiling &&
-          !recentDone.has(q.id) && !chosen.some((c) => c.id === q.id) &&
-          !(q.effort === 'consequent' && consequentElsewhere) &&
-          famCount(q.famille) < 2 &&
-          !(q.famille === 'chaos' && rest.some((c) => c.famille === 'chaos')),
-      ),
-      rng,
+    const curatedHidden = QUESTS.filter(
+      (q) => q.hidden && q.audace <= ceiling &&
+        !recentDone.has(q.id) && !chosen.some((c) => c.id === q.id) &&
+        !(q.effort === 'consequent' && consequentElsewhere) &&
+        famCount(q.famille) < 2 &&
+        !(q.famille === 'chaos' && rest.some((c) => c.famille === 'chaos')),
     );
+    const genHidden = expandTemplates({ ceiling, part, recentDone, rng, hidden: true }).filter(
+      (q) => !chosen.some((c) => c.id === q.id || (q.templateId && c.templateId === q.templateId)) &&
+        !(q.effort === 'consequent' && consequentElsewhere) &&
+        famCount(q.famille) < 2 &&
+        !(q.famille === 'chaos' && rest.some((c) => c.famille === 'chaos')),
+    );
+    const hiddenPool = shuffle(curatedHidden.concat(genHidden), rng);
     if (hiddenPool.length) chosen[idx] = { ...hiddenPool[0], status: 'proposed' };
   }
 
