@@ -218,10 +218,17 @@
 .elan-chest .bar-track { flex: 1; margin: 0; }
 
 .event-panel { border-color: color-mix(in srgb, var(--danger) 45%, rgba(70,45,20,.28)); }
+.event-top { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 2px; }
 .event-badge {
   font-family: var(--font-display);
   font-size: .72rem; text-transform: uppercase;
   color: var(--danger); letter-spacing: .06em;
+}
+.event-fam {
+  display: inline-block; font-size: .68rem;
+  border: 1px solid color-mix(in srgb, var(--fam-color, var(--gold)) 50%, rgba(42,34,24,.2));
+  color: color-mix(in srgb, var(--fam-color, var(--gold)) 45%, var(--ink));
+  border-radius: 3px; padding: 1px 7px;
 }
 .event-title { font-family: var(--font-display); font-size: 1.05rem; margin: 6px 0; color: var(--text); }
 .event-reward { font-size: .82rem; color: var(--gold); margin: 8px 0 10px; }
