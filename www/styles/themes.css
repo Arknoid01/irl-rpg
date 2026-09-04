@@ -1,0 +1,68 @@
+/* Jeux de tokens par thème. Le gameplay ne dépend jamais de ces valeurs. */
+
+:root {
+  --radius: 8px;
+  --panel-radius: 6px;
+  --maxw: 480px;
+  /* plancher d'accessibilité : ces valeurs ne sont jamais surchargées plus bas */
+  --min-text: 14px;
+}
+
+[data-theme="cyberpunk"] {
+  --bg: #060a10;
+  --bg-grad: radial-gradient(ellipse at 20% -10%, #0e2230 0%, #060a10 55%);
+  --panel: #0a121c;
+  --panel2: #0c1620;
+  --border: #1c3a4a;
+  --text: #dff4ff;
+  --text-dim: #8fb0be;
+  --accent: #ff2e9a;
+  --accent2: #00e5ff;
+  --gold: #f4d35e;
+  --danger: #ff5566;
+  --ok: #35e08e;
+  --font-display: 'Orbitron', system-ui, sans-serif;
+  --font-body: 'Share Tech Mono', ui-monospace, monospace;
+  --letter: 0.02em;
+  --panel-radius: 3px;
+}
+
+[data-theme="nordique"] {
+  --bg: #14120f;
+  --bg-grad: radial-gradient(ellipse at 50% -20%, #2a2318 0%, #14120f 60%);
+  --panel: #1e1a14;
+  --panel2: #241f18;
+  --border: #6a5730;
+  --text: #f1e6c9;
+  --text-dim: #c1ac86;
+  --accent: #8fb0c4;
+  --accent2: #d8b23c;
+  --gold: #d8b23c;
+  --danger: #c65b3e;
+  --ok: #7fae6d;
+  --font-display: 'Cinzel', Georgia, serif;
+  --font-body: 'EB Garamond', Georgia, serif;
+  --letter: 0.01em;
+  --panel-radius: 4px;
+  --min-text: 15px;
+}
+
+[data-theme="sombre"] {
+  --bg: #100d0c;
+  --bg-grad: radial-gradient(ellipse at 50% -10%, #211613 0%, #100d0c 60%);
+  --panel: #17110f;
+  --panel2: #1c1512;
+  --border: #4a4038;
+  --text: #e4d9c6;
+  --text-dim: #a99b8c;
+  --accent: #9a3535;
+  --accent2: #c9ccd2;
+  --gold: #c99a4a;
+  --danger: #b23b3b;
+  --ok: #7c9e70;
+  --font-display: 'Almendra SC', Georgia, serif;
+  --font-body: 'Eczar', Georgia, serif;
+  --letter: 0.015em;
+  --panel-radius: 2px;
+  --min-text: 15px;
+}

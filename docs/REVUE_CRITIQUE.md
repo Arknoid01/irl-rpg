@@ -316,6 +316,10 @@ Encore à acter : périmètre MVP (§7), items 7 et 8 ci-dessus.
 
 ## 7. MVP réaliste
 
+> **V1 livrée le 2026-09-04** dans `www/` conformément à ce périmètre — voir
+> `DECISIONS.md` § « V1 livrée » et `www/README.md`. Ajout en cours de route :
+> bilingue FR/EN (D7).
+
 Les specs décrivent un jeu de 2-3 ans. P0 doit être impitoyable.
 
 **Dans le MVP :**

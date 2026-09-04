@@ -1,44 +1,53 @@
 # IRL RPG
 
-> « Et si ta vie quotidienne était un RPG dont l'application était le maître du jeu ? »
+> « Et si ta vie quotidienne était un RPG, et cette appli ton compagnon d'aventure ? »
+> *“What if your everyday life were an RPG, and this app your adventure companion?”*
 
 Application mobile qui transforme le quotidien en RPG : le joueur est le héros, le
-monde réel est le terrain de jeu, l'application propose des petites quêtes IRL
-(sociales, exploration, observation, absurdes…) et fait progresser un vrai
-personnage (XP, niveau, compétences, titres, journal d'aventure).
+monde réel est le terrain de jeu, un **compagnon** propose des petites quêtes IRL
+(sociales, exploration, curiosité, création, absurdes…) et fait progresser un vrai
+personnage (XP, niveau, compétences, titres, journal d'aventure). Philosophie :
+« tiens, ça pourrait être marrant » — jamais « merde, encore une tâche ».
 
-**Projet indépendant** — aucun lien avec le projet Quizz (il traînait par accident
-dans `Téléchargements/Quizz-main/`).
+**Projet indépendant**, aucun lien avec Quizz. Bilingue **FR / EN**.
 
-## Plateforme
+## V1 jouable — `www/`
 
-**HTML / CSS / JS + Capacitor** (décidé 2026-09-04). Pas de Godot. Le cœur reste
-une app web (comme le prototype), empaquetée en app Android/iOS via Capacitor pour
-les notifications natives et la présence store. Même approche que le projet
-Fableris.
+Application complète, testée, dans **`www/`** (voir `www/README.md`).
 
-## État
+```bash
+npm run serve      # http://localhost:8123
+npm test           # moteur + parcours DOM (jsdom)
+npm run sim        # simulation d'une partie de 45 jours
+```
+
+Empaquetage Android/iOS : `npm install && npx cap add android && npx cap sync`.
 
 | Élément | État |
 |---|---|
-| Concept + vision | Rédigé — `docs/IRL_RPG_concept.md` |
-| Design gameplay (interactions, défis, générateur, sécurité) | Rédigé — `docs/IRL_RPG_interactions_defis.md` |
-| Spec UI/UX (navigation, thèmes, design system, priorités) | Rédigé — `docs/IRL_RPG_ui_ux_spec.md` |
-| Taxonomie canonique (familles, compétences, tags, modèle de quête) | `docs/TAXONOMIE.md` |
-| Journal de décisions (plateforme, compagnon, solo-first, élan du jour…) | `docs/DECISIONS.md` |
-| Revue critique des specs | `docs/REVUE_CRITIQUE.md` |
-| Prototype web fonctionnel | `prototype/irl-rpg-prototype.html` (autonome, `localStorage`) |
-| App HTML + Capacitor | Non démarrée |
+| Plateforme : HTML/CSS/JS + Capacitor (D1) | ✅ |
+| Onboarding (langue, thème, prénom, confort, familles, rappel) | ✅ |
+| 3 onglets (Aventure / Journal / Personnage) + réglages, 3 thèmes | ✅ |
+| ~70 quêtes bilingues, tirage quotidien budgété, accepter/ignorer/valider | ✅ |
+| XP / niveau / 6 compétences / 12 titres / style / série sans coût | ✅ |
+| Journal (fragments + moments mémorables), événements | ✅ |
+| Défi d'ami = partage de texte (pas de classement) | ✅ |
+| FR/EN + bouton de bascule, sauvegarde on-device + export/import | ✅ |
+| Rappel quotidien (`@capacitor/local-notifications`, repli web) | ✅ |
+| Monde/carte, inventaire complet, générateur libre, multijoueur, géoloc | ⬜ post-V1 |
 
-## Prototype
+## Documentation
 
-Ouvrir `prototype/irl-rpg-prototype.html` dans un navigateur. Couvre : accueil
-(personnage + quêtes du jour), journal, 3 thèmes (cyberpunk / fantasy nordique /
-dark fantasy), tirage quotidien, XP / niveau / compétences / titres, entrée
-sociale douce, quête cachée, événement aléatoire, sauvegarde locale.
+| Fichier | Contenu |
+|---|---|
+| `docs/DECISIONS.md` | Décisions tranchées (fait autorité en cas de conflit) |
+| `docs/TAXONOMIE.md` | Familles, compétences, matrice, modèle de quête |
+| `docs/REVUE_CRITIQUE.md` | Revue critique des specs + périmètre MVP |
+| `docs/IRL_RPG_concept.md` · `_interactions_defis.md` · `_ui_ux_spec.md` | Specs d'origine |
+| `prototype/irl-rpg-prototype.html` | Prototype initial (conservé pour référence) |
 
-## Prochaines étapes
+## Reste ouvert
 
-Voir `docs/DECISIONS.md` (décisions tranchées) puis `docs/REVUE_CRITIQUE.md` §7
-« MVP réaliste » et §6 items encore ouverts (périmètre MVP à acter, générateur,
-objectif contenu).
+Confirmer le classement d'âge (hypothèse 16+, `DECISIONS.md` D6) · générateur
+modulaire de quêtes (post-V1) · pipeline de contenu pour étoffer la banque ·
+équilibrage fin de la courbe d'XP et des paliers de titres.

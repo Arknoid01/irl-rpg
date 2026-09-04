@@ -100,6 +100,42 @@ libellé change.
 
 ---
 
+## D7 — Bilingue FR / EN dès la V1 (2026-09-04)
+
+L'app est **FR + EN** avec un bouton de bascule (dans la barre du haut et dans les
+réglages). Langue de départ devinée depuis `navigator.language`, puis stockée dans
+la sauvegarde (`state.lang`).
+
+- UI : dictionnaires `www/js/i18n/fr.js` + `en.js`, helper `i18n.t(clé)`.
+- Contenu (quêtes, événements, titres, familles, fragments, phrases du compagnon) :
+  champs `{ fr, en }`, résolus par `i18n.loc(...)`.
+- Les entrées de journal générées stockent les deux langues -> se retraduisent au
+  changement de langue.
+
+---
+
+## V1 livrée (2026-09-04)
+
+Application jouable de bout en bout dans `www/` (voir `www/README.md`).
+Périmètre conforme à `REVUE_CRITIQUE.md` §7 :
+
+- 3 onglets (Aventure / Journal / Personnage) + réglages ; 3 thèmes en tokens
+- Onboarding (langue, thème, prénom, curseur de confort, familles, rappel)
+- Banque de ~70 quêtes bilingues + tags `effort` / `registre` / `safe_fallback` ;
+  pas de générateur libre
+- Tirage quotidien budgété en effort, accepter / ignorer / valider
+- XP / niveau / 6 compétences / 12 titres / style d'aventure / série sans coût
+- Journal (fragments + moments mémorables), 1 famille d'événements (7)
+- Défi d'ami = partage de texte (Web Share / Capacitor Share), aucun classement
+- Sauvegarde on-device + export / import + migration depuis le prototype
+- Rappel quotidien via `@capacitor/local-notifications` (repli web propre)
+- Tests : `node --test` (moteur + DOM jsdom) + simulation 45–90 jours
+
+Hors V1, inchangé : Monde / carte, Inventaire complet, générateur modulaire,
+adaptatif « intelligent », multijoueur, art / son par thème, géoloc, météo.
+
+---
+
 ## D6 — Public / âge : à confirmer (hypothèse : 16+)
 
 **Non tranché.** Hypothèse de travail : **16+**.
