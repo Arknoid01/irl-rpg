@@ -67,7 +67,7 @@ export function openSettings({ getState, dispatch, close }) {
         <p class="tiny muted">${esc(s.name)} · ${i18n.t('level')} ${s.level}</p>
         <button class="btn primary full" data-set="close">${i18n.t('set_close')}</button>
       </div>`;
-    ov.classList.add('show');
+    ov.classList.add('show', 'sheet-mode');
   }
 
   function onInput(e) {
@@ -103,7 +103,7 @@ export function openSettings({ getState, dispatch, close }) {
     ov.removeEventListener('click', onClick);
     ov.removeEventListener('input', onInput);
     ov.removeEventListener('change', onInput);
-    ov.classList.remove('show');
+    ov.classList.remove('show', 'sheet-mode');
     ov.innerHTML = '';
   }
 
