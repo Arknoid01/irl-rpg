@@ -50,6 +50,5 @@ Empaquetage Android/iOS : `npm install && npx cap add android && npx cap sync`.
 
 ## Reste ouvert
 
-Générateur modulaire de quêtes (post-V1) · équilibrage fin de la courbe d'XP
-et des paliers de titres · héberger `privacy.html` et coller l'URL dans la
-console store le jour de la soumission.
+Générateur modulaire de quêtes (post-V1) · héberger `privacy.html` et coller
+l'URL dans la console store le jour de la soumission.

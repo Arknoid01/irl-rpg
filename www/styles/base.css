@@ -24,6 +24,17 @@ img { max-width: 100%; }
 button { font: inherit; color: inherit; cursor: pointer; }
 input, select, textarea { font: inherit; }
 
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--focus, var(--gold));
+  outline-offset: 2px;
+}
+.btn:focus-visible, .tab:focus-visible, .iconbtn:focus-visible,
+.fam-pill:focus-visible, .theme-dot:focus-visible, .lang-toggle button:focus-visible {
+  outline: 2px solid var(--focus, var(--gold));
+  outline-offset: 2px;
+}
+
 .wrap {
   max-width: var(--maxw);
   margin: 0 auto;
@@ -122,12 +133,12 @@ p { margin: .3rem 0 .7rem; }
 }
 .tab {
   flex: 1; background: none; border: 0; color: var(--text-on-dark-dim);
-  padding: 8px 4px 6px; font-size: .72rem;
+  padding: 8px 4px 6px; font-size: .74rem;
   font-family: var(--font-body);
   display: flex; flex-direction: column; align-items: center; gap: 3px;
   border-radius: 12px;
 }
-.tab .ic { font-size: 1.2rem; opacity: .85; }
+.tab .ic { font-size: 1.25rem; opacity: .9; }
 .tab.active { color: var(--nav-active); }
 .tab.active .ic { opacity: 1; }
 

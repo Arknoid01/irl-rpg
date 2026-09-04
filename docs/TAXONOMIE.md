@@ -200,12 +200,12 @@ de confort) :
 
 | Famille | Poids |
 |---|---|
-| `social` | 25 % |
-| `exploration` | 20 % |
+| `social` | 22 % |
+| `exploration` | 18 % |
 | `curiosite` | 15 % |
 | `chaos` | 15 % |
-| `quotidien` | 15 % |
-| `creation` | 10 % |
+| `quotidien` | 18 % |
+| `creation` | 12 % |
 
 Règles de composition d'une journée (3–4 quêtes, budget 7 pts) :
 
@@ -221,16 +221,19 @@ Règles de composition d'une journée (3–4 quêtes, budget 7 pts) :
 
 ## 8. Titres & style d'aventure
 
-### Titres — un fil par compétence (MVP : 1 palier, extensible)
+### Titres — un fil par compétence (V1 : 2 paliers)
 
-| Titre | Compétence | Seuil MVP |
+| Palier | Seuil | Intention |
 |---|---|---|
-| 🥾 Explorateur | `audace` | 250 |
-| 🤝 Diplomate | `social` | 250 |
-| 🧠 Érudit | `curiosite` | 250 |
-| 🎨 Artiste de rue | `creativite` | 250 |
-| 🏆 Héros du quotidien | `discipline` | 250 |
-| 😂 Agent du Chaos | `chaos` | 250 |
+| T1 | **100** | Première récompense en quelques jours d’engagement sur la compétence |
+| T2 | **320** | Palier « maîtrisé » (~2–4 semaines sur une compétence fréquente) |
+
+Un titre par compétence × palier (12 au total). Jamais reperdus. Les poids de
+tirage (social 22 · exploration 18 · quotidien 18 · curiosité 15 · chaos 15 ·
+création 12) évitent que social/audace écrasent discipline/création.
+
+Courbe XP V1 : `xpToNext(level) = 280 + (level - 1) * 130`
+(≈ niv.5 en 1 sem., niv.10 en ~3–4 sem., niv.15 en ~2 mois à ~300 XP/jour).
 
 ### Style d'aventure (`ui_ux_spec` §11)
 

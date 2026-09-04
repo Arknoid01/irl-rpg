@@ -4,7 +4,9 @@ import { xpProgress, elanDuJour, computeStyle } from '../../engine/progression.j
 import { i18n } from '../../i18n/index.js';
 import { esc, pctBar } from '../dom.js';
 
-const SKILL_TITLE_MAX = 400; // borne d'affichage de la barre de compétence
+import { TITLE_TIER2 } from '../../data/titles.js';
+
+const SKILL_TITLE_MAX = TITLE_TIER2; // borne d'affichage de la barre de compétence
 
 export function heroCardHtml(state) {
   const p = xpProgress(state);

@@ -19,12 +19,12 @@ export const FAMILIES = {
   social: {
     label: { fr: 'Social', en: 'Social' }, icon: '🤝', color: '#c9a227',
     desc: { fr: 'Une interaction humaine réelle, positive, naturelle.', en: 'A real, positive, natural human interaction.' },
-    primary: 'social', secondary: 'audace', drawWeight: 25,
+    primary: 'social', secondary: 'audace', drawWeight: 22,
   },
   exploration: {
     label: { fr: 'Exploration', en: 'Exploration' }, icon: '🧭', color: '#4a7a9a',
     desc: { fr: 'Découvrir son environnement, changer ses trajets.', en: 'Discover your surroundings, change your routes.' },
-    primary: 'audace', secondary: 'curiosite', drawWeight: 20,
+    primary: 'audace', secondary: 'curiosite', drawWeight: 18,
   },
   curiosite: {
     label: { fr: 'Curiosité', en: 'Curiosity' }, icon: '🔭', color: '#6b8f71',
@@ -34,12 +34,12 @@ export const FAMILIES = {
   creation: {
     label: { fr: 'Création', en: 'Creation' }, icon: '🎨', color: '#a67c52',
     desc: { fr: 'Fabriquer, dessiner, écrire, cuisiner, photographier.', en: 'Make, draw, write, cook, photograph.' },
-    primary: 'creativite', secondary: 'curiosite', drawWeight: 10,
+    primary: 'creativite', secondary: 'curiosite', drawWeight: 12,
   },
   quotidien: {
     label: { fr: 'Quotidien', en: 'Everyday' }, icon: '🧹', color: '#5a8f62',
     desc: { fr: 'La vie courante — toujours avec une petite torsion de jeu.', en: 'Everyday life — always with a small game twist.' },
-    primary: 'discipline', secondary: null, drawWeight: 15,
+    primary: 'discipline', secondary: null, drawWeight: 18,
   },
   chaos: {
     label: { fr: 'Chaos', en: 'Chaos' }, icon: '😂', color: '#a63d3d',
@@ -73,7 +73,10 @@ export function skillDeltasFor(quest) {
   return deltas;
 }
 
-/** Courbe d'XP : XP nécessaire pour passer du niveau `level` au suivant. */
+/** Courbe d'XP : besoin pour passer du niveau `level` au suivant.
+ *  Cible (≈300 XP/jour) : niv.5 ~1 sem. · niv.10 ~3–4 sem. · niv.15 ~2 mois.
+ */
 export function xpToNext(level) {
-  return 200 + (level - 1) * 100;
+  const L = Math.max(1, Math.round(level) || 1);
+  return 280 + (L - 1) * 130;
 }

@@ -137,6 +137,17 @@ adaptatif « intelligent », multijoueur, art / son par thème, géoloc, météo
 
 ---
 
+## D8 — Économie XP / titres V1 (2026-09-04)
+
+Courbe : `xpToNext(level) = 280 + (level - 1) * 130`.  
+Titres : T1 = **100**, T2 = **320** par compétence.  
+Tirage : social 22 · exploration 18 · quotidien 18 · curiosité 15 · chaos 15 ·
+création 12 (rééquilibre discipline/création vs social/audace).
+
+Détail : `TAXONOMIE.md` §7–§8.
+
+---
+
 ## D6 — Public / âge : **16+** (2026-09-04)
 
 **Tranché : classement 16+.**

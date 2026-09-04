@@ -43,7 +43,10 @@ test('skillDeltasFor répartit 0.5 / 0.2', () => {
 });
 
 test('xpToNext croît avec le niveau', () => {
-  assert.ok(xpToNext(2) > xpToNext(1));
+  assert.equal(xpToNext(1), 280);
+  assert.equal(xpToNext(2), 410);
+  assert.ok(xpToNext(5) > xpToNext(2));
+  assert.ok(xpToNext(10) > xpToNext(5));
 });
 
 /* ─────────────── Banque de quêtes ─────────────── */
@@ -78,7 +81,9 @@ test('titres : compétences valides, bilingues', () => {
   for (const t of TITLES) {
     assert.ok(SKILL_KEYS.includes(t.skill), t.id);
     assert.ok(bilingual(t.label), t.id);
+    assert.ok(t.min === 100 || t.min === 320, `${t.id} seuil`);
   }
+  assert.equal(TITLES.length, 12);
 });
 
 /* ─────────────── Tirage ─────────────── */
@@ -139,9 +144,11 @@ test('gainXp : montée de niveau', () => {
 test('gainSkills : débloque un titre', () => {
   const s = defaultState();
   const fx = [];
-  gainSkills(s, fx, { curiosite: 130 });
+  gainSkills(s, fx, { curiosite: 100 });
   assert.ok(s.titles.includes('curiosite_1'));
   assert.ok(fx.some((e) => e.type === 'title'));
+  gainSkills(s, fx, { curiosite: 220 }); // total 320
+  assert.ok(s.titles.includes('curiosite_2'));
 });
 
 test('bumpStreak : consécutif / trou / même jour', () => {
