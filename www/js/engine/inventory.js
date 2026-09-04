@@ -13,9 +13,9 @@ function textOf(v) {
 export function inferKind(entry) {
   if (entry.kind && LOOT_KINDS[entry.kind]) return entry.kind;
   const s = textOf(entry.item).toLowerCase();
+  if (/🏆|🏅|🏰|🏔|collect|jalon|milestone|crête|ridge|château|castle|médaille|medal/.test(s)) return 'collectible';
   if (/🗺|🗺️|fragment|carte|map|compass|boussole|lentille|lens/.test(s)) return 'fragment';
-  if (/📜|licence|sceau|seal|braise|ember|couronne|crown|clé de|key to|médaille|medal/.test(s)) return 'relic';
-  if (/🏆|🏅|🏰|🏔|collect|jalon|milestone|crête|ridge|château|castle/.test(s)) return 'collectible';
+  if (/📜|licence|sceau|seal|braise|ember|couronne|crown/.test(s)) return 'relic';
   if (/📸|souvenir|memento|moment|note|photo|croquis|sketch/.test(s)) return 'souvenir';
   return 'objet';
 }
