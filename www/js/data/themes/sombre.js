@@ -16,4 +16,7 @@ export default {
     ],
   },
   xpSuffix: { fr: '— le contrat est rempli', en: '— the contract is fulfilled' },
+
+  // Aperçu boutique : voir le commentaire dans cyberpunk.js.
+  previewVideo: null,
 };

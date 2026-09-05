@@ -1,7 +1,9 @@
-// Boutique de thèmes (D12). Aperçu live en CSS — un vrai mini panneau rendu
-// avec le thème réel (police, couleurs, halo animé), pas une vidéo/GIF
-// enregistrée. Le déblocage est local pour l'instant, aucun paiement réel
-// n'est encore branché (voir DECISIONS.md D12).
+// Boutique de thèmes (D12). Aperçu vidéo si le thème en a une
+// (`previewVideo`, cf. data/themes/*.js), sinon repli sur un mini panneau
+// rendu en live avec le vrai thème (police, couleurs, halo animé). Le
+// déblocage est local pour l'instant, aucun paiement réel n'est encore
+// branché (voir DECISIONS.md D12) — débloquer active aussi immédiatement le
+// thème (sinon rien ne semble se passer à l'écran).
 
 import { i18n } from '../i18n/index.js';
 import { THEMES, THEME_KEYS, companionLineFor } from '../data/themes.js';
@@ -14,6 +16,12 @@ export function openShop({ getState, dispatch, close }) {
 
   function previewHtml(key) {
     const t = THEMES[key];
+    if (t.previewVideo) {
+      return `
+        <div class="shop-preview shop-preview-video">
+          <video src="${t.previewVideo}" autoplay muted loop playsinline></video>
+        </div>`;
+    }
     const line = companionLineFor(key, i18n.lang, 0);
     return `
       <div class="shop-preview" data-theme="${key}">
@@ -64,8 +72,14 @@ export function openShop({ getState, dispatch, close }) {
     if (!el) return;
     const k = el.dataset.shop;
     if (k === 'close') { teardown(); close(); return; }
-    if (k === 'unlock') dispatch('unlockTheme', { theme: el.dataset.v });
-    else if (k === 'activate') dispatch('setTheme', { theme: el.dataset.v });
+    if (k === 'unlock') {
+      // Débloquer sans activer laisserait l'écran inchangé (confusion vécue
+      // en test réel) : on active tout de suite le thème qu'on vient
+      // d'acheter. Le bouton « Activer » reste utile pour rebasculer plus
+      // tard entre deux thèmes déjà possédés.
+      dispatch('unlockTheme', { theme: el.dataset.v });
+      dispatch('setTheme', { theme: el.dataset.v });
+    } else if (k === 'activate') dispatch('setTheme', { theme: el.dataset.v });
   }
 
   function teardown() {

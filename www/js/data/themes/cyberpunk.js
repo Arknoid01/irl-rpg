@@ -16,4 +16,11 @@ export default {
     ],
   },
   xpSuffix: { fr: '— données', en: '— data' },
+
+  // Aperçu boutique (ui/shop.js) : mettre './assets/videos/cyberpunk-preview.mp4'
+  // (chemin depuis www/, comme les <link> d'index.html) une fois le fichier
+  // ajouté — vidéo courte en boucle, sans son (l'attribut muted est de toute
+  // façon obligatoire pour l'autoplay mobile). Tant que c'est null, la
+  // boutique retombe sur l'aperçu live en CSS.
+  previewVideo: './assets/videos/cyberpunk-preview.mp4',
 };

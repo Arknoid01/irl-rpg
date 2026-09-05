@@ -146,15 +146,18 @@ test('boutique de thèmes : ouverture depuis Réglages, déblocage puis activati
   assert.equal($$('.shop-card').length, 3, 'les 3 thèmes sont listés');
   assert.ok($('.shop-status.active'), 'un thème actif est marqué');
   assert.ok($('[data-shop="unlock"][data-v="cyberpunk"]'), 'cyberpunk pas encore débloqué');
+  const preview = $('.shop-preview-video video');
+  assert.ok(preview, 'cyberpunk a une vraie vidéo d’aperçu (pas le repli CSS)');
+  assert.match(preview.getAttribute('src'), /cyberpunk-preview\.mp4$/);
 
+  // Débloquer active tout de suite le thème (sinon rien ne semble se
+  // passer à l'écran — retour direct d'un test réel sur appareil).
   await click('[data-shop="unlock"][data-v="cyberpunk"]');
-  assert.ok(
-    $('[data-shop="activate"][data-v="cyberpunk"]'),
-    'après déblocage : bouton activer, plus débloquer',
-  );
-
-  await click('[data-shop="activate"][data-v="cyberpunk"]');
   assert.equal(window.document.documentElement.dataset.theme, 'cyberpunk', 'thème appliqué au document');
+  assert.ok(
+    $('[data-shop="activate"][data-v="nordique"]'),
+    'nordique redevient « activer » une fois qu’il n’est plus le thème actif',
+  );
   const saved = JSON.parse(window.localStorage.getItem('irlrpg_save_v2'));
   assert.equal(saved.theme, 'cyberpunk');
   assert.ok(saved.unlockedThemes.includes('cyberpunk'));
