@@ -1,6 +1,7 @@
 import { i18n } from '../i18n/index.js';
 import { $, esc, hideOverlay } from './dom.js';
 import { companionLineAfterQuest } from '../engine/companion.js';
+import { THEMES } from '../data/themes.js';
 
 let toastTimer;
 export function showToast(msg) {
@@ -99,6 +100,9 @@ function playRemaining(effects) {
         break;
       case 'region': enqueueToast(i18n.t('toast_region')); break;
       case 'streak': if (fx.broke) enqueueToast(i18n.t('streak_break_ok')); break;
+      case 'theme-unlocked':
+        enqueueToast(i18n.t('toast_theme_unlocked', { label: i18n.loc(THEMES[fx.theme]?.label) }));
+        break;
       default: break;
     }
   }

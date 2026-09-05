@@ -1,0 +1,35 @@
+/* Thème payant — Dark fantasy. Palette complète (pas d'héritage des tons
+   chauds de nordique) : parchemin cendré plutôt que sépia, cuir presque noir.
+   Polices et formes restent celles de nordique — dark fantasy et fantasy
+   nordique sont assez proches pour partager la même typo/gabarit ; seule la
+   teinte change. */
+
+[data-theme="sombre"] {
+  --bg: #120e0d;
+  --bg-grad: none;
+  --panel: #ebe3d2;
+  --panel2: #e2d8c4;
+  --border: #c4b49a;
+  --text: #1c120f;
+  --text-dim: #5c453c;
+  --text-on-dark: #f0e4d6;
+  --text-on-dark-dim: #c4a096;
+  --accent: #7a2e2e;
+  --accent2: #8a8e96;
+  --gold: #a87830;
+  --danger: #a03333;
+  --ok: #5a7350;
+  --seal: #7a2e2e;
+  --bar-xp: #6a7078;
+  --bar-elan: #7a2e2e;
+  --nav-active: #c49a48;
+  --theme-color: #120e0d;
+
+  /* Base propre (pas héritée du parchemin chaud de nordique). */
+  --paper: #d8d2c8;
+  --paper2: #cac2b4;
+  --ink: #1c120f;
+  --ink-dim: #5c453c;
+  --leather: #100c0a;
+  --leather2: #181210;
+}

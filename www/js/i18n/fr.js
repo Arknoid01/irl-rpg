@@ -141,6 +141,7 @@ export default {
   set_title: 'Réglages',
   set_appearance: 'Apparence',
   set_language: 'Langue',
+  set_open_shop: 'Voir les thèmes',
   set_adventure: 'Préférences d’aventure',
   set_hero_name: 'Nom du héros',
   set_rename: 'Renommer',
@@ -167,6 +168,16 @@ export default {
   set_import_ok: 'Sauvegarde importée',
   set_import_err: 'Fichier de sauvegarde invalide',
   set_import_prompt: 'Colle ici le contenu de ta sauvegarde :',
+
+  // Boutique de thèmes
+  shop_title: 'Boutique',
+  shop_intro: 'Chaque thème change ta police, tes couleurs, tes cadres et les répliques de ton compagnon. Jamais le contenu du jeu : mêmes quêtes, même XP, pour tout le monde.',
+  shop_active: 'Actif',
+  shop_owned: 'Débloqué',
+  shop_activate: 'Activer',
+  shop_unlock: 'Débloquer',
+  shop_unlock_dev_note: 'Démo locale — achat réel pas encore branché.',
+  toast_theme_unlocked: 'Thème débloqué : {label}',
 
   notif_body: 'Ton compagnon a de quoi remplir la journée. Rien d’obligatoire.',
   share_text: 'Défi IRL RPG pour toi : {quest}',

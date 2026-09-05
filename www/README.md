@@ -33,7 +33,12 @@ www/
 ├── index.html            coquille (charge base/themes/components.css + js/main.js)
 ├── manifest.webmanifest
 ├── styles/
-│   ├── themes.css         jeux de tokens (carnet + encre nordique / sombre / néon)
+│   ├── themes.css         registre : @import de themes/*.css (rien d'autre)
+│   ├── themes/            1 fichier = 1 thème complet (couleurs, et pour un
+│   │                      thème qui diverge vraiment : polices, texture de
+│   │                      fond/page, formes) — base-tokens.css (défauts,
+│   │                      importé en premier), nordique.css (défaut, gratuit),
+│   │                      sombre.css, cyberpunk.css (payants, cf. DECISIONS.md)
 │   ├── base.css           reset, layout, topbar, nav, boutons
 │   └── components.css     panneaux, cartes de quête, journal, overlay, level-up…
 └── js/

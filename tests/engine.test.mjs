@@ -614,3 +614,30 @@ test('renameHero : tronque et conserve un nom valide', () => {
   s = game.renameHero(s, { name: '   ' }).state;
   assert.equal(s.name, 'NouveauNomBeaucoupTropLo');
 });
+
+test('boutique de thèmes (D12) : déblocage local + activation verrouillée', () => {
+  let s = defaultState();
+  assert.deepEqual(s.unlockedThemes, ['nordique']);
+
+  // setTheme refuse un thème non débloqué : aucune faille pour contourner un achat.
+  let r = game.setTheme(s, { theme: 'cyberpunk' });
+  assert.equal(r.state.theme, 'nordique', 'refuse un thème non débloqué');
+  assert.equal(r.effects.length, 0);
+
+  r = game.unlockTheme(s, { theme: 'cyberpunk' });
+  s = r.state;
+  assert.ok(s.unlockedThemes.includes('cyberpunk'));
+  assert.deepEqual(r.effects, [{ type: 'theme-unlocked', theme: 'cyberpunk' }]);
+
+  // idempotent : débloquer deux fois ne duplique rien et ne renvoie aucun effet.
+  r = game.unlockTheme(s, { theme: 'cyberpunk' });
+  assert.equal(r.state.unlockedThemes.filter((k) => k === 'cyberpunk').length, 1);
+  assert.equal(r.effects.length, 0);
+
+  r = game.setTheme(s, { theme: 'cyberpunk' });
+  assert.equal(r.state.theme, 'cyberpunk', 'accepté une fois débloqué');
+
+  // clé de thème invalide : ignorée proprement.
+  r = game.unlockTheme(s, { theme: 'imaginaire' });
+  assert.equal(r.effects.length, 0);
+});

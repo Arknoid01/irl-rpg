@@ -82,6 +82,10 @@ export function normalize(state) {
   }
   s.comfort = Math.min(5, Math.max(1, Math.round(s.comfort) || 3));
   if (s.lang !== 'fr' && s.lang !== 'en') s.lang = 'fr';
+  s.unlockedThemes = Array.isArray(s.unlockedThemes)
+    ? s.unlockedThemes.filter((k) => THEME_KEYS.includes(k))
+    : [];
+  if (!s.unlockedThemes.includes(DEFAULT_THEME)) s.unlockedThemes.push(DEFAULT_THEME);
   s.level = Math.max(1, Math.round(s.level) || 1);
   s.xp = Math.max(0, Math.round(s.xp) || 0);
   s.inventory = normalizeInventory(s.inventory).slice(0, 200);

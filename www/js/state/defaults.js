@@ -12,6 +12,7 @@ export function defaultState() {
     name: '',
     lang: 'fr',            // 'fr' | 'en'
     theme: 'nordique',
+    unlockedThemes: ['nordique'], // thèmes payants débloqués (D12) ; nordique gratuit
     comfort: 3,            // 1..5 — plafond d'audace des quêtes proposées
     prefFamilies: [],      // familles mises en avant au tirage
 

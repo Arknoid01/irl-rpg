@@ -1,91 +1,20 @@
-/* Base visuelle : grimoire (cuir + page). Les thèmes teintent l'encre. */
+/* Registre des thèmes. Un thème = un fichier dans ./themes/. Pour en ajouter
+ * un : dupliquer un des fichiers existants (couleurs obligatoires ;
+ * polices, texture de fond/page, formes des cadres seulement si le thème
+ * doit vraiment diverger visuellement, sinon il hérite des valeurs par
+ * défaut de base-tokens.css), puis l'enregistrer avec une ligne @import
+ * ci-dessous.
+ * Rien d'autre à toucher : base.css et components.css ne connaissent que des
+ * var(--...) et des sélecteurs [data-theme="..."], jamais un nom de thème en
+ * dur.
+ *
+ * Ordre important : base-tokens.css (valeurs par défaut) doit être importé
+ * AVANT les thèmes, sinon ses déclarations dans :root gagneraient sur les
+ * [data-theme="..."] des thèmes pour <html> (même spécificité, l'ordre
+ * décide — <html> correspond aux deux sélecteurs à la fois).
+ */
 
-:root {
-  --maxw: 440px;
-  --min-text: 16.5px;
-  --radius: 14px;
-  --panel-radius: 8px;
-  --scrap-radius: 3px 10px 4px 8px / 8px 4px 10px 3px;
-  --font-brand: 'Italianno', 'Segoe Script', cursive;
-  --font-display: 'Fondamento', 'Palatino Linotype', Palatino, serif;
-  --font-body: 'Cormorant Garamond', 'Palatino Linotype', Palatino, serif;
-  --letter: 0.015em;
-  --paper: #e8d9b8;
-  --paper2: #dcc9a0;
-  --ink: #2a1c10;
-  --ink-dim: #6a5238;
-  --leather: #1a1511;
-  --leather2: #241c16;
-  --shadow-scrap: 0 1px 2px rgba(60, 35, 10, .08);
-  --focus: #d4b45a;
-}
-
-[data-theme="nordique"] {
-  --bg: #17130f;
-  --bg-grad: none;
-  --panel: var(--paper);
-  --panel2: var(--paper2);
-  --border: #cbb99a;
-  --text: var(--ink);
-  --text-dim: var(--ink-dim);
-  --text-on-dark: #f3ead7;
-  --text-on-dark-dim: #c9b89a;
-  --accent: #8b3a32;
-  --accent2: #3d6b58;
-  --gold: #9a7420;
-  --danger: #9a3530;
-  --ok: #3f6b45;
-  --seal: #8b3a32;
-  --bar-xp: #4a7a9a;
-  --bar-elan: #3d6b58;
-  --nav-active: #d4b45a;
-  --theme-color: #17130f;
-}
-
-[data-theme="sombre"] {
-  --bg: #120e0d;
-  --bg-grad: none;
-  --panel: #ebe3d2;
-  --panel2: #e2d8c4;
-  --border: #c4b49a;
-  --text: #1c120f;
-  --text-dim: #5c453c;
-  --text-on-dark: #f0e4d6;
-  --text-on-dark-dim: #c4a096;
-  --accent: #7a2e2e;
-  --accent2: #8a8e96;
-  --gold: #a87830;
-  --danger: #a03333;
-  --ok: #5a7350;
-  --seal: #7a2e2e;
-  --bar-xp: #6a7078;
-  --bar-elan: #7a2e2e;
-  --nav-active: #c49a48;
-  --theme-color: #120e0d;
-}
-
-[data-theme="cyberpunk"] {
-  --bg: #0e1218;
-  --bg-grad: none;
-  --panel: #eef2f6;
-  --panel2: #e4eaf0;
-  --border: #b8c4d0;
-  --text: #121a22;
-  --text-dim: #4a5a6a;
-  --text-on-dark: #e8f0f6;
-  --text-on-dark-dim: #a8bdd0;
-  --accent: #c43a7a;
-  --accent2: #1a9bb8;
-  --gold: #b08a2e;
-  --danger: #c44555;
-  --ok: #2f9e6e;
-  --seal: #c43a7a;
-  --bar-xp: #1a9bb8;
-  --bar-elan: #c43a7a;
-  --nav-active: #5ec8e8;
-  --theme-color: #0e1218;
-  --paper: #eef2f6;
-  --paper2: #e4eaf0;
-  --ink: #121a22;
-  --ink-dim: #4a5a6a;
-}
+@import url('./themes/base-tokens.css');
+@import url('./themes/nordique.css');
+@import url('./themes/sombre.css');
+@import url('./themes/cyberpunk.css');

@@ -1,0 +1,29 @@
+/* Thème par défaut, gratuit — Fantasy nordique.
+   Contrat d'un fichier de thème : couleurs (--bg, --panel, --accent...),
+   éventuellement polices (--font-*) et textures/formes (--page-texture,
+   --page-filter, --body-texture, --tab-clip, --book-bg...). Tout ce qui
+   n'est pas redéfini ici retombe sur les valeurs par défaut de :root dans
+   ../themes.css — c'est le cas de ce thème : il EST la valeur par défaut,
+   rien à redéfinir en plus des couleurs. */
+
+[data-theme="nordique"] {
+  --bg: #17130f;
+  --bg-grad: none;
+  --panel: var(--paper);
+  --panel2: var(--paper2);
+  --border: #cbb99a;
+  --text: var(--ink);
+  --text-dim: var(--ink-dim);
+  --text-on-dark: #f3ead7;
+  --text-on-dark-dim: #c9b89a;
+  --accent: #8b3a32;
+  --accent2: #3d6b58;
+  --gold: #9a7420;
+  --danger: #9a3530;
+  --ok: #3f6b45;
+  --seal: #8b3a32;
+  --bar-xp: #4a7a9a;
+  --bar-elan: #3d6b58;
+  --nav-active: #d4b45a;
+  --theme-color: #17130f;
+}

@@ -18,6 +18,7 @@ import {
   addLoot, lootFromEvent, lootFromHiddenQuest, milestoneLootForLevel,
 } from './inventory.js';
 import { syncRegionUnlocks } from './worldView.js';
+import { THEME_KEYS } from '../data/themes.js';
 
 const RECENT_DONE_MEMORY = 56;
 const RECENT_FAMILLES_MEMORY = 12;
@@ -224,8 +225,23 @@ export function dismissEvent(state) {
 
 export function setTheme(state, { theme }) {
   const s = clone(state);
+  if (!s.unlockedThemes.includes(theme)) return { state: s, effects: [] };
   s.theme = theme;
   return { state: s, effects: [{ type: 'theme', theme }] };
+}
+
+/**
+ * Déblocage d'un thème payant (D12). Pour l'instant local/gratuit — aucun
+ * paiement réel n'est encore branché (plugin IAP Capacitor à venir) ; ne pas
+ * confondre avec un vrai achat validé par un store.
+ */
+export function unlockTheme(state, { theme }) {
+  const s = clone(state);
+  if (!THEME_KEYS.includes(theme) || s.unlockedThemes.includes(theme)) {
+    return { state: s, effects: [] };
+  }
+  s.unlockedThemes.push(theme);
+  return { state: s, effects: [{ type: 'theme-unlocked', theme }] };
 }
 
 export function setComfort(state, { comfort }) {

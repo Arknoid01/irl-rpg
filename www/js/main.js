@@ -11,17 +11,20 @@ import { renderCharacter } from './ui/screens/character.js';
 import { playEffects, closeOverlay, showToast } from './ui/feedback.js';
 import { startOnboarding } from './ui/onboarding.js';
 import { openSettings } from './ui/settings.js';
+import { openShop } from './ui/shop.js';
 import { syncDailyReminder, shareText } from './platform/notifications.js';
 import { syncStatusBar } from './platform/statusbar.js';
 import { QUESTS } from './data/quests.js';
 import { setMuseumFilter, selectMuseumItem } from './ui/components/charBits.js';
 import { clearRegionFresh } from './engine/worldView.js';
+import { initRipples } from './ui/ripple.js';
 
 
 let storage;
 let state;
 let view = 'adventure';
 let settingsOpen = false;
+let shopOpen = false;
 
 const SCREENS = {
   adventure: renderAdventure,
@@ -156,8 +159,15 @@ async function dispatch(action, args = {}) {
     }
 
     case 'open-settings':
+      shopOpen = false;
       settingsOpen = true;
       openSettings({ getState: () => state, dispatch, close: () => { settingsOpen = false; closeOverlay(); render(); } });
+      break;
+
+    case 'open-shop':
+      settingsOpen = false;
+      shopOpen = true;
+      openShop({ getState: () => state, dispatch, close: () => { shopOpen = false; closeOverlay(); render(); } });
       break;
 
     case 'close-overlay': closeOverlay(); break;
@@ -165,8 +175,16 @@ async function dispatch(action, args = {}) {
     /* réglages */
     case 'setTheme':
       state = game.setTheme(state, args).state;
-      applyTheme(state.theme); syncStatusBar(state.theme); persist(); render(); softRerenderSettings();
+      applyTheme(state.theme); syncStatusBar(state.theme); persist(); render();
+      softRerenderSettings(); softRerenderShop();
       break;
+    case 'unlockTheme': {
+      const r = game.unlockTheme(state, args);
+      state = r.state; persist(); render();
+      playEffects(r.effects, state);
+      softRerenderShop();
+      break;
+    }
     case 'setLang':
       state.lang = args.lang === 'en' ? 'en' : 'fr';
       i18n.setLang(state.lang); persist(); render(); softRerenderSettings();
@@ -224,6 +242,10 @@ function softRerenderSettings() {
   if (settingsOpen && typeof openSettings._rerender === 'function') openSettings._rerender();
 }
 
+function softRerenderShop() {
+  if (shopOpen && typeof openShop._rerender === 'function') openShop._rerender();
+}
+
 /* ─────────────── render ─────────────── */
 
 function topbarHtml() {
@@ -265,6 +287,8 @@ document.addEventListener('click', (e) => {
   const args = { id: el.dataset.id, lang: el.dataset.lang };
   dispatch(action, args);
 });
+
+initRipples();
 
 if (document.readyState === 'loading') {
   window.addEventListener('DOMContentLoaded', boot);

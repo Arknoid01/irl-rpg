@@ -27,6 +27,9 @@ export function openSettings({ getState, dispatch, close }) {
           <div class="lang-toggle">${LANGS.map((l) => `
             <button class="${s.lang === l ? 'active' : ''}" data-set="lang" data-v="${l}">${l.toUpperCase()}</button>`).join('')}</div>
         </div>
+        <div class="set-row">
+          <button class="btn ghost small full" data-set="shop">${i18n.t('set_open_shop')}</button>
+        </div>
 
         <h3>${i18n.t('set_adventure')}</h3>
         <div class="set-row col">
@@ -89,6 +92,7 @@ export function openSettings({ getState, dispatch, close }) {
     if (!el) return;
     const k = el.dataset.set;
     if (k === 'close') { teardown(); close(); return; }
+    if (k === 'shop') { teardown(); dispatch('open-shop'); return; }
     if (k === 'lang') dispatch('setLang', { lang: el.dataset.v });
     else if (k === 'fam') {
       const s = getState();

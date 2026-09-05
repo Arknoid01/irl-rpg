@@ -1,0 +1,24 @@
+/* Tokens partagés, valeurs par défaut avant tout thème. Doit être importé en
+ * premier dans ../themes.css : un thème qui redéfinit --paper/--ink/--font-*
+ * doit gagner sur ces valeurs pour le même élément (<html> correspond à la
+ * fois à :root et à [data-theme="..."], même spécificité — l'ordre décide). */
+
+:root {
+  --maxw: 440px;
+  --min-text: 16.5px;
+  --radius: 14px;
+  --panel-radius: 8px;
+  --scrap-radius: 3px 10px 4px 8px / 8px 4px 10px 3px;
+  --font-brand: 'Italianno', 'Segoe Script', cursive;
+  --font-display: 'Fondamento', 'Palatino Linotype', Palatino, serif;
+  --font-body: 'Cormorant Garamond', 'Palatino Linotype', Palatino, serif;
+  --letter: 0.015em;
+  --paper: #e8d9b8;
+  --paper2: #dcc9a0;
+  --ink: #2a1c10;
+  --ink-dim: #6a5238;
+  --leather: #1a1511;
+  --leather2: #241c16;
+  --shadow-scrap: 0 1px 2px rgba(60, 35, 10, .08);
+  --focus: #d4b45a;
+}

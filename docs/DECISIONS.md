@@ -274,3 +274,78 @@ XP) :**
   précise », pas un template générique. Priorité basse (après streak/style),
   n'affecte aucun test existant.
 - `tests/no-network.test.mjs` créé et ajouté à `npm test` / CI.
+
+---
+
+## D12 — Modèle économique : achat unique, pas de pubs (2026-09-05)
+
+Décision (discutée avec Yannick) : **achat unique, jamais de publicité.** Des
+pubs impliqueraient quasi systématiquement du tracking tiers — contradiction
+directe avec D11 (zéro cloud) et avec ce que l'app promet déjà elle-même
+(`set_data_body` : « Aucun compte, aucun serveur, aucune pub » ; `STORE.md` :
+Publicités : non). Jamais de pay-to-win : aucun avantage XP/vitesse de
+progression/titre ne sera jamais derrière un paywall (cohérent avec D3).
+
+**Contenu du pack payant : reskin complet, pas plus de quêtes.** Les thèmes
+`sombre` et `cyberpunk` (déjà présents dans le code, jamais montrés en UI)
+deviennent le contenu payant — palette + police + texture de fond/page +
+formes des cadres, une identité visuelle complète et cohérente par thème, pas
+un simple recolorage. Le contenu de jeu (98 quêtes, courbe XP, compétences)
+reste strictement identique et gratuit pour tout le monde. Prochaine étape
+(pas encore faite) : réécrire la voix du compagnon/cérémonie/chapitres de
+journal par thème (adapter les textes existants, pas en écrire de nouveaux),
+puis brancher un vrai mécanisme d'achat (plugin Capacitor IAP) qui débloque
+le sélecteur de thème actuellement retiré de l'UI (cf. commit "Choix de
+langue explicite...").
+
+Mécanique d'essai envisagée (pas tranchée techniquement) : gratuit à vie sur
+la boucle principale plutôt qu'un mur de paiement après un essai chronométré
+— maximise les installs/bouche-à-oreille pour un lancement sans budget
+marketing (cf. discussion produit du 2026-09-05).
+
+**Refactor d'architecture fait cette session (indépendant du choix
+business ci-dessus, sert aussi bien 2 thèmes que 10) :**
+
+- `data/themes.js` devient un registre qui importe un fichier par thème
+  (`data/themes/nordique.js`, `sombre.js`, `cyberpunk.js`) — ajouter un thème
+  = un nouveau fichier + une ligne d'import, aucun autre fichier à toucher.
+- Même principe côté CSS : `styles/themes.css` n'est plus qu'une liste de
+  `@import` vers `styles/themes/*.css` (`base-tokens.css` d'abord — sinon son
+  `:root` gagnerait sur les couleurs des thèmes pour `<html>`, même
+  spécificité, l'ordre de cascade décide). `nordique.css` reproduit le
+  comportement par défaut à l'identique (zéro régression pour l'expérience
+  gratuite). `sombre.css` complète enfin sa palette (fond/encre propres au
+  lieu d'hériter du parchemin chaud de nordique). `cyberpunk.css` réécrit
+  fond, texture de page, formes des cadres, couleurs d'onglets et polices
+  (Orbitron + Share Tech Mono, Google Fonts/SIL OFL, embarquées en local
+  comme les autres polices — zéro appel réseau, cohérent D11).
+- Aucun changement de layout/structure DOM par thème (seulement CSS) — évite
+  le risque de fragmentation de code identifié dans `REVUE_CRITIQUE.md` §4.2.
+- CSS validé avec un vrai parseur (`css-tree`, dépendance transitive de
+  jsdom) plutôt qu'à l'œil : a immédiatement attrapé un bug réel (un
+  commentaire contenant littéralement `*/` qui fermait le commentaire en
+  plein milieu). Pas de QA visuelle possible dans cet environnement (pas de
+  navigateur) — à vérifier sur un vrai appareil/navigateur avant de vendre
+  quoi que ce soit.
+
+**Effets ajoutés pour cyberpunk (thème payant uniquement, zéro effet sur
+nordique/sombre)** : balayage scanline sur `.page`, halo néon qui pulse sur
+panneaux/cartes (pur CSS, respecte déjà `prefers-reduced-motion` via la règle
+globale existante), et un ripple au clic (`ui/ripple.js`, générique mais gated
+sur `data-theme="cyberpunk"` + sur `prefers-reduced-motion`, avec délai de
+secours si `animationend` ne part jamais).
+
+**Boutique de thèmes (`ui/shop.js`)**, ouverte depuis Réglages → Apparence
+→ « Voir les thèmes ». Aperçu **live en CSS** de chaque thème (police,
+couleurs, réplique de compagnon réelle via `companionLineFor`, halo animé) —
+pas de vidéo/GIF enregistrée (impossible à produire dans cet environnement
+sans navigateur ; un aperçu live reste toujours synchronisé avec le vrai
+rendu, contrairement à une vidéo qui peut devenir obsolète). `label` des
+thèmes passé bilingue `{fr,en}` à cette occasion (était FR uniquement).
+
+Déblocage : **local pour l'instant, aucun paiement réel** (`unlockedThemes`
+dans la sauvegarde, `game.unlockTheme()`). `game.setTheme()` refuse
+désormais un thème non débloqué — impossible de contourner un futur achat en
+trafiquant juste `state.theme`. Prochaine étape non commencée : brancher un
+vrai plugin IAP Capacitor qui appelle `unlockTheme()` après un paiement
+validé par le store, au lieu du bouton "Débloquer" gratuit actuel.

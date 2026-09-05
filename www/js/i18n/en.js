@@ -139,6 +139,7 @@ export default {
   set_title: 'Settings',
   set_appearance: 'Appearance',
   set_language: 'Language',
+  set_open_shop: 'View themes',
   set_adventure: 'Adventure preferences',
   set_hero_name: 'Hero name',
   set_rename: 'Rename',
@@ -165,6 +166,16 @@ export default {
   set_import_ok: 'Save imported',
   set_import_err: 'Invalid save file',
   set_import_prompt: 'Paste your save contents here:',
+
+  // Theme shop
+  shop_title: 'Theme shop',
+  shop_intro: 'Every theme changes your font, colours, frames and companion lines. Never the game content: same quests, same XP, for everyone.',
+  shop_active: 'Active',
+  shop_owned: 'Owned',
+  shop_activate: 'Activate',
+  shop_unlock: 'Unlock',
+  shop_unlock_dev_note: 'Local demo — real purchase not wired up yet.',
+  toast_theme_unlocked: 'Theme unlocked: {label}',
 
   notif_body: 'Your companion has enough to fill the day. Nothing required.',
   share_text: 'IRL RPG challenge for you: {quest}',

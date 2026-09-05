@@ -139,6 +139,66 @@ test('parcours complet dans le DOM', async () => {
   assert.equal(ignoredQuest.status, 'ignored');
 });
 
+test('boutique de thèmes : ouverture depuis Réglages, déblocage puis activation', async () => {
+  await click('[data-action="open-settings"]');
+  await click('[data-set="shop"]');
+  assert.ok($('.shop-sheet'), 'feuille boutique affichée');
+  assert.equal($$('.shop-card').length, 3, 'les 3 thèmes sont listés');
+  assert.ok($('.shop-status.active'), 'un thème actif est marqué');
+  assert.ok($('[data-shop="unlock"][data-v="cyberpunk"]'), 'cyberpunk pas encore débloqué');
+
+  await click('[data-shop="unlock"][data-v="cyberpunk"]');
+  assert.ok(
+    $('[data-shop="activate"][data-v="cyberpunk"]'),
+    'après déblocage : bouton activer, plus débloquer',
+  );
+
+  await click('[data-shop="activate"][data-v="cyberpunk"]');
+  assert.equal(window.document.documentElement.dataset.theme, 'cyberpunk', 'thème appliqué au document');
+  const saved = JSON.parse(window.localStorage.getItem('irlrpg_save_v2'));
+  assert.equal(saved.theme, 'cyberpunk');
+  assert.ok(saved.unlockedThemes.includes('cyberpunk'));
+
+  // reviens à nordique pour ne pas polluer les tests suivants de ce fichier.
+  await click('[data-shop="activate"][data-v="nordique"]');
+  assert.equal(window.document.documentElement.dataset.theme, 'nordique');
+  await click('[data-shop="close"]');
+});
+
+test('ripple au clic : seulement sous cyberpunk, jamais sous nordique', async () => {
+  const { initRipples } = await import('../www/js/ui/ripple.js');
+  initRipples();
+  // Un .iconbtn (réglages) plutôt qu'un .tab : cliquer un .tab déclenche
+  // dispatch('goto') -> render() qui remplace tout #root (nav incluse) et
+  // détacherait la référence captée ici ; le bouton réglages, lui, ne
+  // remplace que #overlay.
+  const btn = window.document.querySelector('[data-action="open-settings"]');
+  assert.ok(btn, 'bouton réglages disponible');
+
+  window.document.documentElement.dataset.theme = 'nordique';
+  btn.dispatchEvent(new window.MouseEvent('click', { bubbles: true, clientX: 5, clientY: 5 }));
+  await tick();
+  assert.equal(btn.querySelector('.ripple'), null, 'pas de ripple sous nordique');
+
+  // Ne pas fermer les réglages ici : close() ré-appelle render(), qui
+  // remplace #root (topbar incluse) et détacherait `btn`. Recliquer
+  // open-settings pendant que c'est déjà ouvert ne fait que re-render la
+  // feuille elle-même, sans toucher au bouton.
+  window.document.documentElement.dataset.theme = 'cyberpunk';
+  btn.dispatchEvent(new window.MouseEvent('click', { bubbles: true, clientX: 5, clientY: 5 }));
+  await tick();
+  const span = btn.querySelector('.ripple');
+  assert.ok(span, 'un ripple apparaît sous cyberpunk');
+
+  // jsdom ne joue pas les animations CSS : animationend ne part jamais,
+  // seul le délai de secours retire l'élément.
+  await new Promise((r) => setTimeout(r, 750));
+  assert.equal(btn.querySelector('.ripple'), null, 'le ripple est retiré après le délai de secours');
+
+  window.document.documentElement.dataset.theme = 'nordique';
+  await click('[data-set="close"]');
+});
+
 test('hideOverlay : fondu synchrone, contenu vidé après coup', async () => {
   const { hideOverlay } = await import('../www/js/ui/dom.js');
   const ov = window.document.createElement('div');
