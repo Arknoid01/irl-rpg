@@ -231,10 +231,6 @@ function topbarHtml() {
   <header class="topbar">
     <div class="brand"><span class="glyph" aria-hidden="true">•</span> ${i18n.t('app_name')}</div>
     <div class="topbar-actions">
-      <div class="lang-toggle small">
-        <button class="${state.lang === 'fr' ? 'active' : ''}" data-action="setLang" data-lang="fr">FR</button>
-        <button class="${state.lang === 'en' ? 'active' : ''}" data-action="setLang" data-lang="en">EN</button>
-      </div>
       <button class="iconbtn" data-action="open-settings" aria-label="${i18n.t('settings')}">⚙</button>
     </div>
   </header>`;

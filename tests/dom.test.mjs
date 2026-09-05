@@ -33,8 +33,12 @@ test('parcours complet dans le DOM', async () => {
   await import('../www/js/main.js');
   await tick();
 
-  // 1. Écran d'ouverture (grimoire fermé) puis onboarding
-  assert.ok($('#overlay').classList.contains('show'), 'overlay onboarding');
+  // 1. Choix de langue (tout premier écran, avant même le grimoire fermé)
+  assert.ok($('#overlay').classList.contains('show'), 'overlay langue');
+  assert.ok($('[data-ob="lang-gate"]'), 'écran de choix de langue');
+  await click('[data-ob="lang-gate"][data-v="fr"]');
+
+  // Écran d'ouverture (grimoire fermé) puis onboarding
   assert.ok($('.cover-screen'), 'écran de couverture');
   await click('[data-ob="next"]');
   assert.ok($('.onboarding'), 'écran onboarding');
@@ -86,14 +90,15 @@ test('parcours complet dans le DOM', async () => {
   assert.ok(saved.xp > 0 || saved.level > 1, 'XP gagnée et persistée');
   assert.equal(saved.history.totalCompleted, 1);
 
-  // 4. Switch de langue
-  const navBefore = $('.tab.active').textContent.trim();
-  await click('[data-action="setLang"][data-lang="fr"]');
-  await click('[data-action="setLang"][data-lang="en"]');
+  // 4. Switch de langue — désormais dans les Réglages, plus dans la topbar
+  // (le sélecteur topbar a été retiré, cf. DECISIONS.md D11).
+  await click('[data-action="open-settings"]');
+  await click('[data-set="lang"][data-v="en"]');
   const navAfter = $('.tab').textContent;
   assert.match(navAfter, /Adventure/, 'nav en anglais');
   assert.equal(JSON.parse(window.localStorage.getItem('irlrpg_save_v2')).lang, 'en');
-  await click('[data-action="setLang"][data-lang="fr"]');
+  await click('[data-set="lang"][data-v="fr"]');
+  await click('[data-set="close"]');
 
   // 5b. Journal vivant
   await click('[data-action="goto"][data-id="journal"]');

@@ -1,7 +1,6 @@
 import { i18n, LANGS } from '../i18n/index.js';
 import { FAMILIES } from '../data/taxonomy.js';
 import { PREFERABLE_FAMILIES } from '../data/quests.js';
-import { THEMES, THEME_KEYS } from '../data/themes.js';
 import { $, esc, hideOverlay } from './dom.js';
 
 /**
@@ -23,12 +22,6 @@ export function openSettings({ getState, dispatch, close }) {
         </div>
 
         <h3>${i18n.t('set_appearance')}</h3>
-        <div class="set-row">
-          <span>${i18n.t('set_theme')}</span>
-          <div class="theme-choose">${THEME_KEYS.map((k) => `
-            <button class="theme-dot${k === s.theme ? ' active' : ''}" style="background:${THEMES[k].dot}"
-              data-set="theme" data-v="${k}" title="${THEMES[k].label}"></button>`).join('')}</div>
-        </div>
         <div class="set-row">
           <span>${i18n.t('set_language')}</span>
           <div class="lang-toggle">${LANGS.map((l) => `
@@ -96,8 +89,7 @@ export function openSettings({ getState, dispatch, close }) {
     if (!el) return;
     const k = el.dataset.set;
     if (k === 'close') { teardown(); close(); return; }
-    if (k === 'theme') dispatch('setTheme', { theme: el.dataset.v });
-    else if (k === 'lang') dispatch('setLang', { lang: el.dataset.v });
+    if (k === 'lang') dispatch('setLang', { lang: el.dataset.v });
     else if (k === 'fam') {
       const s = getState();
       const list = s.prefFamilies.slice();
@@ -113,7 +105,7 @@ export function openSettings({ getState, dispatch, close }) {
       const name = input ? input.value : '';
       dispatch('renameHero', { name });
     }
-    if (['theme', 'lang', 'fam'].includes(k)) render();
+    if (['lang', 'fam'].includes(k)) render();
   }
 
   function teardown() {

@@ -140,7 +140,6 @@ export default {
   // Settings
   set_title: 'Réglages',
   set_appearance: 'Apparence',
-  set_theme: 'Thème',
   set_language: 'Langue',
   set_adventure: 'Préférences d’aventure',
   set_hero_name: 'Nom du héros',

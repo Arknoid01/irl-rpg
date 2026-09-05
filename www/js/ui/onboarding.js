@@ -1,11 +1,11 @@
 import { i18n } from '../i18n/index.js';
 import { FAMILIES } from '../data/taxonomy.js';
 import { PREFERABLE_FAMILIES } from '../data/quests.js';
-import { THEMES, THEME_KEYS } from '../data/themes.js';
-import { applyTheme } from './theme.js';
 import { $, esc, hideOverlay } from './dom.js';
 
-const STEPS = ['cover', 'welcome', 'name', 'comfort', 'families', 'notif'];
+// 'lang' : tout premier écran, avant même le grimoire fermé — choix explicite
+// de langue plutôt qu'une détection silencieuse (axe différenciation D11).
+const STEPS = ['lang', 'cover', 'welcome', 'name', 'comfort', 'families', 'notif'];
 
 export function startOnboarding(initial, onComplete) {
   const ov = $('#overlay');
@@ -30,9 +30,17 @@ export function startOnboarding(initial, onComplete) {
   function chapterMark() {
     const roman = ['I', 'II', 'III', 'IV', 'V'];
     return `<div class="ob-chapter">
-      <span class="ob-chapter-ribbon">${roman[step - 1]} / V</span>
+      <span class="ob-chapter-ribbon">${roman[step - 2]} / V</span>
       <p class="ob-companion">${i18n.t('ob_chapter_' + STEPS[step])}</p>
     </div>`;
+  }
+
+  function langGateHtml() {
+    return `
+      <div class="cover-candle" aria-hidden="true"></div>
+      <h1 class="cover-title">Choisis ta langue<br />Choose your language</h1>
+      <button class="btn primary full" data-ob="lang-gate" data-v="fr">Français</button>
+      <button class="btn primary full" data-ob="lang-gate" data-v="en">English</button>`;
   }
 
   function coverHtml() {
@@ -57,9 +65,6 @@ export function startOnboarding(initial, onComplete) {
           <input id="ob-age" type="checkbox" ${data.ageAck ? 'checked' : ''} />
           <span>${i18n.t('ob_age_ack')}</span>
         </label>
-        <div class="theme-choose">${THEME_KEYS.map((k) => `
-          <button class="theme-dot${k === data.theme ? ' active' : ''}" style="background:${THEMES[k].dot}"
-            data-ob="theme" data-v="${k}" title="${THEMES[k].label}"></button>`).join('')}</div>
         <button class="btn primary full" data-ob="next" ${data.ageAck ? '' : 'disabled'}>${i18n.t('ob_next')}</button>`;
     }
     if (name === 'name') {
@@ -117,12 +122,14 @@ export function startOnboarding(initial, onComplete) {
   }
 
   function render() {
-    if (STEPS[step] === 'cover') {
+    if (STEPS[step] === 'lang') {
+      ov.innerHTML = `<div class="cover-screen lang-gate">${langGateHtml()}</div>`;
+    } else if (STEPS[step] === 'cover') {
       ov.innerHTML = `<div class="cover-screen">${coverHtml()}</div>`;
     } else {
-      const chapters = STEPS.slice(1);
+      const chapters = STEPS.slice(2);
       ov.innerHTML = `<div class="onboarding ob-folio"><div class="ob-progress" aria-hidden="true">${
-        chapters.map((_, i) => `<i class="${i <= step - 1 ? 'on' : ''}"></i>`).join('')
+        chapters.map((_, i) => `<i class="${i <= step - 2 ? 'on' : ''}"></i>`).join('')
       }</div>${stepHtml()}</div>`;
     }
     ov.classList.add('show');
@@ -146,8 +153,9 @@ export function startOnboarding(initial, onComplete) {
     captureInputs();
     if (act === 'lang') {
       i18n.setLang(b.dataset.v); data.lang = b.dataset.v; render();
-    } else if (act === 'theme') {
-      data.theme = b.dataset.v; applyTheme(data.theme); render();
+    } else if (act === 'lang-gate') {
+      i18n.setLang(b.dataset.v); data.lang = b.dataset.v;
+      step += 1; render();
     } else if (act === 'fam') {
       const f = b.dataset.v;
       const idx = data.prefFamilies.indexOf(f);
