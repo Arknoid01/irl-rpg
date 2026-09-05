@@ -23,6 +23,10 @@ export default {
 
   companion_label: 'Your companion',
   quests_today: 'Today’s quests',
+  choose_adventure: 'Choose your adventure.',
+  q_role_principale: 'Main pick',
+  q_role_tranquille: 'Calm pick',
+  q_role_audacieuse: 'Bold pick',
   new_day: 'New day',
   new_day_hint: 'Nothing’s required here — take what appeals to you.',
   all_done_title: 'Every quest done for today 🏆',

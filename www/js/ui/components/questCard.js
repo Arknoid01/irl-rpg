@@ -3,11 +3,21 @@ import { THEMES, DEFAULT_THEME } from '../../data/themes.js';
 import { i18n } from '../../i18n/index.js';
 import { esc } from '../dom.js';
 
+const ROLE_META = {
+  principale: { icon: '⭐', key: 'q_role_principale' },
+  tranquille: { icon: '🌿', key: 'q_role_tranquille' },
+  audacieuse: { icon: '🔥', key: 'q_role_audacieuse' },
+};
+
 export function questCardHtml(quest, themeKey) {
   const fam = FAMILIES[quest.famille] || FAMILIES.quotidien;
   const theme = THEMES[themeKey] || THEMES[DEFAULT_THEME];
   const isMystery = quest.hidden && quest.status === 'proposed';
   const poidsCls = quest.poids && quest.poids !== 'petite' ? ` poids-${quest.poids}` : '';
+  const roleMeta = ROLE_META[quest.role];
+  const roleBadge = roleMeta
+    ? `<span class="quest-role role-${quest.role}">${roleMeta.icon} ${i18n.t(roleMeta.key)}</span>`
+    : '';
 
   const body = isMystery
     ? `<p class="quest-text muted"><em>${i18n.t('q_mystery')}</em></p>`
@@ -50,6 +60,7 @@ export function questCardHtml(quest, themeKey) {
   return `
   <article class="quest-card${poidsCls}${quest.status === 'done' ? ' done' : ''}" style="--fam-color:${fam.color}">
     ${stamp}
+    ${roleBadge}
     <div class="quest-top">
       <span class="quest-cat">${fam.icon} ${i18n.loc(fam.label)}</span>
       <span class="quest-xp">+${quest.xp} XP <span class="xp-suffix">${esc(i18n.loc(theme.xpSuffix))}</span></span>

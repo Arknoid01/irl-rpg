@@ -209,7 +209,8 @@ de confort) :
 | `quotidien` | 18 % |
 | `creation` | 12 % |
 
-Règles de composition d'une journée (3–4 quêtes, budget 7 pts) :
+Règles de composition d'une journée (**exactement 3 quêtes** depuis le
+2026-09-05, D9/D10 ; budget 7 pts) :
 
 1. **Au moins 1 `social`** — mais toujours version douce, jamais un constat
    d'évitement (cf. `REVUE_CRITIQUE` §3.1).
@@ -218,6 +219,11 @@ Règles de composition d'une journée (3–4 quêtes, budget 7 pts) :
 4. Pas **4 `chaos` d'affilée** sur la semaine (rythme émotionnel, `interactions` §29).
 5. 25 % de chance de glisser une quête `hidden` à la place d'une quête tirée.
 6. 30 % de chance d'un **événement** en plus (hors budget).
+7. Les 3 propositions sont étiquetées ⭐ principale / 🌿 tranquille / 🔥
+   audacieuse selon leur `audace` relative (cosmétique, `engine/draw.js`
+   `assignProposalRoles`) — le moteur de tirage/budget reste inchangé, seul
+   l'affichage passe de « 3-4 quêtes en liste » à « 3 propositions cadrées »
+   (plan §12-13). Le joueur peut toujours en accepter plusieurs, comme avant.
 
 ---
 

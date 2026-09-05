@@ -216,3 +216,17 @@ l'habillage/la cérémonie du plan a été repris.
 recoupant des décisions déjà tranchées) : refonte du choix « 3 quêtes »,
 refonte visuelle Monde/Personnage (déjà proches de l'esprit du plan),
 transitions de page supplémentaires, écran de clôture « À demain » dédié.
+
+**Mise à jour 2026-09-05 — tranché par Yannick :**
+- **Rythme d'XP : gardé tel quel.** Le rythme actuel (simulation : niveau 12
+  en 45 jours) est validé, aucun changement de courbe/paliers.
+- **Mécanique « 3 quêtes/jour » : option « 3 propositions, plusieurs
+  faisables » retenue** (pas le choix exclusif d'une seule). **Implémenté** :
+  `engine/draw.js` tire désormais exactement 3 quêtes/jour (`MAX_QUESTS = 3`,
+  au lieu de 3-4) et les étiquette ⭐ principale / 🌿 tranquille / 🔥
+  audacieuse selon l'audace relative (`assignProposalRoles`, cosmétique). Le
+  joueur garde la possibilité d'en accepter plusieurs, budget d'effort et
+  Élan du jour inchangés. Ligne compagnon « Choisis ton aventure. » ajoutée
+  tant qu'il reste des propositions non tranchées (`adventure.js`). Sim 45 j
+  après coup : toujours niveau 12 (rythme d'XP préservé). Voir aussi
+  `TAXONOMIE.md` §7.

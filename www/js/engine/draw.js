@@ -12,8 +12,11 @@ import { weightedPick, shuffle, defaultRng } from './rng.js';
 import { expandTemplates } from './generate.js';
 import { drawEvent, adaptiveFamilyBonus } from './events.js';
 
+// Exactement 3 propositions/jour (plan UX : « choisis ton aventure », D9/D10
+// du 2026-09-05) — le moteur de tirage/budget/accept-multiple reste inchangé,
+// seul le nombre de créneaux affichés change (4 -> 3).
 const MIN_QUESTS = 3;
-const MAX_QUESTS = 4;
+const MAX_QUESTS = 3;
 const HIDDEN_SWAP_CHANCE = 0.25;
 const EVENT_CHANCE = 0.32;
 const PREF_FAMILY_BONUS = 12;
@@ -51,6 +54,23 @@ function gentleSocialQuest() {
 function momentOk(quest, part) {
   const m = (quest.contexte || []).find((c) => c.startsWith('moment:'));
   return !m || m === `moment:${part}`;
+}
+
+/**
+ * Habille les 3 propositions du jour en ⭐ principale / 🌿 tranquille /
+ * 🔥 audacieuse, selon l'audace relative (plan §12-13). Purement cosmétique :
+ * ne change ni le tirage ni les règles, juste l'étiquette affichée.
+ */
+function assignProposalRoles(quests) {
+  const ranked = quests.map((_, i) => i).sort((a, b) => (
+    quests[a].audace - quests[b].audace || a - b
+  ));
+  quests.forEach((q, i) => {
+    if (i === ranked[0]) q.role = 'tranquille';
+    else if (i === ranked[ranked.length - 1]) q.role = 'audacieuse';
+    else q.role = 'principale';
+  });
+  return quests;
 }
 
 export function drawDaily(state, { now = new Date(), rng = defaultRng } = {}) {
@@ -161,5 +181,6 @@ export function drawDaily(state, { now = new Date(), rng = defaultRng } = {}) {
   const drawn = drawEvent(state, { now, rng, chance: EVENT_CHANCE });
   if (drawn) event = { ...drawn, status: 'active' };
 
+  assignProposalRoles(chosen);
   return { quests: chosen, event };
 }

@@ -15,7 +15,7 @@ export function renderCharacter(state) {
       </div>
       <div class="bar-row">
         <div class="bar-label"><span>${i18n.t('xp')}</span><span>${p.xp} / ${p.need}</span></div>
-        ${pctBar(p.pct, 'xp')}
+        ${pctBar(p.pct, 'xp', `${i18n.t('xp')} ${p.xp}/${p.need}`)}
       </div>
       ${styleHtml(state)}
     </section>

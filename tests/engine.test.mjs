@@ -24,15 +24,32 @@ import {
 } from '../www/js/engine/inventory.js';
 import { LOOT_KINDS, EVENT_LOOT_META } from '../www/js/data/loot.js';
 import { buildJournalTimeline, chapterForLevel } from '../www/js/engine/journal.js';
-import { companionLineForState } from '../www/js/engine/companion.js';
+import { companionLineForState, companionLineAfterQuest } from '../www/js/engine/companion.js';
 import { mulberry32 } from '../www/js/engine/rng.js';
 import {
   gainXp, gainSkills, bumpStreak, computeStyle, elanDuJour,
 } from '../www/js/engine/progression.js';
 import { checkNoPenalty } from '../www/js/engine/philosophy.js';
 import * as game from '../www/js/engine/game.js';
+import fr from '../www/js/i18n/fr.js';
+import en from '../www/js/i18n/en.js';
+import {
+  heroCardHtml, skillsGridHtml, titlesHtml, inventoryHtml, statsHtml,
+  setMuseumFilter, selectMuseumItem,
+} from '../www/js/ui/components/charBits.js';
 
 const bilingual = (v) => v && typeof v === 'object' && typeof v.fr === 'string' && typeof v.en === 'string';
+
+/* ─────────────── i18n ─────────────── */
+
+test('i18n : fr et en ont exactement les mêmes clés', () => {
+  const frKeys = new Set(Object.keys(fr));
+  const enKeys = new Set(Object.keys(en));
+  const missingInEn = [...frKeys].filter((k) => !enKeys.has(k));
+  const missingInFr = [...enKeys].filter((k) => !frKeys.has(k));
+  assert.deepEqual(missingInEn, [], `clés absentes de en.js : ${missingInEn.join(', ')}`);
+  assert.deepEqual(missingInFr, [], `clés absentes de fr.js : ${missingInFr.join(', ')}`);
+});
 
 /* ─────────────── Taxonomie ─────────────── */
 
@@ -298,6 +315,22 @@ test('compagnon : répliques contextuelles', () => {
   assert.match(streak, /série|feu|grimoire|braise|rythme/i);
 });
 
+test('compagnon : réaction après quête (cérémonie de validation)', () => {
+  const s = defaultState();
+  s.seeds.companion = 0;
+  const first = companionLineAfterQuest(s, 'fr', { first: true });
+  assert.ok(typeof first === 'string' && first.length > 5);
+  assert.notEqual(first, companionLineAfterQuest(s, 'fr', { first: false }));
+
+  const a = companionLineAfterQuest(s, 'fr');
+  s.seeds.companion = 1;
+  const b = companionLineAfterQuest(s, 'fr');
+  assert.notEqual(a, b, 'le seed doit faire varier la réplique');
+
+  const enLine = companionLineAfterQuest(s, 'en');
+  assert.ok(typeof enLine === 'string' && enLine.length > 5);
+});
+
 test('titres : compétences valides, bilingues', () => {
   for (const t of TITLES) {
     assert.ok(SKILL_KEYS.includes(t.skill), t.id);
@@ -305,6 +338,52 @@ test('titres : compétences valides, bilingues', () => {
     assert.ok(t.min === 100 || t.min === 320, `${t.id} seuil`);
   }
   assert.equal(TITLES.length, 12);
+});
+
+/* ─────────────── UI : composants purs (charBits) ─────────────── */
+
+test('charBits : cartes personnage ne plantent pas et reflètent l’état', () => {
+  const s = defaultState();
+  s.name = 'Aria';
+  s.level = 3;
+  s.skills.curiosite = 100;
+  s.titles = ['curiosite_1'];
+  s.streak = 2;
+
+  assert.match(heroCardHtml(s), /Aria/);
+  assert.match(skillsGridHtml(s), /role="progressbar"/);
+  assert.match(titlesHtml(s), /title-chip/);
+  assert.equal(titlesHtml(defaultState(), true), '', 'aucun titre -> vide en mode compact');
+  assert.match(titlesHtml(defaultState(), false), /no_titles|Aucun titre/);
+  assert.match(statsHtml(s), /stats-grid/);
+});
+
+test('charBits : musée — filtre et sélection', () => {
+  const s = defaultState();
+  s.inventory = [
+    { id: 'a', item: { fr: 'Plume', en: 'Feather' }, kind: 'fragment', date: '2026-09-01' },
+    { id: 'b', item: { fr: 'Médaille', en: 'Medal' }, kind: 'collectible', date: '2026-09-02' },
+  ];
+
+  setMuseumFilter(null);
+  selectMuseumItem(null);
+  let html = inventoryHtml(s);
+  assert.match(html, /aria-pressed="true"/, 'le filtre « tout » est actif par défaut');
+  assert.match(html, /Plume|Médaille/);
+
+  setMuseumFilter('collectible');
+  html = inventoryHtml(s);
+  assert.doesNotMatch(html, /Plume/);
+  assert.match(html, /Médaille/);
+
+  setMuseumFilter('inconnu');
+  html = inventoryHtml(s);
+  assert.match(html, /aria-pressed="true"/, 'un kind invalide retombe sur « tout »');
+
+  setMuseumFilter(null);
+  selectMuseumItem('b');
+  html = inventoryHtml(s);
+  assert.match(html, /museum-detail/);
 });
 
 /* ─────────────── Tirage ─────────────── */
@@ -318,9 +397,12 @@ test('tirage : invariants sur 300 tirages', () => {
     s.history.recentFamilles = seed % 7 === 0 ? ['chaos', 'chaos', 'chaos'] : [];
     const { quests, event } = drawDaily(s, { now: new Date('2026-09-04T10:00:00'), rng });
 
-    assert.ok(quests.length >= 1 && quests.length <= 4, `count ${quests.length} (seed ${seed})`);
+    assert.equal(quests.length, 3, `exactement 3 propositions/jour (seed ${seed})`);
     const fams = quests.map((q) => q.famille);
     assert.ok(fams.includes('social'), `pas de social (seed ${seed})`);
+
+    const roles = quests.map((q) => q.role).sort();
+    assert.deepEqual(roles, ['audacieuse', 'principale', 'tranquille'], `rôles (seed ${seed})`);
 
     const counts = {};
     let effort = 0;
@@ -454,6 +536,29 @@ test('compléter une quête : aucune pénalité, XP en hausse', () => {
   assert.deepEqual(checkNoPenalty(before, s), []);
   assert.ok(s.xp + (s.level - before.level) * 1000 > before.xp);
   assert.ok(r.effects.some((e) => e.type === 'quest-done'));
+});
+
+test('événement : compléter donne XP/loot sans pénalité, ignorer ne coûte rien', () => {
+  const ctx = { now: new Date('2026-09-04T10:00:00'), rng: mulberry32(9) };
+  let s = defaultState();
+  s.level = 10; s.streak = 5; s.comfort = 4; s.ageAck = true;
+  s.event = { ...EVENTS.find((e) => e.id === 'ev_porte'), status: 'active' };
+  const before = structuredClone(s);
+
+  const dismissed = game.dismissEvent(s).state;
+  assert.deepEqual(checkNoPenalty(before, dismissed), []);
+  assert.equal(dismissed.event.status, 'dismissed');
+  assert.equal(dismissed.xp, before.xp);
+
+  const r = game.completeEvent(s, {}, ctx);
+  assert.deepEqual(checkNoPenalty(before, r.state), []);
+  assert.equal(r.state.event.status, 'done');
+  assert.ok(r.state.xp > before.xp || r.state.level > before.level);
+  assert.equal(r.state.inventory.length, 1);
+  assert.ok(r.effects.some((e) => e.type === 'event-done'));
+
+  const again = game.completeEvent(r.state, {}, ctx);
+  assert.equal(again.effects.length, 0, 'un événement déjà fait ne redonne rien');
 });
 
 test('finishOnboarding : produit une journée jouable', () => {

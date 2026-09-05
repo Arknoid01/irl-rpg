@@ -56,6 +56,5 @@ Empaquetage Android/iOS : `npm install && npx cap add android && npx cap sync`.
 Héberger `privacy.html` publiquement (URL à coller dans la console store le
 jour de la soumission) · politique de version Android (`versionCode`/
 `versionName` encore à 1/1.0) · pipeline pour étoffer durablement la banque
-de quêtes · équilibrage de la courbe d'XP. Décisions produit en attente
-(dont le choix « 3 quêtes/jour » d'un nouveau plan UX vs le moteur actuel) :
-voir `docs/DECISIONS.md` (D9).
+de quêtes. Voir `docs/DECISIONS.md` (D9/D10) pour l'historique des décisions
+produit.

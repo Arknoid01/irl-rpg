@@ -32,11 +32,11 @@ export function heroCardHtml(state) {
     </div>
     <div class="bar-row">
       <div class="bar-label"><span>${i18n.t('xp')}</span><span>${p.xp} / ${p.need}</span></div>
-      ${pctBar(p.pct, 'xp')}
+      ${pctBar(p.pct, 'xp', `${i18n.t('xp')} ${p.xp}/${p.need}`)}
     </div>
     <div class="bar-row">
       <div class="bar-label"><span>${i18n.t('elan_jour')}</span><span>${elan}%</span></div>
-      ${pctBar(elan, 'elan')}
+      ${pctBar(elan, 'elan', `${i18n.t('elan_jour')} ${elan}%`)}
       <p class="tiny muted">${i18n.t('elan_hint')}</p>
     </div>
     <div class="streak-row">🔥 ${i18n.t('streak')} : <b>${i18n.t('streak_days', { n: state.streak })}</b></div>
@@ -49,10 +49,11 @@ export function skillsGridHtml(state) {
   const rows = SKILL_KEYS.map((k) => {
     const v = state.skills[k] || 0;
     const pct = Math.min(100, (v / SKILL_TITLE_MAX) * 100);
+    const label = i18n.loc(SKILLS[k].label);
     return `
     <div class="skill-item">
-      <div class="skill-top"><span>${SKILLS[k].icon} ${i18n.loc(SKILLS[k].label)}</span><span>${v}</span></div>
-      <div class="skill-bar"><i style="width:${pct}%"></i></div>
+      <div class="skill-top"><span>${SKILLS[k].icon} ${label}</span><span>${v}</span></div>
+      <div class="skill-bar" role="progressbar" aria-valuenow="${v}" aria-valuemin="0" aria-valuemax="${SKILL_TITLE_MAX}" aria-label="${esc(label)}"><i style="width:${pct}%"></i></div>
     </div>`;
   }).join('');
   return `<div class="skills-grid">${rows}</div>`;
@@ -87,14 +88,16 @@ export function inventoryHtml(state) {
   }
 
   const filters = `
-    <div class="museum-filters" role="tablist">
+    <div class="museum-filters" role="group" aria-label="${esc(i18n.t('museum'))}">
       <button type="button" class="museum-filter${museumFilter == null ? ' active' : ''}"
+        aria-pressed="${museumFilter == null}"
         data-action="museum-filter" data-id="">${i18n.t('museum_all')} · ${view.total}</button>
       ${view.kinds.map((k) => {
         const n = view.counts[k] || 0;
         if (!n) return '';
         const meta = LOOT_KINDS[k];
         return `<button type="button" class="museum-filter${museumFilter === k ? ' active' : ''}"
+          aria-pressed="${museumFilter === k}"
           data-action="museum-filter" data-id="${k}">${meta.icon} ${esc(i18n.loc(meta.label))} · ${n}</button>`;
       }).join('')}
     </div>`;

@@ -10,9 +10,10 @@ export function esc(str) {
   return String(str == null ? '' : str).replace(/[&<>"']/g, (c) => ENT[c]);
 }
 
-export function pctBar(pct, cls = '') {
+export function pctBar(pct, cls = '', label = '') {
   const w = Math.max(0, Math.min(100, pct));
-  return `<div class="bar-track"><div class="bar-fill ${cls}" style="width:${w}%"></div></div>`;
+  const labelAttr = label ? ` aria-label="${esc(label)}"` : '';
+  return `<div class="bar-track" role="progressbar" aria-valuenow="${w}" aria-valuemin="0" aria-valuemax="100"${labelAttr}><div class="bar-fill ${cls}" style="width:${w}%"></div></div>`;
 }
 
 /** Remplace le contenu d'un conteneur par du HTML. */

@@ -48,7 +48,7 @@ export function renderJournal(state) {
     const title = i18n.t(SECTION_KEYS[sec.id] || 'journal_older');
     const entries = sec.entries.map((e) => `
       <article class="journal-entry kind-${e.kind || 'note'}">
-        <span class="journal-date">${KIND_ICON[e.kind] || '•'} ${relDate(e.date, today)}</span>
+        <span class="journal-date"><span aria-hidden="true">${KIND_ICON[e.kind] || '•'}</span> ${relDate(e.date, today)}</span>
         <p>${esc(i18n.loc(e.text))}</p>
       </article>`).join('');
     return `

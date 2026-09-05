@@ -363,5 +363,11 @@ renommer les thèmes (marques) · champ `safe_fallback` dans le modèle de quêt
 - [x] Écrire `docs/TAXONOMIE.md` (§1.1). — *fait 2026-09-04*
 - [x] Réaligner les familles du prototype sur `TAXONOMIE.md`
       (`intelligence` → `curiosite`, ajout `creation`). — *fait 2026-09-04*
-- [ ] Purger / relire 2-3 quêtes « curiosité » borderline (§3.5) — le prototype
+- [x] Purger / relire 2-3 quêtes « curiosité » borderline (§3.5) — le prototype
       n'en contient plus de problématiques ; à garder en tête pour la vraie banque.
+      — *vérifié 2026-09-05 : audité les 17 quêtes curées + les 9 templates
+      génératifs de la famille `curiosite` dans `www/js/data/quests.js` et
+      `templates.js` (`grep` ciblé sur les motifs « indice/enquête/personne
+      ciblée/photographie »). Aucune ne cible une personne précise ou ne
+      relève du repérage — tout porte sur l'environnement (couleurs, textures,
+      sons, objets, lieux). Rien à purger dans la vraie banque.*

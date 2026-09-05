@@ -73,7 +73,11 @@ test('parcours complet dans le DOM', async () => {
   assert.ok(complete, 'bouton valider après acceptation');
   await click(complete);
   await tick();
-  assert.ok($('.quest-ceremony'), 'cérémonie de validation');
+  const ceremony = $('.quest-ceremony');
+  assert.ok(ceremony, 'cérémonie de validation');
+  assert.match($('.ceremony-xp').textContent, /\+\d+\s*XP/);
+  const reaction = $('.ceremony-line').textContent.trim();
+  assert.ok(reaction.length > 3, 'réaction du compagnon affichée');
   await click('[data-action="close-overlay"]');
   await tick();
 
@@ -116,5 +120,42 @@ test('parcours complet dans le DOM', async () => {
   await click('[data-action="goto"][data-id="adventure"]');
   await click('[data-action="new-day"]');
   await tick();
-  assert.ok($$('.quest-card').length >= 1, 'nouvelles quêtes après « nouvelle journée »');
+  const freshCount = $$('.quest-card').length;
+  assert.ok(freshCount >= 1, 'nouvelles quêtes après « nouvelle journée »');
+
+  // 9. Ignorer une quête : gratuit, elle disparaît simplement de la liste
+  const toIgnore = $('[data-action="ignore-quest"]');
+  assert.ok(toIgnore, 'bouton ignorer disponible');
+  const ignoredId = toIgnore.dataset.id;
+  await click(toIgnore);
+  assert.equal($$('.quest-card').length, freshCount - 1, 'la quête ignorée disparaît de la liste');
+  const afterIgnore = JSON.parse(window.localStorage.getItem('irlrpg_save_v2'));
+  const ignoredQuest = afterIgnore.quests.find((q) => q.id === ignoredId);
+  assert.equal(ignoredQuest.status, 'ignored');
+});
+
+test('hideOverlay : fondu synchrone, contenu vidé après coup', async () => {
+  const { hideOverlay } = await import('../www/js/ui/dom.js');
+  const ov = window.document.createElement('div');
+  ov.innerHTML = '<p>contenu</p>';
+  ov.classList.add('show');
+  window.document.body.appendChild(ov);
+
+  hideOverlay(ov);
+  assert.equal(ov.classList.contains('show'), false, 'la classe show part immédiatement');
+  assert.notEqual(ov.innerHTML, '', 'le contenu reste le temps du fondu');
+
+  await new Promise((r) => setTimeout(r, 380));
+  assert.equal(ov.innerHTML, '', 'le contenu est vidé après le délai de secours');
+
+  // Rouvert entre-temps : ne doit jamais être effacé sous les pieds de l'utilisateur.
+  ov.innerHTML = '<p>nouveau contenu</p>';
+  ov.classList.add('show');
+  hideOverlay(ov);
+  ov.innerHTML = '<p>rouvert avant la fin du fondu</p>';
+  ov.classList.add('show');
+  await new Promise((r) => setTimeout(r, 380));
+  assert.notEqual(ov.innerHTML, '', 'un overlay rouvert entre-temps ne doit pas être vidé');
+
+  ov.remove();
 });

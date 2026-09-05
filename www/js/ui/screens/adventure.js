@@ -1,6 +1,6 @@
 import { companionLineForState } from '../../engine/companion.js';
 import { i18n } from '../../i18n/index.js';
-import { esc } from '../dom.js';
+import { esc, pctBar } from '../dom.js';
 import { heroCardHtml } from '../components/charBits.js';
 import { questCardHtml } from '../components/questCard.js';
 import { eventCardHtml } from '../components/eventCard.js';
@@ -13,6 +13,7 @@ export function renderAdventure(state) {
   const done = state.quests.filter((q) => q.status === 'done');
   const ignored = state.quests.filter((q) => q.status === 'ignored');
   const elan = elanDuJour(state);
+  const hasProposals = state.quests.some((q) => q.status === 'proposed');
 
   let questsBlock;
   if (state.quests.length === 0) {
@@ -44,7 +45,7 @@ export function renderAdventure(state) {
         <span class="chest-ic" aria-hidden="true">🗃</span>
         <div style="flex:1">
           <div class="bar-label"><span>${i18n.t('elan_jour')}</span><span>${done.length}/${denom}</span></div>
-          <div class="bar-track"><div class="bar-fill elan" style="width:${elan}%"></div></div>
+          ${pctBar(elan, 'elan', `${i18n.t('elan_jour')} ${done.length}/${denom}`)}
         </div>
       </div>`;
     })()
@@ -58,6 +59,7 @@ export function renderAdventure(state) {
       <button class="refresh-btn" data-action="new-day" title="${i18n.t('new_day_hint')}">↻ ${i18n.t('new_day')}</button>
     </div>
     ${chest}
+    ${hasProposals ? `<p class="choose-line">${i18n.t('choose_adventure')}</p>` : ''}
     ${questsBlock}
     ${eventCardHtml(state.event)}
   `;

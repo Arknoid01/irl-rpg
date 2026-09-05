@@ -23,6 +23,10 @@ export default {
 
   companion_label: 'Ton compagnon',
   quests_today: 'Quêtes du jour',
+  choose_adventure: 'Choisis ton aventure.',
+  q_role_principale: 'Principale',
+  q_role_tranquille: 'Tranquille',
+  q_role_audacieuse: 'Audacieuse',
   new_day: 'Nouvelle journée',
   new_day_hint: 'Rien d’obligatoire ici — prends ce qui te tente.',
   all_done_title: 'Toutes les quêtes du jour sont faites 🏆',
