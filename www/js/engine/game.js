@@ -144,6 +144,7 @@ export function completeQuest(state, { id }, ctx) {
 
   const effects = [];
   const today = todayStr(now);
+  const wasFirst = s.history.totalCompleted === 0;
 
   gainXp(s, effects, q.xp);
   gainSkills(s, effects, skillDeltasFor(q));
@@ -180,7 +181,7 @@ export function completeQuest(state, { id }, ctx) {
 
   applyRegionReveals(s, effects, today);
 
-  effects.push({ type: 'quest-done', xp: q.xp });
+  effects.push({ type: 'quest-done', xp: q.xp, first: wasFirst });
   return { state: s, effects };
 }
 

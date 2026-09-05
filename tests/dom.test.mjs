@@ -33,8 +33,10 @@ test('parcours complet dans le DOM', async () => {
   await import('../www/js/main.js');
   await tick();
 
-  // 1. Onboarding visible
+  // 1. Écran d'ouverture (grimoire fermé) puis onboarding
   assert.ok($('#overlay').classList.contains('show'), 'overlay onboarding');
+  assert.ok($('.cover-screen'), 'écran de couverture');
+  await click('[data-ob="next"]');
   assert.ok($('.onboarding'), 'écran onboarding');
 
   // welcome -> name (âge 16+ obligatoire)
@@ -70,6 +72,9 @@ test('parcours complet dans le DOM', async () => {
   const complete = $('[data-action="complete-quest"]');
   assert.ok(complete, 'bouton valider après acceptation');
   await click(complete);
+  await tick();
+  assert.ok($('.quest-ceremony'), 'cérémonie de validation');
+  await click('[data-action="close-overlay"]');
   await tick();
 
   const saved = JSON.parse(window.localStorage.getItem('irlrpg_save_v2'));

@@ -58,7 +58,7 @@ function boot() {
       syncStatusBar(state.theme);
       persist();
       render();
-      playEffects(r.effects.filter((e) => e.type !== 'onboarded'));
+      playEffects(r.effects.filter((e) => e.type !== 'onboarded'), state);
       syncDailyReminder(state);
     });
     return;
@@ -91,7 +91,7 @@ function apply(result) {
   state = result.state;
   persist();
   render();
-  playEffects(result.effects);
+  playEffects(result.effects, state);
 }
 
 async function dispatch(action, args = {}) {

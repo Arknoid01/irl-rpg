@@ -1,5 +1,6 @@
 import { i18n } from '../i18n/index.js';
-import { $ } from './dom.js';
+import { $, esc } from './dom.js';
+import { companionLineAfterQuest } from '../engine/companion.js';
 
 let toastTimer;
 export function showToast(msg) {
@@ -48,13 +49,41 @@ export function levelUpOverlay(level, opts = {}) {
   ov.classList.add('show');
 }
 
+let pendingAfterClose = [];
+
 export function closeOverlay() {
   const ov = $('#overlay');
   if (ov) { ov.classList.remove('show'); ov.innerHTML = ''; }
+  if (pendingAfterClose.length) {
+    const run = pendingAfterClose;
+    pendingAfterClose = [];
+    for (const fn of run) fn();
+  }
 }
 
-/** Joue une liste d'effets renvoyée par le moteur. */
-export function playEffects(effects) {
+/**
+ * Cérémonie de validation (plan §16) — jouée pour la quête accomplie elle-même,
+ * pas pour un simple toast : « ACCOMPLIE / le monde a changé un peu / +XP »
+ * puis la réaction (courte) du compagnon.
+ */
+function questCeremonyOverlay(state, { xp, first }, onClose) {
+  const ov = $('#overlay');
+  if (!ov) return;
+  const reaction = companionLineAfterQuest(state, state?.lang || i18n.lang, { first });
+  ov.innerHTML = `
+    <div class="levelup quest-ceremony" role="dialog" aria-live="assertive">
+      <div class="levelup-seal" aria-hidden="true">✦</div>
+      <div class="levelup-kicker">${i18n.t('quest_ceremony_title')}</div>
+      <div class="ceremony-sub">${i18n.t('quest_ceremony_sub')}</div>
+      <div class="ceremony-xp">+${xp} XP</div>
+      <p class="ceremony-line">${esc(reaction)}</p>
+      <button class="btn primary" data-action="close-overlay">${i18n.t('quest_ceremony_close')}</button>
+    </div>`;
+  ov.classList.add('show');
+  pendingAfterClose.push(onClose);
+}
+
+function playRemaining(effects) {
   let lastLevel = null;
   let lootAtLevel = null;
   for (const fx of effects || []) {
@@ -76,4 +105,17 @@ export function playEffects(effects) {
   if (lastLevel != null) {
     setTimeout(() => levelUpOverlay(lastLevel, { lootLabel: lootAtLevel || undefined }), 600);
   }
+}
+
+/** Joue une liste d'effets renvoyée par le moteur. */
+export function playEffects(effects, state) {
+  const list = effects || [];
+  const questDone = list.find((e) => e.type === 'quest-done');
+  if (questDone) {
+    // Le +XP de la quête est déjà montré dans la cérémonie : on l'enlève des toasts.
+    const rest = list.filter((e) => e !== questDone && e.type !== 'xp');
+    questCeremonyOverlay(state, questDone, () => playRemaining(rest));
+    return;
+  }
+  playRemaining(list);
 }

@@ -97,6 +97,14 @@ export default {
   levelup_sub: 'Une page se tourne dans ton grimoire.',
   levelup_close: 'Continuer',
   levelup_loot: 'Nouvelle pièce au musée : {item}',
+  quest_ceremony_title: 'Accomplie',
+  quest_ceremony_sub: 'Le monde vient de changer un peu.',
+  quest_ceremony_close: 'Continuer',
+
+  // Onboarding — écran d'ouverture (grimoire fermé)
+  cover_title: 'Et si votre quotidien cachait une aventure ?',
+  cover_body: 'IRL RPG transforme les journées ordinaires en petites aventures.',
+  cover_cta: 'Commencer mon aventure',
 
   // Onboarding
   ob_welcome_title: 'Ouvre le grimoire',
@@ -129,7 +137,7 @@ export default {
   set_appearance: 'Apparence',
   set_theme: 'Thème',
   set_language: 'Langue',
-  set_adventure: 'Aventure',
+  set_adventure: 'Préférences d’aventure',
   set_hero_name: 'Nom du héros',
   set_rename: 'Renommer',
   set_renamed: 'Nom mis à jour',

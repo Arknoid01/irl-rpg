@@ -59,6 +59,38 @@ const CTX = {
   },
 };
 
+const AFTER_QUEST = {
+  fr: [
+    'Pas mal.',
+    'Voilà qui est fait.',
+    'Le monde a bougé, un peu.',
+    'Ton compagnon hoche la tête.',
+    'Une page de plus dans le grimoire.',
+  ],
+  en: [
+    'Not bad.',
+    'Well, that’s done.',
+    'The world shifted, a little.',
+    'Your companion nods.',
+    'One more page in the grimoire.',
+  ],
+};
+
+const AFTER_QUEST_FIRST = {
+  fr: 'Ton compagnon sourit : « J’ai quelque chose pour toi. Reviens demain. »',
+  en: 'Your companion smiles: “I’ll have something for you. Come back tomorrow.”',
+};
+
+/**
+ * Réaction courte du compagnon après une quête accomplie (plan §8/§26).
+ */
+export function companionLineAfterQuest(state, lang = 'fr', opts = {}) {
+  if (opts.first) return AFTER_QUEST_FIRST[lang] || AFTER_QUEST_FIRST.fr;
+  const seed = state?.seeds?.companion || 0;
+  const lines = AFTER_QUEST[lang] || AFTER_QUEST.fr;
+  return lines[seed % lines.length];
+}
+
 function themeFallback(themeKey, lang, seed) {
   const t = THEMES[themeKey] || THEMES[DEFAULT_THEME];
   const lines = t.companionLines[lang] || t.companionLines.fr;

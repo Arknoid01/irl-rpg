@@ -181,3 +181,38 @@ inutile) — un seul pool, gate d'âge à l'onboarding.
 
 Ce n'est **pas** une vérification d'identité — déclaration honorable, comme le
 reste du jeu (D3).
+
+---
+
+## D9 — Application du `IRL_RPG_PLAN_UX_UI_V1.md` (2026-09-05)
+
+Un second document de plan (`~/Téléchargements/IRL_RPG_PLAN_UX_UI_V1.md`) est arrivé
+après la V1 livrée. Il décrit la même philosophie (grimoire, compagnon, pas de
+liste de tâches) mais avec un script écran-par-écran plus cérémonieux, et un
+détail structurel différent : « 3 propositions max/jour, on en choisit une ».
+
+**Décision : ne pas remplacer le moteur de tirage multi-quêtes budgété (D8,
+`draw.js`)** par un choix strict à 3 options. C'est une décision de fond déjà
+tranchée, testée (simulation 45 j, invariants) et livrée — la retoucher change
+l'équilibrage XP et le rythme de jeu, pas juste l'habillage. À confirmer avec
+Yannick si un vrai changement de mécanique est voulu ; en attendant, seul
+l'habillage/la cérémonie du plan a été repris.
+
+**Appliqué cette session (sans toucher au moteur de tirage) :**
+
+- Écran d'ouverture « grimoire fermé » avant l'onboarding (`.cover-screen`,
+  `ui/onboarding.js` step `cover`) — texte du plan repris quasi mot pour mot.
+- Cérémonie de validation de quête (plan §16) : overlay « Accomplie / le monde
+  vient de changer un peu / +XP / réaction du compagnon », au lieu d'un simple
+  toast. `companionLineAfterQuest()` ajouté dans `engine/companion.js`.
+- **Bug corrigé** : l'effet `{ type: 'quest-done' }` émis par
+  `completeQuest()` n'était géré par aucun `case` dans `ui/feedback.js` —
+  silencieusement ignoré depuis la livraison V1. C'est ce canal qui porte
+  maintenant la cérémonie ci-dessus.
+- Réglages : libellé de section « Aventure » → « Préférences d'aventure »
+  (plan §33), simple renommage.
+
+**Pas fait / laissé en l'état** (périmètre trop large pour une session, ou
+recoupant des décisions déjà tranchées) : refonte du choix « 3 quêtes »,
+refonte visuelle Monde/Personnage (déjà proches de l'esprit du plan),
+transitions de page supplémentaires, écran de clôture « À demain » dédié.

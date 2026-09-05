@@ -5,7 +5,7 @@ import { THEMES, THEME_KEYS } from '../data/themes.js';
 import { applyTheme } from './theme.js';
 import { $, esc } from './dom.js';
 
-const STEPS = ['welcome', 'name', 'comfort', 'families', 'notif'];
+const STEPS = ['cover', 'welcome', 'name', 'comfort', 'families', 'notif'];
 
 export function startOnboarding(initial, onComplete) {
   const ov = $('#overlay');
@@ -30,9 +30,17 @@ export function startOnboarding(initial, onComplete) {
   function chapterMark() {
     const roman = ['I', 'II', 'III', 'IV', 'V'];
     return `<div class="ob-chapter">
-      <span class="ob-chapter-ribbon">${roman[step]} / V</span>
+      <span class="ob-chapter-ribbon">${roman[step - 1]} / V</span>
       <p class="ob-companion">${i18n.t('ob_chapter_' + STEPS[step])}</p>
     </div>`;
+  }
+
+  function coverHtml() {
+    return `
+      <div class="cover-candle" aria-hidden="true"></div>
+      <h1 class="cover-title">${i18n.t('cover_title')}</h1>
+      <p class="cover-body">${i18n.t('cover_body')}</p>
+      <button class="btn primary full" data-ob="next">${i18n.t('cover_cta')}</button>`;
   }
 
   function stepHtml() {
@@ -108,9 +116,14 @@ export function startOnboarding(initial, onComplete) {
   }
 
   function render() {
-    ov.innerHTML = `<div class="onboarding ob-folio"><div class="ob-progress" aria-hidden="true">${
-      STEPS.map((_, i) => `<i class="${i <= step ? 'on' : ''}"></i>`).join('')
-    }</div>${stepHtml()}</div>`;
+    if (STEPS[step] === 'cover') {
+      ov.innerHTML = `<div class="cover-screen">${coverHtml()}</div>`;
+    } else {
+      const chapters = STEPS.slice(1);
+      ov.innerHTML = `<div class="onboarding ob-folio"><div class="ob-progress" aria-hidden="true">${
+        chapters.map((_, i) => `<i class="${i <= step - 1 ? 'on' : ''}"></i>`).join('')
+      }</div>${stepHtml()}</div>`;
+    }
     ov.classList.add('show');
     const nameInput = $('#ob-name');
     if (nameInput) setTimeout(() => nameInput.focus(), 50);
@@ -141,7 +154,7 @@ export function startOnboarding(initial, onComplete) {
       else if (data.prefFamilies.length < 3) data.prefFamilies.push(f);
       render();
     } else if (act === 'next') {
-      if (step === 0 && !data.ageAck) return;
+      if (STEPS[step] === 'welcome' && !data.ageAck) return;
       step = Math.min(STEPS.length - 1, step + 1); render();
     } else if (act === 'back') {
       step = Math.max(0, step - 1); render();
