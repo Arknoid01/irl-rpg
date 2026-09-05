@@ -167,6 +167,11 @@ input, select, textarea { font: inherit; }
   padding: 4px 16px 8px 28px;
   position: relative;
   z-index: 3;
+  animation: wrap-fade .3s ease both;
+}
+@keyframes wrap-fade {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: none; }
 }
 
 h2 {

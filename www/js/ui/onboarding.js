@@ -3,7 +3,7 @@ import { FAMILIES } from '../data/taxonomy.js';
 import { PREFERABLE_FAMILIES } from '../data/quests.js';
 import { THEMES, THEME_KEYS } from '../data/themes.js';
 import { applyTheme } from './theme.js';
-import { $, esc } from './dom.js';
+import { $, esc, hideOverlay } from './dom.js';
 
 const STEPS = ['cover', 'welcome', 'name', 'comfort', 'families', 'notif'];
 
@@ -162,8 +162,7 @@ export function startOnboarding(initial, onComplete) {
       if (!data.ageAck) return;
       ov.removeEventListener('click', onClick);
       ov.removeEventListener('change', onChange);
-      ov.classList.remove('show');
-      ov.innerHTML = '';
+      hideOverlay(ov);
       onComplete(data);
     }
   }

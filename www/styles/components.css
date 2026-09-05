@@ -367,10 +367,19 @@
   position: fixed; inset: 0; z-index: 80;
   background: rgba(12, 9, 7, .78);
   backdrop-filter: blur(4px);
-  display: none; align-items: center; justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   padding: 16px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .3s ease, visibility 0s linear .3s;
 }
-#overlay.show { display: flex; }
+#overlay.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity .3s ease, visibility 0s linear 0s;
+}
 
 .onboarding, .sheet {
   width: 100%; max-width: var(--maxw);

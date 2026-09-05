@@ -1,5 +1,5 @@
 import { i18n } from '../i18n/index.js';
-import { $, esc } from './dom.js';
+import { $, esc, hideOverlay } from './dom.js';
 import { companionLineAfterQuest } from '../engine/companion.js';
 
 let toastTimer;
@@ -52,8 +52,7 @@ export function levelUpOverlay(level, opts = {}) {
 let pendingAfterClose = [];
 
 export function closeOverlay() {
-  const ov = $('#overlay');
-  if (ov) { ov.classList.remove('show'); ov.innerHTML = ''; }
+  hideOverlay($('#overlay'));
   if (pendingAfterClose.length) {
     const run = pendingAfterClose;
     pendingAfterClose = [];

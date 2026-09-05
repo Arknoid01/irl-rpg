@@ -2,7 +2,7 @@ import { i18n, LANGS } from '../i18n/index.js';
 import { FAMILIES } from '../data/taxonomy.js';
 import { PREFERABLE_FAMILIES } from '../data/quests.js';
 import { THEMES, THEME_KEYS } from '../data/themes.js';
-import { $, esc } from './dom.js';
+import { $, esc, hideOverlay } from './dom.js';
 
 /**
  * @param {object} opts
@@ -119,8 +119,7 @@ export function openSettings({ getState, dispatch, close }) {
     ov.removeEventListener('click', onClick);
     ov.removeEventListener('input', onInput);
     ov.removeEventListener('change', onInput);
-    ov.classList.remove('show', 'sheet-mode');
-    ov.innerHTML = '';
+    hideOverlay(ov, ['sheet-mode']);
   }
 
   // Re-render externe (ex. après import) : exposé pour main.
