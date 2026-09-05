@@ -26,15 +26,18 @@ Empaquetage Android/iOS : `npm install && npx cap add android && npx cap sync`.
 | Élément | État |
 |---|---|
 | Plateforme : HTML/CSS/JS + Capacitor (D1) | ✅ |
-| Onboarding (langue, thème, prénom, confort, familles, rappel, **ack 16+**) | ✅ |
-| 3 onglets (Aventure / Journal / Personnage) + réglages, 3 thèmes | ✅ |
-| ~95 quêtes bilingues, tirage quotidien budgété, accepter/ignorer/valider | ✅ |
+| Onboarding (écran d'ouverture, langue, thème, prénom, confort, familles, rappel, **ack 16+**) | ✅ |
+| 4 onglets (Aventure / Monde / Journal / Personnage) + réglages, 3 thèmes | ✅ |
+| 98 quêtes bilingues curées + 42 templates génératifs (slots), tirage quotidien budgété | ✅ |
 | XP / niveau / 6 compétences / 12 titres / style / série sans coût | ✅ |
-| Journal (fragments + moments mémorables), événements | ✅ |
+| Journal (fragments + moments mémorables), 34 événements | ✅ |
+| Monde : carte symbolique, 10 régions, découvertes progressives | ✅ |
+| Musée / inventaire (souvenirs, jalons de niveau) | ✅ |
+| Cérémonie de validation de quête, transitions en fondu | ✅ |
 | Défi d'ami = partage de texte (pas de classement) | ✅ |
 | FR/EN + bouton de bascule, sauvegarde on-device + export/import | ✅ |
 | Rappel quotidien (`@capacitor/local-notifications`, repli web) | ✅ |
-| Monde/carte, inventaire complet, générateur libre, multijoueur, géoloc | ⬜ post-V1 |
+| Multijoueur, géoloc, générateur libre (LLM) | ⬜ non prévu (D2/D3) |
 
 ## Documentation
 
@@ -50,5 +53,9 @@ Empaquetage Android/iOS : `npm install && npx cap add android && npx cap sync`.
 
 ## Reste ouvert
 
-Générateur modulaire de quêtes (post-V1) · héberger `privacy.html` et coller
-l'URL dans la console store le jour de la soumission.
+Héberger `privacy.html` publiquement (URL à coller dans la console store le
+jour de la soumission) · politique de version Android (`versionCode`/
+`versionName` encore à 1/1.0) · pipeline pour étoffer durablement la banque
+de quêtes · équilibrage de la courbe d'XP. Décisions produit en attente
+(dont le choix « 3 quêtes/jour » d'un nouveau plan UX vs le moteur actuel) :
+voir `docs/DECISIONS.md` (D9).

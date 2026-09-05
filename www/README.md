@@ -34,19 +34,22 @@ www/
 ├── manifest.webmanifest
 ├── styles/
 │   ├── themes.css         jeux de tokens (carnet + encre nordique / sombre / néon)
-
 │   ├── base.css           reset, layout, topbar, nav, boutons
 │   └── components.css     panneaux, cartes de quête, journal, overlay, level-up…
 └── js/
     ├── main.js            contrôleur : boot, dispatch, rendu de la coquille
     ├── i18n/              index.js (t / loc) + fr.js + en.js
-    ├── data/              taxonomy · quests (~98) · events · titles · themes
+    ├── data/              taxonomy · quests (98) · templates + slots (générateur) · events ·
+    │                      titles · loot (musée) · themes · world (carte)
     ├── state/             defaults.js (forme de sauvegarde) · store.js (persist + migrations)
-    ├── engine/            dates · rng · draw (tirage quotidien) · progression · journal · game (orchestrateur) · philosophy
+    ├── engine/            dates · rng · draw (tirage quotidien) · generate (templates+slots) ·
+    │                      progression · journal · companion · events (tirage contextuel) ·
+    │                      inventory (musée) · worldView (carte) · game (orchestrateur) · philosophy
     ├── ui/                dom · theme · feedback · onboarding · settings
-    │   ├── screens/       adventure · journal · character  (render(state) -> string)
+    │   ├── screens/       adventure · world · journal · character  (render(state) -> string)
     │   └── components/    questCard · eventCard · charBits
-    └── platform/          notifications.js (Capacitor local-notifications + repli web)
+    └── platform/          notifications.js (Capacitor local-notifications + repli web) ·
+                           statusbar.js (couleur de la barre système selon le thème)
 ```
 
 Le moteur (`engine/`, `data/`, `state/`, `i18n/`) est sans DOM et testable en Node.
