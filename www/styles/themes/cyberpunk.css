@@ -4,29 +4,29 @@
    ne changent jamais — seule l'habillage visuel de ce fichier change. */
 
 [data-theme="cyberpunk"] {
-  --bg: #0e1218;
+  --bg: #05070a;
   --bg-grad: none;
-  --panel: #eef2f6;
-  --panel2: #e4eaf0;
-  --border: #b8c4d0;
-  --text: #121a22;
-  --text-dim: #4a5a6a;
+  --panel: #0c121c;
+  --panel2: #111a28;
+  --border: #1c3444;
+  --text: #d8ecf6;
+  --text-dim: #7f97a8;
   --text-on-dark: #e8f0f6;
   --text-on-dark-dim: #a8bdd0;
-  --accent: #c43a7a;
-  --accent2: #1a9bb8;
-  --gold: #b08a2e;
-  --danger: #c44555;
-  --ok: #2f9e6e;
-  --seal: #c43a7a;
-  --bar-xp: #1a9bb8;
-  --bar-elan: #c43a7a;
+  --accent: #ff2e9a;
+  --accent2: #00e5ff;
+  --gold: #f4c430;
+  --danger: #ff4d6a;
+  --ok: #33e6a0;
+  --seal: #ff2e9a;
+  --bar-xp: #00e5ff;
+  --bar-elan: #ff2e9a;
   --nav-active: #5ec8e8;
-  --theme-color: #0e1218;
-  --paper: #eef2f6;
-  --paper2: #e4eaf0;
-  --ink: #121a22;
-  --ink-dim: #4a5a6a;
+  --theme-color: #05070a;
+  --paper: #0c121c;
+  --paper2: #111a28;
+  --ink: #d8ecf6;
+  --ink-dim: #7f97a8;
 
   /* Polices — Orbitron (titres/display) + Share Tech Mono (corps), embarquées
      localement (fonts.css). Aucun autre thème ne les utilise. */
@@ -111,8 +111,8 @@
   border-radius: 3px;
   border-color: rgba(0,229,255,.35);
   background:
-    linear-gradient(160deg, rgba(0,229,255,.07), transparent 45%),
-    rgba(238,242,246,.85);
+    linear-gradient(160deg, rgba(0,229,255,.09), transparent 45%),
+    rgba(12,18,28,.88);
   animation: cyber-glow 4.5s ease-in-out infinite;
 }
 @keyframes cyber-glow {
@@ -132,8 +132,56 @@
 [data-theme="cyberpunk"] .world-frame {
   background:
     linear-gradient(160deg, rgba(0,229,255,.10), transparent 45%),
-    #0e1218;
+    var(--bg);
   box-shadow: inset 0 0 40px rgba(0,229,255,.06);
+}
+
+/* ---------- Rattrapage des contrôles secondaires — boutons/champs/pastilles
+   étaient réglés en dur pour un fond de page clair (bordures/fonds bruns ou
+   blancs translucides) ; sur un panneau désormais sombre ils seraient
+   invisibles ou détonneraient. Un seul point de reprise par famille de
+   composant plutôt que de tout retoucher au cas par cas. ---------- */
+[data-theme="cyberpunk"] .btn {
+  border-color: rgba(0,229,255,.3);
+}
+[data-theme="cyberpunk"] .btn.ghost {
+  color: var(--text);
+}
+[data-theme="cyberpunk"] .iconbtn,
+[data-theme="cyberpunk"] .sheet-head .iconbtn {
+  background: rgba(0,229,255,.08);
+  border-color: rgba(0,229,255,.3);
+  color: var(--text);
+}
+[data-theme="cyberpunk"] .onboarding input[type="text"],
+[data-theme="cyberpunk"] .onboarding input[type="number"],
+[data-theme="cyberpunk"] .sheet input[type="number"],
+[data-theme="cyberpunk"] .set-name-row input {
+  background: rgba(0,229,255,.07);
+  border-color: rgba(0,229,255,.3);
+  color: var(--text);
+}
+[data-theme="cyberpunk"] .fam-pill {
+  background: rgba(0,229,255,.07);
+  border-color: rgba(0,229,255,.3);
+}
+[data-theme="cyberpunk"] .fam-pill.active {
+  background: color-mix(in srgb, var(--seal) 22%, rgba(0,229,255,.07));
+  border-color: var(--seal);
+}
+[data-theme="cyberpunk"] .lang-toggle,
+[data-theme="cyberpunk"] .onboarding .lang-toggle,
+[data-theme="cyberpunk"] .sheet .lang-toggle {
+  background: rgba(0,229,255,.08);
+  border-color: rgba(0,229,255,.3);
+}
+[data-theme="cyberpunk"] .museum-filter {
+  background: rgba(0,229,255,.07);
+  border-color: rgba(0,229,255,.25);
+}
+[data-theme="cyberpunk"] .elan-chest {
+  background: rgba(0,229,255,.06);
+  border-color: rgba(0,229,255,.3);
 }
 
 /* ---------- Onglets : forme HUD anguleuse + couleurs propres ---------- */
