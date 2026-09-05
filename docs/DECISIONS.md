@@ -230,3 +230,47 @@ transitions de page supplémentaires, écran de clôture « À demain » dédié
   tant qu'il reste des propositions non tranchées (`adventure.js`). Sim 45 j
   après coup : toujours niveau 12 (rythme d'XP préservé). Voir aussi
   `TAXONOMIE.md` §7.
+
+---
+
+## D11 — Verrous de différenciation produit (2026-09-05)
+
+Analyse concurrentielle (Habitica, LifeUp, Finch, RPG Life, LifeForge,
+IRLQUEST) : le marché 2026 converge vers IA cloud qui construit ton skill
+tree, coach IA, leaderboards, récompenses réelles (cartes cadeaux) — et les
+utilisateurs se plaignent d'abonnements chers sans nouvelle mécanique
+(Habitica, Finch). `irl-rpg` va délibérément à rebours sur 3 axes déjà
+présents dans l'architecture mais jamais verrouillés ni rendus visibles.
+**Décision : verrouiller ces 3 piliers comme contraintes permanentes**, pas
+des choix de design révisables au coup par coup — au même titre que D3.
+
+1. **Push, jamais pull** — le joueur ne crée jamais sa propre quête. Le
+   compagnon propose (`draw.js`) ; jamais de « + ajoute ta tâche ». Toute
+   feature qui irait dans ce sens est refusée par design, pas débattue au cas
+   par cas. Différence structurelle avec Habitica/LifeUp/RPG Life (tous des
+   gamificateurs de to-do list où le joueur saisit ses propres tâches).
+2. **Anti-pression** — étend D3/D5. `docs/PHILOSOPHY_CHECKLIST.md` devient le
+   passage obligatoire pour toute feature touchant séries, notifications ou
+   comparaison entre joueurs.
+3. **Zéro cloud** — aucune télémétrie, aucun SDK analytics, aucune IA
+   distante, jamais. Garde-fou enforced (pas juste documenté) :
+   `tests/no-network.test.mjs` fait échouer la CI si `fetch`/`XMLHttpRequest`/
+   un appel réseau apparaît dans `www/js`.
+
+**Appliqué cette session (sans toucher au moteur de tirage ni à l'équilibrage
+XP) :**
+
+- Écran d'ouverture reformulé : `cover_title`/`cover_body` nomment le contraste
+  push/pas-de-liste dès la première image ; `cover_tagline` ajoute la promesse
+  vie privée avant même l'onboarding.
+- Bloc « Notre promesse » ajouté à Réglages → À propos (`set_promise`) :
+  rend explicite ce qui était seulement vrai en interne (aucun classement,
+  aucune perte réelle, ton jamais culpabilisant).
+- `streak_break_ok` (chaîne existante, jamais câblée) enfin affichée : une
+  vraie rupture de série (`bumpStreak` → `broke: true`) déclenche un toast de
+  réassurance au lieu d'un reset silencieux.
+- Réplique compagnon « callback » (`companion.js`) : cite un fragment de
+  journal d'un jour précédent — renforce « il/elle connaît ton histoire
+  précise », pas un template générique. Priorité basse (après streak/style),
+  n'affecte aucun test existant.
+- `tests/no-network.test.mjs` créé et ajouté à `npm test` / CI.

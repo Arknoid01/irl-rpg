@@ -45,14 +45,17 @@ export function checkTitles(s, effects) {
 export function bumpStreak(s, effects, todayS) {
   if (s.lastActiveDate === todayS) return;
   const y = yesterdayStr(new Date(todayS + 'T12:00:00Z'));
+  const prev = s.streak || 0;
+  let broke = false;
   if (s.lastActiveDate === y) {
     s.streak += 1;
   } else {
+    broke = prev > 1;
     s.streak = 1;
   }
   s.lastActiveDate = todayS;
   s.history.bestStreak = Math.max(s.history.bestStreak || 0, s.streak);
-  effects.push({ type: 'streak', value: s.streak });
+  effects.push({ type: 'streak', value: s.streak, broke });
 }
 
 /** % de quêtes du jour accomplies. Indicateur, PAS une ressource — ne bloque rien. */

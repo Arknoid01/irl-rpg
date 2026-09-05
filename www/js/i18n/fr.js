@@ -106,8 +106,9 @@ export default {
   quest_ceremony_close: 'Continuer',
 
   // Onboarding — écran d'ouverture (grimoire fermé)
-  cover_title: 'Et si votre quotidien cachait une aventure ?',
-  cover_body: 'IRL RPG transforme les journées ordinaires en petites aventures.',
+  cover_title: 'Ton compagnon a déjà une idée pour aujourd’hui.',
+  cover_body: 'Pas de liste à remplir : chaque jour, une petite aventure choisie pour toi dans le monde réel.',
+  cover_tagline: 'Ton aventure ne quitte jamais ton téléphone.',
   cover_cta: 'Commencer mon aventure',
 
   // Onboarding
@@ -157,6 +158,8 @@ export default {
   set_wipe: 'Tout effacer',
   set_wipe_confirm: 'Effacer toute la progression ? C’est irréversible.',
   set_about: 'À propos',
+  set_promise: 'Notre promesse',
+  set_promise_body: 'Jamais de classement, jamais de perte réelle si tu ignores une quête, jamais de ton culpabilisant. Une série qui repart ne coûte rien — littéralement : aucune notification ne te le reprochera.',
   set_privacy: 'Confidentialité',
   set_privacy_body: 'Tout reste sur cet appareil (sauvegarde locale). Pas d’analytics, pas de tracking, pas de compte. Les polices sont embarquées. Les rappels utilisent les notifications locales du système.',
   set_age_rating: 'Classement : 16+',

@@ -315,6 +315,24 @@ test('compagnon : répliques contextuelles', () => {
   assert.match(streak, /série|feu|grimoire|braise|rythme/i);
 });
 
+test('compagnon : callback cite un fragment de journal passé (axe différenciation D11)', () => {
+  const s = defaultState();
+  s.quests = [{ id: 'a', status: 'proposed', famille: 'social', text: { fr: 'x', en: 'x' }, xp: 10 }];
+  s.journal = [
+    { date: '2026-09-01', text: { fr: 'Tu as parlé à un inconnu.', en: 'You talked to a stranger.' }, kind: 'fragment' },
+  ];
+  s.seeds.companion = 0; // seed % 3 === 0 -> déclenche la branche callback
+  const line = companionLineForState(s, 'fr', new Date('2026-09-02T12:00:00'));
+  assert.match(line, /Tu as parlé à un inconnu/);
+
+  // Un fragment du jour même ne doit jamais être cité (pas encore "passé").
+  s.journal = [
+    { date: '2026-09-02', text: { fr: 'Tu as parlé à un inconnu.', en: 'You talked to a stranger.' }, kind: 'fragment' },
+  ];
+  const noSelfCite = companionLineForState(s, 'fr', new Date('2026-09-02T12:00:00'));
+  assert.doesNotMatch(noSelfCite, /Tu as parlé à un inconnu/);
+});
+
 test('compagnon : réaction après quête (cérémonie de validation)', () => {
   const s = defaultState();
   s.seeds.companion = 0;
@@ -456,15 +474,22 @@ test('gainSkills : débloque un titre', () => {
 
 test('bumpStreak : consécutif / trou / même jour', () => {
   const s = defaultState();
-  bumpStreak(s, [], '2026-09-01');
+  let fx = [];
+  bumpStreak(s, fx, '2026-09-01');
   assert.equal(s.streak, 1);
-  bumpStreak(s, [], '2026-09-02');
+  assert.equal(fx.at(-1).broke, false, 'premier jour : pas une rupture');
+  fx = [];
+  bumpStreak(s, fx, '2026-09-02');
   assert.equal(s.streak, 2);
-  bumpStreak(s, [], '2026-09-02'); // même jour
+  fx = [];
+  bumpStreak(s, fx, '2026-09-02'); // même jour
   assert.equal(s.streak, 2);
-  bumpStreak(s, [], '2026-09-10'); // trou -> reset, sans coût
+  assert.equal(fx.length, 0, 'même jour : aucun effet');
+  fx = [];
+  bumpStreak(s, fx, '2026-09-10'); // trou -> reset, sans coût
   assert.equal(s.streak, 1);
   assert.equal(s.history.bestStreak, 2);
+  assert.equal(fx.at(-1).broke, true, 'une série >1 qui casse doit être signalée pour la réassurance UI');
 });
 
 test('computeStyle : défaut puis dominante', () => {

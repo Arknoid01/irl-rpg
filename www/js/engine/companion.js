@@ -5,6 +5,7 @@ import { THEMES, DEFAULT_THEME } from '../data/themes.js';
 import { computeStyle } from './progression.js';
 import { STYLE_DEFAULT } from '../data/titles.js';
 import { loc } from '../i18n/index.js';
+import { todayStr } from './dates.js';
 
 const CTX = {
   allDone: {
@@ -57,7 +58,32 @@ const CTX = {
       `It’s clear who you are on the road: ${style}. Here’s something to feed that.`,
     ],
   },
+  // Le compagnon se souvient d'un fragment précis de ton histoire — jamais
+  // une case cochée générique. Renforce « il/elle connaît ton histoire »
+  // (axe différenciation : push, pas pull).
+  callback: {
+    fr: (t) => [
+      `Hier : « ${t} » Ton compagnon s’en souvient encore.`,
+      `Ce que tu as fait n’est pas oublié : « ${t} »`,
+    ],
+    en: (t) => [
+      `Yesterday: “${t}” Your companion still remembers it.`,
+      `What you did isn’t forgotten: “${t}”`,
+    ],
+  },
 };
+
+/** Dernier fragment/moment de journal d'un jour précédent (pas aujourd'hui). */
+function lastCallbackEntry(state, today) {
+  const journal = state.journal || [];
+  for (let i = journal.length - 1; i >= 0; i--) {
+    const e = journal[i];
+    if ((e.kind === 'fragment' || e.kind === 'moment') && e.date && e.date !== today) {
+      return e.text;
+    }
+  }
+  return null;
+}
 
 const AFTER_QUEST = {
   fr: [
@@ -101,7 +127,7 @@ function themeFallback(themeKey, lang, seed) {
  * Ligne du compagnon pour l’écran Aventure (et ailleurs).
  * @returns {string}
  */
-export function companionLineForState(state, lang = 'fr') {
+export function companionLineForState(state, lang = 'fr', now = new Date()) {
   const seed = state.seeds?.companion || 0;
   const quests = state.quests || [];
   const active = quests.filter((q) => q.status === 'proposed' || q.status === 'accepted');
@@ -133,6 +159,14 @@ export function companionLineForState(state, lang = 'fr') {
   if (style && style !== STYLE_DEFAULT && (state.history?.totalCompleted || 0) >= 4) {
     const label = loc(style, lang);
     const factory = CTX.styleLead[lang] || CTX.styleLead.fr;
+    const lines = factory(label);
+    return lines[seed % lines.length];
+  }
+
+  const callbackText = lastCallbackEntry(state, todayStr(now));
+  if (callbackText && seed % 3 === 0) {
+    const label = loc(callbackText, lang);
+    const factory = CTX.callback[lang] || CTX.callback.fr;
     const lines = factory(label);
     return lines[seed % lines.length];
   }

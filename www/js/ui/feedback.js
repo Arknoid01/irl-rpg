@@ -98,6 +98,7 @@ function playRemaining(effects) {
         if (lastLevel != null) lootAtLevel = i18n.loc(fx.item);
         break;
       case 'region': enqueueToast(i18n.t('toast_region')); break;
+      case 'streak': if (fx.broke) enqueueToast(i18n.t('streak_break_ok')); break;
       default: break;
     }
   }

@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "serve": "python3 -m http.server 8123 --directory www",
-    "test": "node --test tests/engine.test.mjs tests/dom.test.mjs",
+    "test": "node --test tests/engine.test.mjs tests/dom.test.mjs tests/no-network.test.mjs",
     "sim": "node tests/simulate.mjs",
     "cap:add:android": "cap add android",
     "cap:sync": "cap sync"

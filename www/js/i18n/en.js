@@ -106,8 +106,9 @@ export default {
   quest_ceremony_close: 'Continue',
 
   // Onboarding — opening screen (closed grimoire)
-  cover_title: 'What if your everyday life hid an adventure?',
-  cover_body: 'IRL RPG turns ordinary days into small adventures.',
+  cover_title: 'Your companion already has something for today.',
+  cover_body: 'No list to fill in: every day, a small real-world adventure picked for you.',
+  cover_tagline: 'Your adventure never leaves your phone.',
   cover_cta: 'Start my adventure',
 
   ob_welcome_title: 'Open the grimoire',
@@ -155,6 +156,8 @@ export default {
   set_wipe: 'Erase everything',
   set_wipe_confirm: 'Erase all progress? This cannot be undone.',
   set_about: 'About',
+  set_promise: 'Our promise',
+  set_promise_body: 'Never a leaderboard, never a real loss for skipping a quest, never a guilt-tripping tone. A streak starting over costs nothing — literally: no notification will ever blame you for it.',
   set_privacy: 'Privacy',
   set_privacy_body: 'Everything stays on this device (local save). No analytics, no tracking, no account. Fonts are bundled. Reminders use the system’s local notifications.',
   set_age_rating: 'Rating: 16+',

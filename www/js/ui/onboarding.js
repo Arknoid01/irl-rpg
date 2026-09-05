@@ -40,7 +40,8 @@ export function startOnboarding(initial, onComplete) {
       <div class="cover-candle" aria-hidden="true"></div>
       <h1 class="cover-title">${i18n.t('cover_title')}</h1>
       <p class="cover-body">${i18n.t('cover_body')}</p>
-      <button class="btn primary full" data-ob="next">${i18n.t('cover_cta')}</button>`;
+      <button class="btn primary full" data-ob="next">${i18n.t('cover_cta')}</button>
+      <p class="tiny muted cover-tagline">${i18n.t('cover_tagline')}</p>`;
   }
 
   function stepHtml() {
