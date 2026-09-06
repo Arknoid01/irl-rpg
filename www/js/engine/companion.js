@@ -1,5 +1,12 @@
 // Compagnon contextuel — répliques selon streak, style, carte, journée.
 // D4 : toujours « avec toi », jamais un maître du jeu.
+//
+// Voix par thème : chaque fichier de thème (data/themes/<clé>.js) peut exporter
+// un objet `ctx` optionnel qui redéfinit des « seaux » de répliques
+// (emptyDay, allDone, streakHot, mapFresh, afterQuest, afterQuestFirst).
+// Ce qui n'est pas redéfini retombe sur DEFAULT_VOICE ci-dessous — qui EST la
+// voix du thème nordique. Le texte de sécurité / d'optionnalité vit dans i18n
+// et ne dépend jamais du thème (spec §22).
 
 import { THEMES, DEFAULT_THEME } from '../data/themes.js';
 import { computeStyle } from './progression.js';
@@ -7,7 +14,7 @@ import { STYLE_DEFAULT } from '../data/titles.js';
 import { loc } from '../i18n/index.js';
 import { todayStr } from './dates.js';
 
-const CTX = {
+const DEFAULT_VOICE = {
   allDone: {
     fr: [
       'Les pages du jour sont remplies. Repose-toi — ou feuillette le journal.',
@@ -48,6 +55,31 @@ const CTX = {
       'No quests yet — your companion waits for your cue.',
     ],
   },
+  afterQuest: {
+    fr: [
+      'Pas mal.',
+      'Voilà qui est fait.',
+      'Le monde a bougé, un peu.',
+      'Ton compagnon hoche la tête.',
+      'Une page de plus dans le grimoire.',
+    ],
+    en: [
+      'Not bad.',
+      'Well, that’s done.',
+      'The world shifted, a little.',
+      'Your companion nods.',
+      'One more page in the grimoire.',
+    ],
+  },
+  afterQuestFirst: {
+    fr: ['Ton compagnon sourit : « J’ai quelque chose pour toi. Reviens demain. »'],
+    en: ['Your companion smiles: “I’ll have something for you. Come back tomorrow.”'],
+  },
+};
+
+// styleLead / callback restent partagés : ils interpolent un nom de style ou une
+// citation de journal — peu de valeur à les décliner par thème.
+const CTX = {
   styleLead: {
     fr: (style) => [
       `Ton style — « ${style} » — colore déjà la journée. Ton compagnon s’adapte.`,
@@ -58,9 +90,8 @@ const CTX = {
       `It’s clear who you are on the road: ${style}. Here’s something to feed that.`,
     ],
   },
-  // Le compagnon se souvient d'un fragment précis de ton histoire — jamais
-  // une case cochée générique. Renforce « il/elle connaît ton histoire »
-  // (axe différenciation : push, pas pull).
+  // Le compagnon se souvient d'un fragment précis de ton histoire — jamais une
+  // case cochée générique (axe différenciation : push, pas pull).
   callback: {
     fr: (t) => [
       `Hier : « ${t} » Ton compagnon s’en souvient encore.`,
@@ -72,6 +103,13 @@ const CTX = {
     ],
   },
 };
+
+/** Répliques du seau `bucket` pour le thème actif, sinon la voix par défaut. */
+function voice(themeKey, bucket, lang) {
+  const themed = THEMES[themeKey] && THEMES[themeKey].ctx && THEMES[themeKey].ctx[bucket];
+  const set = themed || DEFAULT_VOICE[bucket] || DEFAULT_VOICE.afterQuest;
+  return set[lang] || set.fr;
+}
 
 /** Dernier fragment/moment de journal d'un jour précédent (pas aujourd'hui). */
 function lastCallbackEntry(state, today) {
@@ -85,35 +123,12 @@ function lastCallbackEntry(state, today) {
   return null;
 }
 
-const AFTER_QUEST = {
-  fr: [
-    'Pas mal.',
-    'Voilà qui est fait.',
-    'Le monde a bougé, un peu.',
-    'Ton compagnon hoche la tête.',
-    'Une page de plus dans le grimoire.',
-  ],
-  en: [
-    'Not bad.',
-    'Well, that’s done.',
-    'The world shifted, a little.',
-    'Your companion nods.',
-    'One more page in the grimoire.',
-  ],
-};
-
-const AFTER_QUEST_FIRST = {
-  fr: 'Ton compagnon sourit : « J’ai quelque chose pour toi. Reviens demain. »',
-  en: 'Your companion smiles: “I’ll have something for you. Come back tomorrow.”',
-};
-
 /**
  * Réaction courte du compagnon après une quête accomplie (plan §8/§26).
  */
 export function companionLineAfterQuest(state, lang = 'fr', opts = {}) {
-  if (opts.first) return AFTER_QUEST_FIRST[lang] || AFTER_QUEST_FIRST.fr;
   const seed = state?.seeds?.companion || 0;
-  const lines = AFTER_QUEST[lang] || AFTER_QUEST.fr;
+  const lines = voice(state?.theme, opts.first ? 'afterQuestFirst' : 'afterQuest', lang);
   return lines[seed % lines.length];
 }
 
@@ -134,24 +149,24 @@ export function companionLineForState(state, lang = 'fr', now = new Date()) {
   const done = quests.filter((q) => q.status === 'done');
 
   if (!quests.length) {
-    const lines = CTX.emptyDay[lang] || CTX.emptyDay.fr;
+    const lines = voice(state.theme, 'emptyDay', lang);
     return lines[seed % lines.length];
   }
 
   if (quests.length && active.length === 0 && done.length > 0) {
-    const lines = CTX.allDone[lang] || CTX.allDone.fr;
+    const lines = voice(state.theme, 'allDone', lang);
     return lines[seed % lines.length];
   }
 
   const unlocked = state.history?.regionsUnlocked || [];
   const fresh = state.history?.regionsFresh || [];
   if (fresh.length) {
-    const lines = CTX.mapFresh[lang] || CTX.mapFresh.fr;
+    const lines = voice(state.theme, 'mapFresh', lang);
     return lines[seed % lines.length];
   }
 
   if ((state.streak || 0) >= 5) {
-    const lines = CTX.streakHot[lang] || CTX.streakHot.fr;
+    const lines = voice(state.theme, 'streakHot', lang);
     return lines[seed % lines.length];
   }
 
@@ -173,9 +188,10 @@ export function companionLineForState(state, lang = 'fr', now = new Date()) {
 
   // Carte déjà bien ouverte → mention douce occasionnelle
   if (unlocked.length >= 5 && seed % 4 === 0) {
-    const lines = CTX.mapFresh[lang] || CTX.mapFresh.fr;
+    const lines = voice(state.theme, 'mapFresh', lang);
     return lines[(seed + 1) % lines.length];
   }
 
+  // Rien de contextuel : la phrase d'ambiance du thème.
   return themeFallback(state.theme, lang, seed);
 }

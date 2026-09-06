@@ -315,6 +315,22 @@ test('compagnon : répliques contextuelles', () => {
   assert.match(streak, /série|feu|grimoire|braise|rythme/i);
 });
 
+test('compagnon : la voix suit le thème actif', () => {
+  const base = defaultState();
+  base.quests = [{ id: 'a', status: 'done', famille: 'social', text: { fr: 'x', en: 'x' }, xp: 10 }];
+
+  const nord = companionLineForState({ ...base, theme: 'nordique' }, 'fr');
+  const cyber = companionLineForState({ ...base, theme: 'cyberpunk' }, 'fr');
+  const astral = companionLineForState({ ...base, theme: 'mystique' }, 'fr');
+  assert.notEqual(nord, cyber);
+  assert.match(cyber, /réseau|missions?|IA/i);
+  assert.match(astral, /ciel|astres?|présages?/i);
+
+  // Réaction après quête : idem, et un thème sans ctx retombe sur la voix par défaut.
+  const rCyber = companionLineAfterQuest({ ...base, theme: 'cyberpunk', seeds: { companion: 1 } }, 'fr');
+  assert.match(rCyber, /Mission|IA|Données|Validé/i);
+});
+
 test('compagnon : callback cite un fragment de journal passé (axe différenciation D11)', () => {
   const s = defaultState();
   s.quests = [{ id: 'a', status: 'proposed', famille: 'social', text: { fr: 'x', en: 'x' }, xp: 10 }];
