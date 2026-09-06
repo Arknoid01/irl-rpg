@@ -655,5 +655,11 @@ test('thèmes : chaque fichier respecte le contrat', async () => {
         `${key}.companionLines.${lang}`);
       assert.equal(typeof companionLineFor(key, lang, 1), 'string');
     }
+    // `ui` est optionnel ; s'il existe, chaque slot est bilingue.
+    if (t.ui) {
+      for (const slot of Object.keys(t.ui)) {
+        assert.ok(bilingual(t.ui[slot]), `${key}.ui.${slot} bilingue`);
+      }
+    }
   }
 });

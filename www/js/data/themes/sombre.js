@@ -17,6 +17,16 @@ export default {
   },
   xpSuffix: { fr: '— le contrat est rempli', en: '— the contract is fulfilled' },
 
+  // Mots de saveur (cf. ui/themeText.js). Habillage uniquement.
+  ui: {
+    questsHeading: { fr: 'Contrats du jour', en: 'Today’s contracts' },
+    eventLabel: { fr: 'Incident', en: 'Incident' },
+    allDone: {
+      fr: 'Tous les contrats du jour sont remplis 🏆',
+      en: 'All of today’s contracts are fulfilled 🏆',
+    },
+  },
+
   // Aperçu boutique : voir le commentaire dans cyberpunk.js.
   previewVideo: null,
 };

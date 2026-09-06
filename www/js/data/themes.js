@@ -7,6 +7,12 @@
 // dans le code n'a besoin de changer (companion.js, store.js, ui/theme.js
 // importent tous depuis ce fichier, pas depuis ./themes/ directement).
 //
+// Champs optionnels d'un thème :
+//   previewVideo : chemin d'une vidéo d'aperçu boutique (sinon aperçu live CSS).
+//   ui : mots de saveur { questsHeading, eventLabel, allDone } en { fr, en },
+//        résolus par ui/themeText.js. Habillage uniquement — jamais un texte
+//        de sécurité / d'optionnalité (spec §22).
+//
 // D4 : l'entité qui propose les quêtes est un « compagnon », jamais un maître du jeu.
 // Le vocabulaire de thème n'habille que des mots de saveur ; tout le texte de
 // sécurité / optionnalité reste identique quel que soit le thème.

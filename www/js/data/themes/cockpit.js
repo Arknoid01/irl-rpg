@@ -17,5 +17,14 @@ export default {
   },
   xpSuffix: { fr: '— consigné au journal de bord', en: '— logged to the flight record' },
 
+  ui: {
+    questsHeading: { fr: 'Objectifs du jour', en: 'Today’s objectives' },
+    eventLabel: { fr: 'Incident', en: 'Incident' },
+    allDone: {
+      fr: 'Tous les objectifs du jour sont atteints 🏆',
+      en: 'All of today’s objectives met 🏆',
+    },
+  },
+
   previewVideo: null,
 };

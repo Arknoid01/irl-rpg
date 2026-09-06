@@ -17,6 +17,15 @@ export default {
   },
   xpSuffix: { fr: '— données', en: '— data' },
 
+  ui: {
+    questsHeading: { fr: 'Missions du jour', en: 'Today’s missions' },
+    eventLabel: { fr: 'Incident', en: 'Incident' },
+    allDone: {
+      fr: 'Toutes les missions du jour sont bouclées 🏆',
+      en: 'All of today’s missions are done 🏆',
+    },
+  },
+
   // Aperçu boutique (ui/shop.js) : mettre './assets/videos/cyberpunk-preview.mp4'
   // (chemin depuis www/, comme les <link> d'index.html) une fois le fichier
   // ajouté — vidéo courte en boucle, sans son (l'attribut muted est de toute

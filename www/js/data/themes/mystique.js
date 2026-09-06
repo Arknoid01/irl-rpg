@@ -17,5 +17,14 @@ export default {
   },
   xpSuffix: { fr: '— le signe est lu', en: '— the sign is read' },
 
+  ui: {
+    questsHeading: { fr: 'Présages du jour', en: 'Today’s omens' },
+    eventLabel: { fr: 'Signe', en: 'Sign' },
+    allDone: {
+      fr: 'Tous les présages du jour sont lus 🏆',
+      en: 'Every omen today has been read 🏆',
+    },
+  },
+
   previewVideo: null,
 };

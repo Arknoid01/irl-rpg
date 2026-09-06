@@ -17,5 +17,14 @@ export default {
   },
   xpSuffix: { fr: '— ça, c’est fait', en: '— that one’s done' },
 
+  ui: {
+    questsHeading: { fr: 'Missions du jour', en: 'Today’s runs' },
+    eventLabel: { fr: 'Alerte', en: 'Alert' },
+    allDone: {
+      fr: 'Toutes les missions du jour sont faites 🏆',
+      en: 'All of today’s runs are done 🏆',
+    },
+  },
+
   previewVideo: null,
 };

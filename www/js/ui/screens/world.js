@@ -1,5 +1,6 @@
 import { buildWorldView } from '../../engine/worldView.js';
 import { i18n } from '../../i18n/index.js';
+import { themeText } from '../themeText.js';
 import { esc } from '../dom.js';
 
 /** Sélection locale (non persistée). */
@@ -91,7 +92,7 @@ function detailHtml(view) {
       const meta = p.kind === 'quest'
         ? `${statusLabel(p.status === 'proposed' ? 'active' : p.status)} · +${p.xp} XP`
         : p.kind === 'event'
-          ? `${i18n.t('event_badge')} · +${p.xp} XP`
+          ? `${themeText('eventLabel', 'event_badge')} · +${p.xp} XP`
           : i18n.t('map_souvenir');
       return `<li><span class="map-pin-ic">${pinGlyph(p)}</span><div><b>${esc(title)}</b><span class="tiny muted">${esc(meta)}</span></div></li>`;
     }).join('')}</ul>`;

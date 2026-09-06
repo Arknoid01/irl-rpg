@@ -154,6 +154,8 @@ test('boutique de thèmes : ouverture depuis Réglages, déblocage puis activati
   // passer à l'écran — retour direct d'un test réel sur appareil).
   await click('[data-shop="unlock"][data-v="cyberpunk"]');
   assert.equal(window.document.documentElement.dataset.theme, 'cyberpunk', 'thème appliqué au document');
+  // Vocabulaire de thème : le titre de section suit le thème actif.
+  assert.match($('.section-label span').textContent, /Missions du jour/, 'vocab cyberpunk sur l’écran');
   assert.ok(
     $('[data-shop="activate"][data-v="nordique"]'),
     'nordique redevient « activer » une fois qu’il n’est plus le thème actif',
@@ -171,6 +173,7 @@ test('boutique de thèmes : ouverture depuis Réglages, déblocage puis activati
   // reviens à nordique pour ne pas polluer les tests suivants de ce fichier.
   await click('[data-shop="activate"][data-v="nordique"]');
   assert.equal(window.document.documentElement.dataset.theme, 'nordique');
+  assert.match($('.section-label span').textContent, /Quêtes du jour/, 'vocab par défaut restauré');
   await click('[data-shop="close"]');
 });
 

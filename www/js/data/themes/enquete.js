@@ -17,6 +17,15 @@ export default {
   },
   xpSuffix: { fr: '— versé au dossier', en: '— filed to the case' },
 
+  ui: {
+    questsHeading: { fr: 'Pistes du jour', en: 'Today’s leads' },
+    eventLabel: { fr: 'Développement', en: 'Development' },
+    allDone: {
+      fr: 'Toutes les pistes du jour sont suivies 🏆',
+      en: 'Every lead today has been followed 🏆',
+    },
+  },
+
   // Aperçu boutique : voir le commentaire dans cyberpunk.js.
   previewVideo: null,
 };
