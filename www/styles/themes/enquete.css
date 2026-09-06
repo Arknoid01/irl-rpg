@@ -70,12 +70,24 @@
   border-right: 1px solid rgba(60,45,25,.4);
   box-shadow: 3px 0 12px rgba(60,30,5,.1);
 }
-/* Taches -> anneau de café + légère vignette. */
+/* Anneau de café + effet signature : la poussière d'archive dérive lentement
+   dans le faisceau de la lampe. Sans animation, motes et anneau restent en
+   place. */
 [data-theme="enquete"] .page::after {
   background:
     radial-gradient(circle 60px at 85% 90%, transparent 52px, rgba(90,60,30,.16) 54px, transparent 60px),
+    radial-gradient(1.4px 1.4px at 26% 30%, rgba(90,70,40,.3), transparent 60%),
+    radial-gradient(1.2px 1.2px at 68% 52%, rgba(90,70,40,.24), transparent 60%),
+    radial-gradient(1.3px 1.3px at 44% 78%, rgba(90,70,40,.22), transparent 60%),
     radial-gradient(ellipse 120% 80% at 50% 50%, transparent 62%, rgba(30,22,12,.12) 100%);
+  background-repeat: no-repeat;
+  mix-blend-mode: multiply;
   opacity: .85;
+  animation: enquete-dust 26s linear infinite;
+}
+@keyframes enquete-dust {
+  from { background-position: 0 0, 0 0, 0 0, 0 0, 0 0; }
+  to { background-position: 0 0, 7px -46px, -6px -52px, 5px -48px, 0 0; }
 }
 
 /* Cadres : coins nets, bord discret. */

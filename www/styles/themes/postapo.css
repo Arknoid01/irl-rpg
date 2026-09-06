@@ -69,14 +69,23 @@
   background: repeating-linear-gradient(135deg, #b89526 0 12px, #1a1610 12px 24px);
   border-right: 1px solid rgba(60,45,25,.5);
 }
-/* Taches -> auréoles de rouille. */
+/* Taches de rouille + effet signature : grain de pellicule qui tremble
+   (friture radio). Sans animation, le grain reste, simplement fixe. */
 [data-theme="postapo"] .page::after {
   background:
     radial-gradient(ellipse 40% 24% at 10% 12%, rgba(120,60,25,.24), transparent 70%),
     radial-gradient(ellipse 34% 22% at 88% 86%, rgba(100,50,20,.26), transparent 68%),
     radial-gradient(circle 26px at 62% 32%, rgba(110,55,20,.18), transparent 72%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='130' height='130'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"),
     radial-gradient(ellipse 120% 80% at 50% 50%, transparent 44%, rgba(15,10,5,.3) 100%);
+  background-size: auto, auto, auto, 130px 130px, auto;
+  mix-blend-mode: multiply;
   opacity: .9;
+  animation: postapo-grain .5s steps(2) infinite;
+}
+@keyframes postapo-grain {
+  0% { background-position: 0 0, 0 0, 0 0, 0 0, 0 0; }
+  100% { background-position: 0 0, 0 0, 0 0, 7px -9px, 0 0; }
 }
 
 /* Cadres : coins nets, bord épais, angle entaillé. */

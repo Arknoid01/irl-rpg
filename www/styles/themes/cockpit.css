@@ -72,6 +72,9 @@
     0 0 24px -4px rgba(44,159,216,.22);
 }
 [data-theme="cockpit"] .page::before { display: none; }
+/* Effet signature : un balayage radar descend lentement sur la console.
+   Sans animation, il reste calé hors champ — ligne d'horizon + vignette
+   restent visibles. */
 [data-theme="cockpit"] .page::after {
   content: '';
   position: absolute;
@@ -80,9 +83,15 @@
   pointer-events: none;
   background:
     linear-gradient(90deg, transparent, rgba(94,200,232,.35) 50%, transparent) 0 55% / 100% 1px no-repeat,
+    linear-gradient(180deg, transparent, rgba(44,159,216,.12) 50%, transparent) 0 -220px / 100% 220px no-repeat,
     radial-gradient(ellipse 120% 80% at 50% 55%, transparent 58%, rgba(4,8,16,.32) 100%);
   mix-blend-mode: normal;
   opacity: 1;
+  animation: cockpit-scan 7s linear infinite;
+}
+@keyframes cockpit-scan {
+  from { background-position: 0 55%, 0 -220px, 0 0; }
+  to { background-position: 0 55%, 0 calc(100% + 220px), 0 0; }
 }
 
 /* Cadres : coins nets, bord bleu, léger halo. */

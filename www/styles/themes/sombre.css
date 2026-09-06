@@ -33,3 +33,22 @@
   --leather: #100c0a;
   --leather2: #181210;
 }
+
+/* Effet signature : quelques braises montent du bas de la page. Remplace les
+   taches de foxing chaudes (mieux adaptées à une teinte cendrée). Sans
+   animation, les braises restent visibles au ras du bord + vignette. */
+[data-theme="sombre"] .page::after {
+  background:
+    radial-gradient(2px 2px at 22% 98%, rgba(210,110,50,.6), transparent 60%),
+    radial-gradient(1.6px 1.6px at 54% 99%, rgba(190,80,35,.5), transparent 60%),
+    radial-gradient(2px 2px at 80% 97%, rgba(220,120,55,.45), transparent 60%),
+    radial-gradient(ellipse 120% 80% at 50% 55%, transparent 52%, rgba(20,8,8,.2) 100%);
+  background-repeat: no-repeat;
+  mix-blend-mode: normal;
+  opacity: .85;
+  animation: sombre-embers 9s linear infinite;
+}
+@keyframes sombre-embers {
+  from { background-position: 0 0, 0 0, 0 0, 0 0; }
+  to { background-position: 0 -420px, 0 -480px, 0 -400px, 0 0; }
+}
