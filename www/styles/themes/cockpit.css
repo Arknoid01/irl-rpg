@@ -1,0 +1,179 @@
+/* Thème payant — Poste de pilotage. Console d'astronef : grille HUD, bleu
+   glacier + ambre, blanc froid. Comme cyberpunk, le panneau de contenu passe
+   au sombre — d'où les rattrapages de contrôles en fin de fichier. Layout et
+   gameplay inchangés, seul l'habillage bouge. */
+
+[data-theme="cockpit"] {
+  --bg: #060a12;
+  --bg-grad: none;
+  --panel: #0d1622;
+  --panel2: #121e2e;
+  --border: #24384a;
+  --text: #dceaf4;
+  --text-dim: #8299ab;
+  --text-on-dark: #e6f0f7;
+  --text-on-dark-dim: #a4bacd;
+  --accent: #2c9fd8;
+  --accent2: #d69a3a;
+  --gold: #d69a3a;
+  --danger: #e06a52;
+  --ok: #3fb98a;
+  --seal: #2c9fd8;
+  --bar-xp: #2c9fd8;
+  --bar-elan: #d69a3a;
+  --nav-active: #5ec8e8;
+  --theme-color: #060a12;
+  --paper: #0d1622;
+  --paper2: #121e2e;
+  --ink: #dceaf4;
+  --ink-dim: #8299ab;
+
+  --font-brand: 'Chakra Petch', 'Segoe UI', sans-serif;
+  --font-display: 'Chakra Petch', 'Segoe UI', sans-serif;
+  --font-body: 'Chakra Petch', 'Segoe UI', sans-serif;
+}
+
+/* Fond : grille de console + lueur d'instruments en bas. */
+[data-theme="cockpit"] body {
+  background-color: #060a12;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(44,159,216,.05) 0 1px, transparent 1px 34px),
+    repeating-linear-gradient(90deg, rgba(44,159,216,.04) 0 1px, transparent 1px 34px),
+    radial-gradient(ellipse at 50% 118%, rgba(44,159,216,.16) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 8%, rgba(214,154,58,.06) 0%, transparent 45%);
+}
+
+/* Reliure -> châssis métal brossé à liseré bleu. */
+[data-theme="cockpit"] .book {
+  background: linear-gradient(90deg, #0a0f18 0%, #10161f 50%, #0a0f18 100%);
+  border-radius: 6px;
+  box-shadow:
+    inset 0 0 0 1px rgba(44,159,216,.3),
+    inset 0 0 30px rgba(0,0,0,.55),
+    0 18px 40px -12px rgba(0,0,0,.85),
+    0 0 24px -6px rgba(44,159,216,.28);
+}
+[data-theme="cockpit"] .book::before,
+[data-theme="cockpit"] .book::after { display: none; }
+
+/* Page -> écran de console : sombre, sans grain ni sépia, fine grille + ligne d'horizon. */
+[data-theme="cockpit"] .page {
+  background-color: var(--panel);
+  background-image:
+    linear-gradient(rgba(44,159,216,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(44,159,216,.05) 1px, transparent 1px),
+    linear-gradient(165deg, rgba(44,159,216,.08) 0%, transparent 42%);
+  background-size: 34px 34px, 34px 34px, 100% 100%;
+  filter: none;
+  border-radius: 3px;
+  box-shadow:
+    inset 0 0 0 1px rgba(44,159,216,.22),
+    inset 0 0 44px rgba(44,159,216,.05),
+    0 0 24px -4px rgba(44,159,216,.22);
+}
+[data-theme="cockpit"] .page::before { display: none; }
+[data-theme="cockpit"] .page::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, rgba(94,200,232,.35) 50%, transparent) 0 55% / 100% 1px no-repeat,
+    radial-gradient(ellipse 120% 80% at 50% 55%, transparent 58%, rgba(4,8,16,.32) 100%);
+  mix-blend-mode: normal;
+  opacity: 1;
+}
+
+/* Cadres : coins nets, bord bleu, léger halo. */
+[data-theme="cockpit"] .panel,
+[data-theme="cockpit"] .quest-card,
+[data-theme="cockpit"] .inv-item,
+[data-theme="cockpit"] .sheet,
+[data-theme="cockpit"] .journal-entry,
+[data-theme="cockpit"] .museum-grid .museum-card,
+[data-theme="cockpit"] .world-frame,
+[data-theme="cockpit"] .levelup {
+  border-radius: 3px;
+  border-color: rgba(44,159,216,.35);
+  background:
+    linear-gradient(160deg, rgba(44,159,216,.08), transparent 45%),
+    rgba(13,22,34,.9);
+}
+[data-theme="cockpit"] .world-frame {
+  background:
+    linear-gradient(160deg, rgba(44,159,216,.10), transparent 45%),
+    var(--bg);
+  box-shadow: inset 0 0 40px rgba(44,159,216,.06);
+}
+
+/* Néon sobre sur les chiffres qui comptent (XP, niveau). */
+[data-theme="cockpit"] .levelup-number,
+[data-theme="cockpit"] .quest-ceremony .ceremony-xp,
+[data-theme="cockpit"] .quest-xp {
+  text-shadow: 0 0 6px rgba(44,159,216,.5);
+}
+
+/* ---------- Rattrapage des contrôles réglés en dur pour un fond clair ------ */
+[data-theme="cockpit"] .btn { border-color: rgba(44,159,216,.32); }
+[data-theme="cockpit"] .btn.ghost { color: var(--text); }
+[data-theme="cockpit"] .btn.primary {
+  background: linear-gradient(180deg, #2c9fd8, #1f7ba8);
+  border-radius: 3px;
+}
+[data-theme="cockpit"] .iconbtn,
+[data-theme="cockpit"] .sheet-head .iconbtn {
+  background: rgba(44,159,216,.08);
+  border-color: rgba(44,159,216,.3);
+  color: var(--text);
+}
+[data-theme="cockpit"] .refresh-btn {
+  color: var(--text-dim);
+  border-color: rgba(44,159,216,.3);
+}
+[data-theme="cockpit"] .onboarding input[type="text"],
+[data-theme="cockpit"] .onboarding input[type="number"],
+[data-theme="cockpit"] .sheet input[type="number"],
+[data-theme="cockpit"] .set-name-row input {
+  background: rgba(44,159,216,.07);
+  border-color: rgba(44,159,216,.3);
+  color: var(--text);
+}
+[data-theme="cockpit"] .fam-pill {
+  background: rgba(44,159,216,.07);
+  border-color: rgba(44,159,216,.3);
+}
+[data-theme="cockpit"] .fam-pill.active {
+  background: color-mix(in srgb, var(--seal) 22%, rgba(44,159,216,.07));
+  border-color: var(--seal);
+}
+[data-theme="cockpit"] .lang-toggle,
+[data-theme="cockpit"] .onboarding .lang-toggle,
+[data-theme="cockpit"] .sheet .lang-toggle {
+  background: rgba(44,159,216,.08);
+  border-color: rgba(44,159,216,.3);
+}
+[data-theme="cockpit"] .museum-filter {
+  background: rgba(44,159,216,.07);
+  border-color: rgba(44,159,216,.25);
+}
+[data-theme="cockpit"] .elan-chest {
+  background: rgba(44,159,216,.06);
+  border-color: rgba(44,159,216,.3);
+}
+
+/* Onglets -> touches de console. */
+[data-theme="cockpit"] .tab {
+  color: #dceaf4;
+  clip-path: none;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(180deg, #14202c, #0d151d);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.10),
+    0 0 12px -2px rgba(44,159,216,.35);
+}
+[data-theme="cockpit"] .tab:nth-child(2),
+[data-theme="cockpit"] .tab:nth-child(3),
+[data-theme="cockpit"] .tab:nth-child(4) {
+  background: linear-gradient(180deg, #14202c, #0d151d);
+}

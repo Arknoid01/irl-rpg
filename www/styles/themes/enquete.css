@@ -1,0 +1,109 @@
+/* Thème payant — Enquête. Bureau de nuit, chemise cartonnée, machine à
+   écrire. Panneau de contenu clair (papier kraft) : peu de rattrapages de
+   contrôles, seul l'habillage de la coque change vraiment. */
+
+[data-theme="enquete"] {
+  --bg: #16130e;
+  --bg-grad: none;
+  --panel: #e7dcc4;
+  --panel2: #ddcfb2;
+  --border: #c3b48f;
+  --text: #241d14;
+  --text-dim: #5f5138;
+  --text-on-dark: #efe6d2;
+  --text-on-dark-dim: #c2b295;
+  --accent: #1f3a5f;
+  --accent2: #7a6a4a;
+  --gold: #8a6f2c;
+  --danger: #a83232;
+  --ok: #4f6b45;
+  --seal: #a83232;
+  --bar-xp: #3f6690;
+  --bar-elan: #7a6a4a;
+  --nav-active: #c99a3f;
+  --theme-color: #16130e;
+  --paper: #e7dcc4;
+  --paper2: #ddcfb2;
+  --ink: #241d14;
+  --ink-dim: #5f5138;
+
+  --font-brand: 'Special Elite', 'Courier New', monospace;
+  --font-display: 'Special Elite', 'Courier New', monospace;
+}
+
+/* Fond : sous-main de bureau sombre, planches verticales à peine visibles. */
+[data-theme="enquete"] body {
+  background-color: #16130e;
+  background-image:
+    repeating-linear-gradient(92deg, rgba(0,0,0,.13) 0 3px, transparent 3px 26px),
+    radial-gradient(ellipse at 72% 4%, rgba(200,170,110,.14) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 100%, rgba(0,0,0,.4) 0%, transparent 60%);
+}
+
+/* Reliure -> onglet de chemise kraft. */
+[data-theme="enquete"] .book {
+  background: linear-gradient(90deg, #6b5836 0%, #7d6a44 8%, #8a7550 13%, #6b5836 18%, #5a4a30 100%);
+  border-radius: 8px 8px 6px 6px;
+  box-shadow:
+    inset 3px 0 10px rgba(0,0,0,.4),
+    0 14px 34px -12px rgba(0,0,0,.7),
+    0 0 0 1px rgba(70,55,30,.6);
+}
+[data-theme="enquete"] .book::before { display: none; }
+
+/* Page -> feuille kraft à plat, sans grain sépia ni taches de foxing. */
+[data-theme="enquete"] .page {
+  background-color: var(--paper);
+  background-image:
+    repeating-linear-gradient(180deg, transparent 0 30px, rgba(90,70,40,.05) 30px 31px),
+    linear-gradient(160deg, #ece1c8 0%, #e2d4b4 60%, #d8c8a2 100%);
+  filter: none;
+  border-radius: 1px;
+  box-shadow:
+    inset 0 0 0 1px rgba(90,70,40,.22),
+    inset 0 0 50px rgba(70,50,20,.08),
+    0 1px 0 rgba(255,245,220,.15);
+}
+/* Gouttière -> tranche « CONFIDENTIEL » rouge. */
+[data-theme="enquete"] .page::before {
+  background: repeating-linear-gradient(180deg, #a83232 0 10px, #8a2828 10px 20px);
+  border-right: 1px solid rgba(60,45,25,.4);
+  box-shadow: 3px 0 12px rgba(60,30,5,.1);
+}
+/* Taches -> anneau de café + légère vignette. */
+[data-theme="enquete"] .page::after {
+  background:
+    radial-gradient(circle 60px at 85% 90%, transparent 52px, rgba(90,60,30,.16) 54px, transparent 60px),
+    radial-gradient(ellipse 120% 80% at 50% 50%, transparent 62%, rgba(30,22,12,.12) 100%);
+  opacity: .85;
+}
+
+/* Cadres : coins nets, bord discret. */
+[data-theme="enquete"] .panel,
+[data-theme="enquete"] .quest-card,
+[data-theme="enquete"] .inv-item,
+[data-theme="enquete"] .sheet,
+[data-theme="enquete"] .journal-entry {
+  border-radius: 1px;
+  border-color: rgba(60,45,25,.32);
+}
+
+/* Onglets -> intercalaires de dossier (clairs, texte foncé). */
+[data-theme="enquete"] .tab {
+  color: #2a2016;
+  clip-path: none;
+  border-radius: 7px 7px 0 0;
+  background: linear-gradient(180deg, #cdbb95, #b6a074);
+}
+[data-theme="enquete"] .tab:nth-child(2) { background: linear-gradient(180deg, #b7c0c9, #9aa7b2); }
+[data-theme="enquete"] .tab:nth-child(3) { background: linear-gradient(180deg, #b3c0a0, #96a67e); }
+[data-theme="enquete"] .tab:nth-child(4) { background: linear-gradient(180deg, #d8c48a, #bfa869); }
+[data-theme="enquete"] .tab.active { color: #16110a; }
+
+/* Boutons primaires : étiquette rectangulaire. */
+[data-theme="enquete"] .btn { border-radius: 1px; }
+[data-theme="enquete"] .btn.primary,
+[data-theme="enquete"] .btn.done { border-radius: 1px; }
+[data-theme="enquete"] .btn.primary {
+  background: linear-gradient(180deg, #2a4a70, #1f3a5f);
+}

@@ -1,0 +1,106 @@
+/* Thème payant — Mystique. Ciel étoilé, constellations, enluminure. Panneau
+   de contenu clair (parchemin lilas) ; la coque passe au bleu nuit et l'or
+   remplace les dorures chaudes. */
+
+[data-theme="mystique"] {
+  --bg: #0c0a18;
+  --bg-grad: none;
+  --panel: #ece7ef;
+  --panel2: #e2dae7;
+  --border: #c7bcd0;
+  --text: #241a33;
+  --text-dim: #574a68;
+  --text-on-dark: #ece6f4;
+  --text-on-dark-dim: #b9a9cf;
+  --accent: #5b3fa0;
+  --accent2: #b78f3a;
+  --gold: #a67f2e;
+  --danger: #9c3557;
+  --ok: #4a6b5c;
+  --seal: #5b3fa0;
+  --bar-xp: #6a4b9e;
+  --bar-elan: #b78f3a;
+  --nav-active: #c9a94a;
+  --theme-color: #0c0a18;
+  --paper: #ece7ef;
+  --paper2: #e2dae7;
+  --ink: #241a33;
+  --ink-dim: #574a68;
+
+  --font-brand: 'Cinzel', 'Fondamento', 'Palatino Linotype', serif;
+  --font-display: 'Cinzel', 'Fondamento', 'Palatino Linotype', serif;
+}
+
+/* Fond : voûte céleste — halo violet en haut, nuit dense en bas + étoiles. */
+[data-theme="mystique"] body {
+  background-color: #0c0a18;
+  background-image:
+    radial-gradient(1.4px 1.4px at 15% 22%, rgba(255,255,255,.9), transparent 60%),
+    radial-gradient(1.1px 1.1px at 62% 12%, rgba(255,255,255,.7), transparent 60%),
+    radial-gradient(1.5px 1.5px at 84% 30%, #fff, transparent 60%),
+    radial-gradient(1.1px 1.1px at 34% 46%, rgba(255,255,255,.6), transparent 60%),
+    radial-gradient(ellipse at 50% -8%, rgba(91,63,160,.30) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 108%, rgba(35,22,66,.5) 0%, transparent 60%);
+  background-size: 320px 320px, 260px 260px, 380px 380px, 300px 300px, 100% 100%, 100% 100%;
+}
+
+/* Reliure -> ais sombre à tranche dorée. */
+[data-theme="mystique"] .book {
+  background: linear-gradient(90deg, #140f26 0%, #1e1738 9%, #2a1f4a 14%, #1a1330 100%);
+  border-radius: 4px 14px 14px 4px;
+  box-shadow:
+    inset 4px 0 14px rgba(0,0,0,.6),
+    inset -2px 0 8px rgba(183,143,58,.14),
+    0 18px 44px -12px rgba(0,0,0,.8),
+    0 0 0 1px rgba(120,95,40,.5);
+}
+
+/* Page -> parchemin lilas pâle à plat, poussière d'or au lieu du foxing. */
+[data-theme="mystique"] .page {
+  background-color: var(--paper);
+  background-image:
+    repeating-linear-gradient(180deg, transparent 0 29px, rgba(91,63,160,.05) 29px 30px),
+    linear-gradient(165deg, #f1ecf4 0%, #e7e0ec 55%, #ddd4e6 100%);
+  filter: none;
+  border-radius: 4px;
+  box-shadow:
+    inset 0 0 0 1px rgba(91,63,160,.22),
+    inset 0 0 55px rgba(60,40,110,.08),
+    0 1px 0 rgba(255,255,255,.15);
+}
+[data-theme="mystique"] .page::before {
+  background: linear-gradient(90deg, rgba(183,143,58,.3), rgba(183,143,58,.06) 55%, transparent 100%);
+  border-right: 1px solid rgba(183,143,58,.5);
+}
+[data-theme="mystique"] .page::after {
+  background:
+    radial-gradient(circle 1.5px at 20% 25%, rgba(183,143,58,.4), transparent 60%),
+    radial-gradient(circle 1.5px at 76% 60%, rgba(183,143,58,.32), transparent 60%),
+    radial-gradient(circle 1.5px at 55% 15%, rgba(183,143,58,.28), transparent 60%),
+    radial-gradient(ellipse 120% 80% at 50% 50%, transparent 60%, rgba(20,12,40,.14) 100%);
+  mix-blend-mode: normal;
+  opacity: .8;
+}
+
+/* Cadres : bord double, coins doux. */
+[data-theme="mystique"] .panel,
+[data-theme="mystique"] .quest-card,
+[data-theme="mystique"] .inv-item,
+[data-theme="mystique"] .sheet,
+[data-theme="mystique"] .journal-entry {
+  border-radius: 4px;
+  border: 1px double rgba(91,63,160,.5);
+}
+
+/* Onglets nuit + liseré or actif (l'accent actif est géré par --nav-active). */
+[data-theme="mystique"] .tab {
+  color: #ece6f4;
+  background: linear-gradient(180deg, #3a2d5e, #281f42);
+}
+[data-theme="mystique"] .tab:nth-child(2) { background: linear-gradient(180deg, #2f2d5e, #201f42); }
+[data-theme="mystique"] .tab:nth-child(3) { background: linear-gradient(180deg, #2d3d5e, #1f2a42); }
+[data-theme="mystique"] .tab:nth-child(4) { background: linear-gradient(180deg, #5a4a7a, #3f3358); }
+
+[data-theme="mystique"] .btn.primary {
+  background: linear-gradient(180deg, #6b4bb0, #5b3fa0);
+}

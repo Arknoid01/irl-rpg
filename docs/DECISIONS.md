@@ -349,3 +349,14 @@ désormais un thème non débloqué — impossible de contourner un futur achat 
 trafiquant juste `state.theme`. Prochaine étape non commencée : brancher un
 vrai plugin IAP Capacitor qui appelle `unlockTheme()` après un paiement
 validé par le store, au lieu du bouton "Débloquer" gratuit actuel.
+
+**Catalogue étendu (2026-09-06)** — 4 thèmes payants de plus au format « 1
+fichier = 1 thème » : `enquete` (bureau + chemise cartonnée, Special Elite),
+`mystique` (ciel étoilé + enluminure, Cinzel), `postapo` (plaque rivetée +
+papier délavé, Black Ops One), `cockpit` (console HUD sombre, Chakra Petch —
+seul des 4 dont le panneau passe au sombre, d'où des rattrapages de
+contrôles comme cyberpunk). Total : 1 gratuit + 6 payants. Aucun paiement
+réel branché (toujours le déblocage local D12). Polices latin-seul, SIL OFL
+sauf Special Elite (Apache 2.0), cf. `assets/fonts/LICENSES.md`. CSS validé
+au parseur `css-tree`. QA visuelle toujours impossible ici (flatpak Firefox
+headless : `CanCreateUserNamespace EPERM`) — à vérifier sur appareil.

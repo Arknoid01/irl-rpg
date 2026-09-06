@@ -641,3 +641,19 @@ test('boutique de thèmes (D12) : déblocage local + activation verrouillée', (
   r = game.unlockTheme(s, { theme: 'imaginaire' });
   assert.equal(r.effects.length, 0);
 });
+
+test('thèmes : chaque fichier respecte le contrat', async () => {
+  const { THEMES, THEME_KEYS, companionLineFor } = await import('../www/js/data/themes.js');
+  assert.ok(THEME_KEYS.length >= 7, 'catalogue complet');
+  for (const key of THEME_KEYS) {
+    const t = THEMES[key];
+    assert.ok(bilingual(t.label), `${key}.label bilingue`);
+    assert.ok(typeof t.dot === 'string' && t.dot.length, `${key}.dot`);
+    assert.ok(bilingual(t.xpSuffix), `${key}.xpSuffix bilingue`);
+    for (const lang of ['fr', 'en']) {
+      assert.ok(Array.isArray(t.companionLines[lang]) && t.companionLines[lang].length >= 3,
+        `${key}.companionLines.${lang}`);
+      assert.equal(typeof companionLineFor(key, lang, 1), 'string');
+    }
+  }
+});

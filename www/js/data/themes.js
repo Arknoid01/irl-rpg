@@ -14,10 +14,14 @@
 import nordique from './themes/nordique.js';
 import sombre from './themes/sombre.js';
 import cyberpunk from './themes/cyberpunk.js';
+import enquete from './themes/enquete.js';
+import mystique from './themes/mystique.js';
+import postapo from './themes/postapo.js';
+import cockpit from './themes/cockpit.js';
 
 export const DEFAULT_THEME = 'nordique';
 
-export const THEMES = { nordique, sombre, cyberpunk };
+export const THEMES = { nordique, sombre, cyberpunk, enquete, mystique, postapo, cockpit };
 
 export const THEME_KEYS = Object.keys(THEMES);
 

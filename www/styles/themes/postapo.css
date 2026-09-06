@@ -1,0 +1,108 @@
+/* Thème payant — Post-apo. Ruines, plaque rivetée, grésillement radio.
+   Panneau de contenu clair mais sali ; coque en métal rouillé et béton. */
+
+[data-theme="postapo"] {
+  --bg: #14110d;
+  --bg-grad: none;
+  --panel: #ddd1ba;
+  --panel2: #d1c3a6;
+  --border: #b7a683;
+  --text: #221c13;
+  --text-dim: #5c4c34;
+  --text-on-dark: #e9dec6;
+  --text-on-dark-dim: #b8a888;
+  --accent: #a4552b;
+  --accent2: #7a6a3f;
+  --gold: #97781f;
+  --danger: #a33a26;
+  --ok: #5c6a3c;
+  --seal: #a4552b;
+  --bar-xp: #8a6a3a;
+  --bar-elan: #a4552b;
+  --nav-active: #c08a3a;
+  --theme-color: #14110d;
+  --paper: #ddd1ba;
+  --paper2: #d1c3a6;
+  --ink: #221c13;
+  --ink-dim: #5c4c34;
+
+  --font-brand: 'Black Ops One', 'Fondamento', 'Segoe UI', sans-serif;
+  --font-display: 'Black Ops One', 'Fondamento', 'Segoe UI', sans-serif;
+}
+
+/* Fond : béton + balayage radio horizontal. */
+[data-theme="postapo"] body {
+  background-color: #14110d;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(0,0,0,.14) 0 2px, transparent 2px 5px),
+    radial-gradient(ellipse at 50% 35%, rgba(90,60,30,.12) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 100%, rgba(0,0,0,.45) 0%, transparent 60%);
+}
+
+/* Reliure -> plaque métal rouillée. */
+[data-theme="postapo"] .book {
+  background: linear-gradient(90deg, #3a3128 0%, #4a3d30 8%, #574636 13%, #3a3128 18%, #2c2620 100%);
+  border-radius: 2px;
+  box-shadow:
+    inset 3px 0 10px rgba(0,0,0,.5),
+    inset -2px 0 6px rgba(200,120,60,.06),
+    0 14px 34px -12px rgba(0,0,0,.8),
+    0 0 0 1px rgba(60,45,30,.7);
+}
+[data-theme="postapo"] .book::before { opacity: .35; }
+
+/* Page -> papier délavé et taché (garde du grain, teinte rouille pas sépia). */
+[data-theme="postapo"] .page {
+  background-color: var(--paper);
+  background-image:
+    repeating-linear-gradient(180deg, transparent 0 30px, rgba(60,45,25,.06) 30px 31px),
+    linear-gradient(160deg, #e3d7be 0%, #d7c8a8 55%, #cbb98f 100%);
+  filter: contrast(1.04) saturate(.82);
+  border-radius: 2px;
+  box-shadow:
+    inset 0 0 0 1px rgba(60,45,25,.28),
+    inset 0 0 55px rgba(50,35,15,.12),
+    0 1px 0 rgba(255,240,210,.12);
+}
+/* Gouttière -> bande de danger. */
+[data-theme="postapo"] .page::before {
+  background: repeating-linear-gradient(135deg, #b89526 0 12px, #1a1610 12px 24px);
+  border-right: 1px solid rgba(60,45,25,.5);
+}
+/* Taches -> auréoles de rouille. */
+[data-theme="postapo"] .page::after {
+  background:
+    radial-gradient(ellipse 40% 24% at 10% 12%, rgba(120,60,25,.24), transparent 70%),
+    radial-gradient(ellipse 34% 22% at 88% 86%, rgba(100,50,20,.26), transparent 68%),
+    radial-gradient(circle 26px at 62% 32%, rgba(110,55,20,.18), transparent 72%),
+    radial-gradient(ellipse 120% 80% at 50% 50%, transparent 44%, rgba(15,10,5,.3) 100%);
+  opacity: .9;
+}
+
+/* Cadres : coins nets, bord épais, angle entaillé. */
+[data-theme="postapo"] .panel,
+[data-theme="postapo"] .quest-card,
+[data-theme="postapo"] .inv-item,
+[data-theme="postapo"] .sheet,
+[data-theme="postapo"] .journal-entry {
+  border-radius: 0;
+  border: 2px solid rgba(90,55,30,.4);
+}
+
+/* Onglets stencil métal. */
+[data-theme="postapo"] .tab {
+  color: #e9dec6;
+  border-radius: 0;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
+  background: linear-gradient(180deg, #6a4a30, #47301f);
+}
+[data-theme="postapo"] .tab:nth-child(2) { background: linear-gradient(180deg, #4a4a44, #2e2e2a); }
+[data-theme="postapo"] .tab:nth-child(3) { background: linear-gradient(180deg, #5a5238, #3a3524); }
+[data-theme="postapo"] .tab:nth-child(4) { background: linear-gradient(180deg, #7a5a28, #4a3818); }
+
+[data-theme="postapo"] .btn { border-radius: 0; }
+[data-theme="postapo"] .btn.primary,
+[data-theme="postapo"] .btn.done { border-radius: 0; }
+[data-theme="postapo"] .btn.primary {
+  background: linear-gradient(180deg, #a4552b, #7a3c1c);
+}
