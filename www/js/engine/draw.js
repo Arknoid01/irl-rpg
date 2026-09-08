@@ -12,6 +12,7 @@ import { weightedPick, shuffle, defaultRng } from './rng.js';
 import { expandTemplates } from './generate.js';
 import { drawEvent, adaptiveFamilyBonus } from './events.js';
 import { isComebackDay } from './comeback.js';
+import { currentArcStep } from './arcs.js';
 
 // Exactement 3 propositions/jour (plan UX : « choisis ton aventure », D9/D10
 // du 2026-09-05) — le moteur de tirage/budget/accept-multiple reste inchangé,
@@ -19,6 +20,9 @@ import { isComebackDay } from './comeback.js';
 const MIN_QUESTS = 3;
 const MAX_QUESTS = 3;
 const HIDDEN_SWAP_CHANCE = 0.25;
+// Étape de mini-arc : ~1 fois tous les 3-4 jours quand un arc est disponible
+// (4 arcs de 3-4 étapes ≈ 2-3 mois de jeu).
+const ARC_STEP_CHANCE = 0.28;
 const EVENT_CHANCE = 0.32;
 const COMEBACK_EVENT_CHANCE = 0.8;
 // Après ce nombre de jours sans événement, on en force un : il faut qu'il y ait
@@ -104,6 +108,8 @@ export function drawDaily(state, { now = new Date(), rng = defaultRng } = {}) {
     if (chosen.some((c) => c.id === q.id)) return false;
     if (q.templateId && chosen.some((c) => c.templateId === q.templateId)) return false;
     if ((familleCount[q.famille] || 0) >= 2) return false;
+    // Au retour après absence, on ne propose jamais d'effort conséquent.
+    if (comeback && q.effort === 'consequent') return false;
     if (q.effort === 'consequent' && consequentUsed) return false;
     const next = effortUsed + EFFORT_POINTS[q.effort];
     if (next > DAILY_EFFORT_BUDGET) {
@@ -157,9 +163,31 @@ export function drawDaily(state, { now = new Date(), rng = defaultRng } = {}) {
     if (chosen.length >= MIN_QUESTS && effortUsed >= DAILY_EFFORT_BUDGET - 1) break;
   }
 
-  // 3. Quête cachée à la place d'un créneau non-social (25 %),
-  //    sans casser les invariants (≤1 conséquent, ≤2 par famille, budget).
-  if (rng() < HIDDEN_SWAP_CHANCE && chosen.length) {
+  // 3a. Étape de mini-arc secret (Phase 3.3) — occupe le créneau « mystère »
+  //     à la place d'une quête cachée aléatoire. Toujours légère + audace 2,
+  //     donc les invariants tiennent (budget d'effort ne fait que baisser).
+  let arcInjected = false;
+  const arcStep = currentArcStep(state);
+  if (arcStep && rng() < ARC_STEP_CHANCE && chosen.length) {
+    let idx = -1;
+    for (let i = chosen.length - 1; i >= 0; i--) {
+      if (chosen[i].famille !== 'social' && chosen[i].id !== arcStep.id) { idx = i; break; }
+    }
+    if (idx >= 0) {
+      const rest = chosen.filter((_, i) => i !== idx);
+      const famOk = rest.filter((c) => c.famille === arcStep.famille).length < 2;
+      const dup = chosen.some((c) => c.id === arcStep.id) || recentDone.has(arcStep.id);
+      if (famOk && !dup) {
+        chosen[idx] = { ...arcStep, status: 'proposed' };
+        arcInjected = true;
+      }
+    }
+  }
+
+  // 3b. Sinon, quête cachée à la place d'un créneau non-social (25 %),
+  //     sans casser les invariants (≤1 conséquent, ≤2 par famille, budget).
+  //     Pas au retour après absence — on garde la reprise légère.
+  if (!arcInjected && !comeback && rng() < HIDDEN_SWAP_CHANCE && chosen.length) {
     let idx = chosen.length - 1;
     for (let i = chosen.length - 1; i >= 0; i--) {
       if (chosen[i].famille !== 'social') { idx = i; break; }

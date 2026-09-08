@@ -68,6 +68,7 @@ export default {
   q_effort_moyen: 'moyen',
   q_effort_consequent: 'conséquent',
   q_send_friend: '↗ Partager',
+  q_arc_marker: '🧵 une piste',
   q_mystery: '❓ Quête mystérieuse — son sens se révélera si tu l’acceptes.',
 
   skills: 'Compétences',
@@ -121,6 +122,8 @@ export default {
   toast_item: 'Objet obtenu : {item}',
   toast_loot: 'Vitrine : {item}',
   toast_region: 'Carte : brume levée',
+  toast_arc_clue: '🧵 Un indice s’ajoute à ton journal',
+  toast_arc_done: '🗝 Une piste se referme',
   levelup_title: 'Niveau supérieur',
   levelup_sub: 'Une page se tourne dans ton grimoire.',
   levelup_close: 'Continuer',

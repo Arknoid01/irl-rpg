@@ -35,6 +35,7 @@ export function defaultState() {
 
     milestones: {},        // <clé de jalon> -> 'YYYY-MM-DD' de la première fois
     discoveries: {},       // <clé de contexte de vie> -> 'YYYY-MM-DD' (Phase 2.4)
+    arcs: { active: null, step: 0, completed: [] }, // mini-arcs secrets (Phase 3.3)
 
     history: {
       social: { proposed: 0, skipped: 0, completed: 0 },

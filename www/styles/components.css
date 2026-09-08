@@ -434,6 +434,7 @@
 }
 .quest-meta { font-size: .76rem; color: var(--text-dim); margin: 4px 0 8px; }
 .quest-meta .linkbtn { text-decoration: none; }
+.quest-thread { color: var(--accent); font-style: italic; }
 /* « Accepter » domine, « Ignorer » reste discret (ROADMAP Phase 0.4). */
 .quest-actions { display: flex; gap: 8px; align-items: stretch; }
 .quest-actions .btn { flex: 1; }
@@ -471,6 +472,10 @@
 .journal-entry.kind-chapitre { border-left-color: var(--seal); }
 .journal-entry.kind-decouverte { border-left-color: #4a7a9a; }
 .journal-entry.kind-evenement { border-left-color: var(--danger); }
+.journal-entry.kind-jour { border-left-color: var(--text-dim); }
+.journal-entry.kind-indice { border-left-color: var(--accent); }
+.journal-entry.kind-revelation { border-left-color: var(--gold); }
+.journal-entry.kind-revelation p { font-style: italic; }
 .journal-date { font-size: .72rem; color: var(--text-dim); display: block; margin-bottom: 4px; }
 .journal-entry p { margin: 0; font-size: .95rem; color: var(--text); }
 

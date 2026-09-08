@@ -141,6 +141,7 @@ console.log(`  Objets (souvenirs) ...... ${state.inventory.length}`);
 console.log(`  Entrées de journal ...... ${state.journal.length}`);
 console.log(`  Jalons atteints ......... ${Object.keys(state.milestones).length}  (${Object.keys(state.milestones).join(', ') || '—'})`);
 console.log(`  Découvertes ............. ${Object.keys(state.discoveries).length}  (${Object.keys(state.discoveries).join(', ') || '—'})`);
+console.log(`  Mini-arcs terminés ...... ${state.arcs.completed.length}  (${state.arcs.completed.join(', ') || '—'})${state.arcs.active ? ` · en cours : ${state.arcs.active} (étape ${state.arcs.step})` : ''}`);
 console.log(`  Reprises (retours) ...... ${state.history.comebacks}`);
 console.log(`  Titres débloqués ........ ${unlockedTitles.join(', ') || '—'}`);
 console.log(`  Jours joués (history) ... ${state.history.daysPlayed}`);

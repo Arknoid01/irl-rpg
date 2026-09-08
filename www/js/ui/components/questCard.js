@@ -51,6 +51,7 @@ export function questCardHtml(quest, themeKey) {
   const friend = quest.defi_ami
     ? ` · <button class="linkbtn" data-action="share-quest" data-id="${quest.id}">${i18n.t('q_send_friend')}</button>`
     : '';
+  const thread = quest.arcId ? ` · <span class="quest-thread">${i18n.t('q_arc_marker')}</span>` : '';
 
   let stamp = '';
   if (quest.status === 'done') {
@@ -68,7 +69,7 @@ export function questCardHtml(quest, themeKey) {
     ${badge}
     ${body}
     ${fallback}
-    <div class="quest-meta">${i18n.t('q_effort')} ${effortLabel}${friend}</div>
+    <div class="quest-meta">${i18n.t('q_effort')} ${effortLabel}${thread}${friend}</div>
     ${actions}
   </article>`;
 }

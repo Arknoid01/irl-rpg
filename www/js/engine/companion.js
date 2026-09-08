@@ -7,6 +7,7 @@ import { STYLE_DEFAULT } from '../data/titles.js';
 import { loc } from '../i18n/index.js';
 import { todayStr } from './dates.js';
 import { isComebackDay } from './comeback.js';
+import { arcInProgress } from './arcs.js';
 
 // Le texte de saveur (contextuel + réaction après quête) vit désormais dans
 // data/themes/<thème>.js sous `voice` : voiceFor(state.theme) renvoie la voix
@@ -93,6 +94,13 @@ export function companionLineForState(state, lang = 'fr', now = new Date()) {
   if ((state.streak || 0) >= 5) {
     const lines = C.streakHot[lang] || C.streakHot.fr;
     return lines[seed % lines.length];
+  }
+
+  // Mini-arc en cours : mention douce occasionnelle (Phase 3.3).
+  if (arcInProgress(state) && seed % 3 === 1) {
+    const ip = voiceFor(state.theme).arc.inProgress;
+    const lines = (ip && (ip[lang] || ip.fr)) || [];
+    if (lines.length) return lines[seed % lines.length];
   }
 
   const style = computeStyle(state);

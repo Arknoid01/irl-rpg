@@ -11,6 +11,7 @@ import { todayStr } from './dates.js';
 import {
   addEntry, maybeMemorable, eventEntry, levelChapterEntry, regionRevealEntry,
   chapterFor, chapterOpenEntry, CHAPTER_QUEST_THRESHOLDS, dailyRecapEntry,
+  arcClueEntry, arcRevealEntry,
 } from './journal.js';
 import { defaultRng } from './rng.js';
 import { templateHistoryKey } from './generate.js';
@@ -23,6 +24,7 @@ import {
   recordQuestMilestones, recordEventMilestones, applyMilestones,
 } from './milestones.js';
 import { recordDiscoveries } from './discoveries.js';
+import { advanceArc } from './arcs.js';
 import { isComebackDay } from './comeback.js';
 import { THEME_KEYS } from '../data/themes.js';
 
@@ -217,9 +219,28 @@ export function completeQuest(state, { id }, ctx) {
     effects.push({ type: 'moment', text: memo });
   }
 
-  if (q.hidden) {
+  if (q.hidden && !q.arcId) {
     const loot = lootFromHiddenQuest(q, today);
     if (addLoot(s, loot)) effects.push({ type: 'loot', item: loot.item, kind: loot.kind });
+  }
+
+  // Mini-arc secret (Phase 3.3) — l'étape fait avancer la piste ; le texte
+  // brut de data/arcs.js est habillé par la voix du thème.
+  if (q.arcId) {
+    const adv = advanceArc(s, q);
+    if (adv) {
+      if (adv.last) {
+        addEntry(s, { date: today, text: arcRevealEntry(adv.text, s.theme), kind: 'revelation' });
+        const loot = {
+          ...adv.arc.loot, date: today, source: 'arc', id: `arc_${adv.arc.id}`,
+        };
+        if (addLoot(s, loot)) effects.push({ type: 'loot', item: loot.item, kind: loot.kind });
+        effects.push({ type: 'arc-done', arcId: adv.arc.id });
+      } else {
+        addEntry(s, { date: today, text: arcClueEntry(adv.text, s.theme), kind: 'indice' });
+        effects.push({ type: 'arc-clue', arcId: adv.arc.id });
+      }
+    }
   }
 
   applyRegionReveals(s, effects, today);

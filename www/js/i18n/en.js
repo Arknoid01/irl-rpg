@@ -68,6 +68,7 @@ export default {
   q_effort_moyen: 'medium',
   q_effort_consequent: 'bigger',
   q_send_friend: '↗ Share',
+  q_arc_marker: '🧵 a thread',
   q_mystery: '❓ Mystery quest — its meaning shows once you accept it.',
 
   skills: 'Skills',
@@ -121,6 +122,8 @@ export default {
   toast_item: 'Item obtained: {item}',
   toast_loot: 'Display case: {item}',
   toast_region: 'Map: fog lifted',
+  toast_arc_clue: '🧵 A clue is added to your journal',
+  toast_arc_done: '🗝 A thread closes',
   levelup_title: 'Level up',
   levelup_sub: 'A page turns in your grimoire.',
   levelup_close: 'Continue',

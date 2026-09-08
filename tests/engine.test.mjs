@@ -55,6 +55,10 @@ import {
   pathStatsHtml, inventoryHtml, setMuseumFilter, selectMuseumItem,
 } from '../www/js/ui/components/charBits.js';
 import { recordDiscoveries, DISCOVERY_KEYS } from '../www/js/engine/discoveries.js';
+import {
+  nextArc, currentArcStep, advanceArc, arcInProgress, arcState,
+} from '../www/js/engine/arcs.js';
+import { ARCS } from '../www/js/data/arcs.js';
 import { renderCharacter } from '../www/js/ui/screens/character.js';
 
 const bilingual = (v) => v && typeof v === 'object' && typeof v.fr === 'string' && typeof v.en === 'string';
@@ -544,6 +548,103 @@ test('événement d’ouverture : forcé après une longue disette', () => {
     if (drawDaily(s, { now, rng: mulberry32(seed) }).event) normal += 1;
   }
   assert.ok(normal < forced, `sans disette le tirage reste partiel : ${normal}/20`);
+});
+
+test('mini-arcs : contenu bien formé (Phase 3.3)', () => {
+  const ids = new Set();
+  for (const arc of ARCS) {
+    assert.ok(!ids.has(arc.id), `arc dupliqué : ${arc.id}`);
+    ids.add(arc.id);
+    assert.ok(arc.steps.length >= 3 && arc.steps.length <= 5, `${arc.id} : 3-5 étapes`);
+    assert.ok(FAMILY_KEYS.includes(arc.famille));
+    assert.ok(bilingual(arc.loot.item) && bilingual(arc.loot.lore));
+    assert.ok(LOOT_KINDS[arc.loot.kind], `${arc.id} loot kind`);
+    arc.steps.forEach((s, i) => {
+      assert.ok(FAMILY_KEYS.includes(s.famille) && s.famille !== 'chaos', `${arc.id}#${i} famille`);
+      assert.ok(bilingual(s.text), `${arc.id}#${i} text`);
+      assert.ok(bilingual(s.safe_fallback), `${arc.id}#${i} fallback`);
+      const last = i === arc.steps.length - 1;
+      assert.ok(bilingual(last ? s.revelation : s.indice), `${arc.id}#${i} ${last ? 'revelation' : 'indice'}`);
+    });
+  }
+  assert.equal(ARCS.length, 4);
+});
+
+test('mini-arcs : moteur — proposition, avancement, révélation', () => {
+  const s = defaultState();
+  // rien de commencé -> propose l'étape 0 du premier arc
+  const arc0 = nextArc(s);
+  assert.ok(arc0);
+  let step = currentArcStep(s);
+  assert.equal(step.arcStep, 0);
+  assert.equal(step.effort, 'leger');
+  assert.equal(step.audace, 2);
+  assert.ok(step.hidden && step.poids === 'mystere');
+
+  // compléter l'étape 0 -> arc actif, étape 1
+  let adv = advanceArc(s, step);
+  assert.equal(adv.last, false);
+  assert.equal(s.arcs.active, arc0.id);
+  assert.equal(s.arcs.step, 1);
+  assert.ok(arcInProgress(s));
+
+  // aller jusqu'à la dernière étape
+  let guard = 0;
+  while (!currentArcStep(s).arcLast && guard++ < 10) {
+    adv = advanceArc(s, currentArcStep(s));
+    assert.equal(adv.last, false);
+  }
+  const lastStep = currentArcStep(s);
+  assert.equal(lastStep.arcLast, true);
+  adv = advanceArc(s, lastStep);
+  assert.equal(adv.last, true);
+  assert.ok(adv.text.fr, 'révélation présente');
+  assert.deepEqual(s.arcs.completed, [arc0.id]);
+  assert.equal(s.arcs.active, null);
+  assert.ok(!arcInProgress(s));
+
+  // l'arc suivant devient disponible
+  const arc1 = nextArc(s);
+  assert.ok(arc1 && arc1.id !== arc0.id);
+
+  // rejouer la dernière étape ne recompte pas
+  assert.equal(advanceArc(s, lastStep), null);
+});
+
+test('mini-arcs : completeQuest fait avancer la piste + dépose une pièce', () => {
+  const ctx = { now: new Date('2026-09-04T10:00:00'), rng: mulberry32(3) };
+  let s = game.finishOnboarding(defaultState(), { name: 'P', comfort: 4, ageAck: true }, ctx).state;
+  const arc = ARCS[0];
+
+  // injecte manuellement les étapes de l'arc et les complète
+  for (let i = 0; i < arc.steps.length; i += 1) {
+    const stepQ = { ...currentArcStep(s), status: 'accepted' };
+    assert.equal(stepQ.arcStep, i);
+    s.quests = [stepQ];
+    const r = game.completeQuest(s, { id: stepQ.id }, ctx);
+    s = r.state;
+    const last = i === arc.steps.length - 1;
+    if (last) {
+      assert.ok(r.effects.some((e) => e.type === 'arc-done' && e.arcId === arc.id));
+      assert.ok(s.journal.some((e) => e.kind === 'revelation'));
+      assert.ok(s.inventory.some((it) => it.id === `arc_${arc.id}`), 'pièce de musée déposée');
+    } else {
+      assert.ok(r.effects.some((e) => e.type === 'arc-clue'));
+      assert.ok(s.journal.some((e) => e.kind === 'indice'));
+    }
+    // pas de souvenir « Chapitre glané » pour une étape d'arc
+    assert.ok(!s.inventory.some((it) => /Chapitre glané|Gleaned chapter/.test(JSON.stringify(it.item))));
+  }
+  assert.deepEqual(s.arcs.completed, [arc.id]);
+});
+
+test('mini-arcs : le compagnon mentionne une piste en cours', () => {
+  const s = defaultState();
+  s.arcs = { active: ARCS[0].id, step: 1, completed: [] };
+  s.quests = [{ id: 'a', status: 'proposed', famille: 'social', text: { fr: 'x', en: 'x' }, xp: 10 }];
+  s.seeds.companion = 1; // seed % 3 === 1 -> branche arc
+  const line = companionLineForState(s, 'fr');
+  assert.match(line, /piste|page|grimoire/i);
 });
 
 test('newDay : compteur de disette d’événement', () => {

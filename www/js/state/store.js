@@ -95,6 +95,15 @@ export function normalize(state) {
   if (!s.discoveries || typeof s.discoveries !== 'object' || Array.isArray(s.discoveries)) {
     s.discoveries = {};
   }
+  if (!s.arcs || typeof s.arcs !== 'object' || Array.isArray(s.arcs)) {
+    s.arcs = { active: null, step: 0, completed: [] };
+  } else {
+    s.arcs.active = typeof s.arcs.active === 'string' ? s.arcs.active : null;
+    s.arcs.step = Math.max(0, Math.round(s.arcs.step) || 0);
+    s.arcs.completed = Array.isArray(s.arcs.completed)
+      ? s.arcs.completed.filter((x) => typeof x === 'string')
+      : [];
+  }
   s.version = SAVE_VERSION;
   return s;
 }

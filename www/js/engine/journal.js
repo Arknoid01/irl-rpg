@@ -53,6 +53,18 @@ export function regionRevealEntry(regionLabel, themeKey) {
   };
 }
 
+/** Indice de mini-arc au journal (Phase 3.3) — texte brut habillé par le thème. */
+export function arcClueEntry(text, themeKey) {
+  const v = voiceFor(themeKey).arc.clue;
+  return { fr: v.fr(loc(text, 'fr')), en: v.en(loc(text, 'en')) };
+}
+
+/** Révélation finale d'un mini-arc. */
+export function arcRevealEntry(text, themeKey) {
+  const v = voiceFor(themeKey).arc.reveal;
+  return { fr: v.fr(loc(text, 'fr')), en: v.en(loc(text, 'en')) };
+}
+
 /**
  * Entrée de journal « du jour » (Phase 3.2) — résumé narratif de la veille.
  * @param {number} dayNo  numéro du jour résumé
