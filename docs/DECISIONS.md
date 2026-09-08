@@ -349,3 +349,36 @@ désormais un thème non débloqué — impossible de contourner un futur achat 
 trafiquant juste `state.theme`. Prochaine étape non commencée : brancher un
 vrai plugin IAP Capacitor qui appelle `unlockTheme()` après un paiement
 validé par le store, au lieu du bouton "Débloquer" gratuit actuel.
+
+### Addendum 2026-09-08 — thème `sombre` porté à parité visuelle
+
+Le pass visuel poussé de `sombre` (jusque-là juste une palette, cf. plus
+haut) est fait, direction « Grimoire / pierre gravée » (choix produit) :
+
+- **Police dédiée** : Cinzel (capitales romaines gravées) pour les titres
+  (`--font-brand`, `--font-display`), Google Fonts / SIL OFL, embarquée en
+  local dans `www/assets/fonts/` comme toutes les autres — zéro appel réseau,
+  cohérent D11. Le texte courant (réplique compagnon, corps de quête, journal,
+  blurbs) reste en Cormorant Garamond : lisibilité. Un seul fichier woff2 par
+  sous-ensemble couvre 400→700 (fonte variable sous-répartie par l'API).
+- **Fond / texture** : parchemin cendré froid (grain désaturé, `grayscale`
+  léger), gouttière et taches de foxing chaudes remplacées par une brume
+  froide en haut de page + une vignette sombre aux bords.
+- **Cadres** : coins nets + double filet (filet clair intérieur / filet fer
+  extérieur via `box-shadow` inset) façon plaque de fer forgé, au lieu des
+  bords « papier déchiré » de nordique.
+- **Onglets** : ardoise froide, léger accent par onglet.
+- **Effet payant** : `sombre-candle`, vacillement lent d'opacité sur la
+  vignette de page (mimique une bougie). Respecte `prefers-reduced-motion`
+  via la règle globale `*` de `components.css` comme les effets cyberpunk.
+- **Ripple au clic** : `ui/ripple.js` n'est plus gated sur le seul
+  `cyberpunk` mais sur un `Set` de thèmes payants (`cyberpunk`, `sombre`) ;
+  l'apparence (néon vs diffusion d'encre) vient du CSS de chaque thème.
+
+`previewVideo` de `sombre` reste `null` (place réservée, commentaire dans
+`data/themes/sombre.js`) : Yannick enregistrera les vidéos d'aperçu boutique
+à la fin. En attendant, l'aperçu live en CSS de la boutique est déjà complet.
+
+Toujours **pas de QA visuelle possible ici** (pas de navigateur) : CSS validé
+au parseur (`css-tree`), 42/42 tests, simulation 45 j inchangée — mais le
+rendu réel des deux thèmes payants est à revoir sur appareil avant de vendre.

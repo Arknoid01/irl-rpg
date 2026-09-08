@@ -1,6 +1,10 @@
-// Ripple au clic — cosmétique, thème cyberpunk uniquement (cf. DECISIONS.md
-// D12). Actif seulement si data-theme="cyberpunk" ET prefers-reduced-motion
-// n'est pas demandé : ni élément créé, ni écouteur inutile pour tout le reste.
+// Ripple au clic — cosmétique, thèmes payants uniquement (cf. DECISIONS.md
+// D12). Actif seulement si data-theme est un thème payant (cyberpunk : halo
+// néon ; sombre : diffusion d'encre) ET prefers-reduced-motion n'est pas
+// demandé. L'apparence du ripple est définie dans le CSS de chaque thème ;
+// pour les thèmes gratuits, aucun élément n'est créé ni écouteur utile.
+
+const RIPPLE_THEMES = new Set(['cyberpunk', 'sombre']);
 
 function reduceMotion() {
   return typeof window.matchMedia === 'function'
@@ -9,7 +13,7 @@ function reduceMotion() {
 
 export function initRipples() {
   document.addEventListener('click', (e) => {
-    if (document.documentElement.dataset.theme !== 'cyberpunk') return;
+    if (!RIPPLE_THEMES.has(document.documentElement.dataset.theme)) return;
     if (reduceMotion()) return;
     const el = e.target.closest('.btn, .tab, .iconbtn');
     if (!el) return;

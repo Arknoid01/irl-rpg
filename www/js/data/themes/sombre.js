@@ -17,6 +17,10 @@ export default {
   },
   xpSuffix: { fr: '— le contrat est rempli', en: '— the contract is fulfilled' },
 
-  // Aperçu boutique : voir le commentaire dans cyberpunk.js.
+  // Aperçu boutique (ui/shop.js) : place réservée pour une vidéo d'aperçu, à
+  // enregistrer sur appareil plus tard (Yannick). Mettre alors le chemin
+  // './assets/videos/sombre-preview.mp4' (depuis www/, comme les <link>
+  // d'index.html) — vidéo courte en boucle, sans son. Tant que c'est null, la
+  // boutique retombe sur l'aperçu live en CSS (déjà complet pour ce thème).
   previewVideo: null,
 };

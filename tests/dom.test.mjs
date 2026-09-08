@@ -168,7 +168,7 @@ test('boutique de thèmes : ouverture depuis Réglages, déblocage puis activati
   await click('[data-shop="close"]');
 });
 
-test('ripple au clic : seulement sous cyberpunk, jamais sous nordique', async () => {
+test('ripple au clic : sous les thèmes payants, jamais sous nordique', async () => {
   const { initRipples } = await import('../www/js/ui/ripple.js');
   initRipples();
   // Un .iconbtn (réglages) plutôt qu'un .tab : cliquer un .tab déclenche
@@ -197,6 +197,13 @@ test('ripple au clic : seulement sous cyberpunk, jamais sous nordique', async ()
   // seul le délai de secours retire l'élément.
   await new Promise((r) => setTimeout(r, 750));
   assert.equal(btn.querySelector('.ripple'), null, 'le ripple est retiré après le délai de secours');
+
+  // Le thème sombre (payant) a lui aussi son ripple (diffusion d'encre).
+  window.document.documentElement.dataset.theme = 'sombre';
+  btn.dispatchEvent(new window.MouseEvent('click', { bubbles: true, clientX: 5, clientY: 5 }));
+  await tick();
+  assert.ok(btn.querySelector('.ripple'), 'un ripple apparaît aussi sous sombre');
+  await new Promise((r) => setTimeout(r, 750));
 
   window.document.documentElement.dataset.theme = 'nordique';
   await click('[data-set="close"]');

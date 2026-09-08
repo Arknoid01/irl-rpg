@@ -1,35 +1,215 @@
-/* Thème payant — Dark fantasy. Palette complète (pas d'héritage des tons
-   chauds de nordique) : parchemin cendré plutôt que sépia, cuir presque noir.
-   Polices et formes restent celles de nordique — dark fantasy et fantasy
-   nordique sont assez proches pour partager la même typo/gabarit ; seule la
-   teinte change. */
+/* Thème payant — Dark fantasy « Grimoire / pierre gravée ». Identité complète
+   et distincte (comme cyberpunk, pas un simple recolorage) : capitales romaines
+   gravées pour les titres (Cinzel), parchemin cendré froid, vignette de bougie
+   et brume, cadres à double filet façon fer forgé, vacillement lent de flamme.
+   Le gameplay et la structure DOM ne changent jamais — seul l'habillage de ce
+   fichier (et fonts.css pour Cinzel) change. */
 
 [data-theme="sombre"] {
-  --bg: #120e0d;
+  --bg: #100e10;
   --bg-grad: none;
-  --panel: #ebe3d2;
-  --panel2: #e2d8c4;
-  --border: #c4b49a;
-  --text: #1c120f;
-  --text-dim: #5c453c;
-  --text-on-dark: #f0e4d6;
-  --text-on-dark-dim: #c4a096;
+  --panel: #e5dfd0;
+  --panel2: #d9d2bf;
+  --border: #b7b1a1;
+  --text: #1a1820;
+  --text-dim: #4e4a54;
+  --text-on-dark: #ece6db;
+  --text-on-dark-dim: #b8b2a6;
   --accent: #7a2e2e;
   --accent2: #8a8e96;
-  --gold: #a87830;
-  --danger: #a03333;
-  --ok: #5a7350;
+  --gold: #9c7a3c;
+  --danger: #9c3333;
+  --ok: #566b52;
   --seal: #7a2e2e;
-  --bar-xp: #6a7078;
+  --bar-xp: #6a707a;
   --bar-elan: #7a2e2e;
-  --nav-active: #c49a48;
-  --theme-color: #120e0d;
+  --nav-active: #b89a5a;
+  --theme-color: #100e10;
+  --focus: #b89a5a;
 
-  /* Base propre (pas héritée du parchemin chaud de nordique). */
-  --paper: #d8d2c8;
-  --paper2: #cac2b4;
-  --ink: #1c120f;
-  --ink-dim: #5c453c;
-  --leather: #100c0a;
-  --leather2: #181210;
+  /* Base propre, froide (pas le parchemin chaud de nordique). */
+  --paper: #d9d4c7;
+  --paper2: #cbc5b4;
+  --ink: #1a1820;
+  --ink-dim: #4e4a54;
+  --leather: #0d0c0e;
+  --leather2: #16151a;
+
+  /* Polices — Cinzel (titres/display) pour les capitales gravées, embarquée
+     localement (fonts.css). Le corps de texte garde Cormorant Garamond
+     (--font-body de base-tokens) : lisibilité du texte courant. */
+  --font-brand: 'Cinzel', 'Palatino Linotype', Palatino, serif;
+  --font-display: 'Cinzel', 'Palatino Linotype', Palatino, serif;
+}
+
+/* ---------- Fond d'écran : nuit froide + grain désaturé ---------- */
+[data-theme="sombre"] body {
+  background-color: #08080a;
+  background-image:
+    radial-gradient(ellipse at 50% 12%, rgba(74, 72, 82, .28) 0%, transparent 55%),
+    radial-gradient(ellipse at 82% 96%, #0c0b0e 0%, #08080a 62%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='ns'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.05 0 0 0 0 0.05 0 0 0 0 0.06 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23ns)'/%3E%3C/svg%3E");
+}
+
+/* ---------- Reliure -> plaque de fer sombre ---------- */
+[data-theme="sombre"] .book {
+  background: linear-gradient(90deg, #131218 0%, #1d1b24 12%, #26232e 16%, #1b1922 100%);
+  box-shadow:
+    inset 4px 0 12px rgba(0, 0, 0, .6),
+    inset -2px 0 8px rgba(180, 190, 210, .05),
+    0 18px 40px -12px rgba(0, 0, 0, .82),
+    0 0 0 1px rgba(92, 96, 110, .42);
+}
+
+/* ---------- Page : parchemin cendré froid, vignette + brume ---------- */
+[data-theme="sombre"] .page {
+  background-image:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='ps'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.28 0 0 0 0 0.27 0 0 0 0 0.24 0 0 0 0.2 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23ps)'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(180deg, transparent 0 28px, rgba(40, 42, 50, .07) 28px 29px),
+    linear-gradient(165deg, #e4decd 0%, #d8d1bd 32%, #c9c1a9 68%, #bcb399 100%);
+  filter: grayscale(.28) contrast(1.02);
+  box-shadow:
+    inset 0 0 0 1px rgba(48, 48, 54, .3),
+    inset 20px 0 34px -22px rgba(15, 15, 20, .3),
+    inset 0 0 70px rgba(18, 18, 24, .16),
+    0 1px 0 rgba(255, 255, 255, .08);
+}
+[data-theme="sombre"] .page::before {
+  /* gouttière recolorée froide, filet rouge sang conservé */
+  background: linear-gradient(90deg, rgba(28, 28, 34, .26), rgba(28, 28, 34, .06) 55%, transparent 100%);
+  border-right-color: rgba(122, 46, 46, .3);
+}
+[data-theme="sombre"] .page::after {
+  /* plus de taches de foxing chaudes : brume froide en haut + vignette
+     sombre aux bords, vacillement lent de bougie (désactivé si
+     prefers-reduced-motion via la règle globale de components.css). */
+  background:
+    radial-gradient(ellipse 130% 55% at 50% -8%, rgba(214, 216, 224, .4), transparent 62%),
+    radial-gradient(ellipse 55% 42% at 12% 10%, rgba(26, 26, 34, .12), transparent 72%),
+    radial-gradient(ellipse 52% 44% at 90% 92%, rgba(20, 20, 28, .18), transparent 72%),
+    radial-gradient(ellipse 128% 92% at 50% 55%, transparent 46%, rgba(12, 12, 18, .26) 100%);
+  mix-blend-mode: normal;
+  opacity: .95;
+  animation: sombre-candle 9s ease-in-out infinite;
+}
+@keyframes sombre-candle {
+  0%, 100% { opacity: .95; }
+  18% { opacity: .88; }
+  22% { opacity: .97; }
+  47% { opacity: .9; }
+  63% { opacity: 1; }
+  81% { opacity: .87; }
+}
+
+/* ---------- Cadres : double filet façon fer forgé, coins nets ---------- */
+[data-theme="sombre"] .panel,
+[data-theme="sombre"] .quest-card,
+[data-theme="sombre"] .inv-item,
+[data-theme="sombre"] .sheet,
+[data-theme="sombre"] .onboarding,
+[data-theme="sombre"] .journal-entry,
+[data-theme="sombre"] .museum-grid .museum-card,
+[data-theme="sombre"] .levelup {
+  border-radius: 2px;
+  border: 1.5px solid rgba(44, 44, 52, .5);
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, .22), transparent 42%),
+    var(--panel);
+  box-shadow:
+    inset 0 0 0 1px rgba(216, 210, 194, .55),
+    inset 0 0 0 2px rgba(44, 44, 52, .3),
+    0 2px 7px -1px rgba(0, 0, 0, .2);
+}
+[data-theme="sombre"] .world-frame {
+  border-radius: 2px;
+  border: 1.5px solid rgba(44, 44, 52, .5);
+  background:
+    linear-gradient(160deg, rgba(230, 232, 238, .3), transparent 45%),
+    linear-gradient(165deg, #c7c2b4 0%, #b3ad9c 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(216, 210, 194, .5),
+    inset 0 0 40px rgba(18, 18, 24, .18);
+}
+
+/* ---------- Onglets : ardoise froide, léger accent par onglet ---------- */
+[data-theme="sombre"] .tab {
+  background: linear-gradient(180deg, #33323c 0%, #24232c 100%);
+  clip-path: polygon(6% 0, 94% 0, 100% 10px, 100% 100%, 0 100%, 0 10px);
+  border-radius: 0 0 4px 4px;
+  color: var(--text-on-dark);
+  box-shadow:
+    inset 0 1px 0 rgba(210, 214, 224, .12),
+    0 6px 12px -4px rgba(0, 0, 0, .6);
+}
+[data-theme="sombre"] .tab:nth-child(2) {
+  background: linear-gradient(180deg, #313842 0%, #232a33 100%);
+}
+[data-theme="sombre"] .tab:nth-child(3) {
+  background: linear-gradient(180deg, #313c39 0%, #232c2a 100%);
+}
+[data-theme="sombre"] .tab:nth-child(4) {
+  background: linear-gradient(180deg, #3a352c 0%, #2a271f 100%);
+}
+[data-theme="sombre"] .tab.active {
+  color: #fbf6ec;
+  filter: brightness(1.16);
+}
+
+/* ---------- Titres gravés : le texte courant garde Cormorant ---------- */
+[data-theme="sombre"] .companion-line,
+[data-theme="sombre"] .quest-text,
+[data-theme="sombre"] .journal-entry p,
+[data-theme="sombre"] .journal-chapter-blurb,
+[data-theme="sombre"] .map-blurb,
+[data-theme="sombre"] .museum-intro,
+[data-theme="sombre"] .quest-ceremony .ceremony-line {
+  font-family: var(--font-body);
+}
+/* Capitales gravées : un chouïa d'interlettrage, comme une inscription. */
+[data-theme="sombre"] .brand,
+[data-theme="sombre"] h2,
+[data-theme="sombre"] .section-label,
+[data-theme="sombre"] .cover-title,
+[data-theme="sombre"] .ob-title,
+[data-theme="sombre"] .hero-name,
+[data-theme="sombre"] .levelup-kicker {
+  letter-spacing: .06em;
+}
+
+/* ---------- Rattrapage : filets/accents chauds hérités de components.css,
+   recolorés froid pour rester cohérent avec la palette cendrée. ---------- */
+[data-theme="sombre"] .topbar {
+  border-bottom-color: rgba(60, 58, 66, .3);
+}
+[data-theme="sombre"] .section-label,
+[data-theme="sombre"] .journal-section-title,
+[data-theme="sombre"] .ob-chapter {
+  border-bottom-color: rgba(60, 58, 66, .28);
+}
+[data-theme="sombre"] .journal-timeline {
+  border-left-color: rgba(60, 58, 66, .24);
+}
+[data-theme="sombre"] .btn {
+  border-color: rgba(52, 50, 58, .32);
+}
+[data-theme="sombre"] .refresh-btn {
+  border-color: rgba(52, 50, 58, .36);
+}
+[data-theme="sombre"] .companion-line {
+  border-left-color: rgba(122, 46, 46, .5);
+}
+[data-theme="sombre"] .brand .glyph {
+  background: radial-gradient(circle at 35% 30%, #d8d4c8, #9aa0a8 55%, #4a4d55);
+  box-shadow: inset 0 -2px 4px rgba(0, 0, 0, .4), 0 0 0 1.5px rgba(70, 72, 82, .3);
+}
+
+/* ---------- Ripple au clic : encre qui se diffuse (structure dans
+   components.css / ripple.js, gated sur le thème + prefers-reduced-motion). --- */
+[data-theme="sombre"] .ripple {
+  background: radial-gradient(circle, rgba(122, 46, 46, .4) 0%, rgba(46, 44, 52, .22) 45%, transparent 72%);
+  animation: sombre-ripple .6s ease-out forwards;
+}
+@keyframes sombre-ripple {
+  from { transform: scale(0); opacity: .85; }
+  to { transform: scale(1); opacity: 0; }
 }
