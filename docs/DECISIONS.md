@@ -439,3 +439,27 @@ le store renvoie (placeholder `null` sinon).
 
 44/44 tests (dont `billing (D12)` : impl dev + parité des identifiants
 produits), simulation 45 j inchangée.
+
+### Addendum 2026-09-08 (suite) — pipeline banque de quêtes
+
+Le point « pipeline pour étoffer durablement la banque de quêtes » (README
+« Reste ouvert ») est concrétisé, sans nouveau format ni build step :
+
+- `tools/quests-report.mjs` (`npm run quests`, ajouté à la CI après `sim`) :
+  rapport de **couverture** (familles vs poids de tirage cible, matrice
+  famille × effort, histogramme d'audace, défi d'ami / mystère / contexte,
+  combinaisons génératives par template) et **checks durs** que les tests
+  unitaires ne couvraient pas — doublon de texte fr/en, deux templates
+  identiques hors slots, famille sans aucune quête curée (exit 1). Le reste
+  (case vide, audace 4–5 mince) est un point d'attention, pas un blocage :
+  c'est la feuille de route des prochains ajouts.
+- `tests/engine.test.mjs` : nouveau test « pas de doublon de texte » (garde
+  CI même si `npm run quests` est oublié).
+- `docs/QUESTS.md` : mode d'emploi — la boucle report → ajout → test → sim,
+  le modèle de champ par champ (curées et templates), ce qui bloque.
+
+État de départ mesuré : 98 curées + 42 templates (~1 100 combinaisons),
+familles globalement alignées sur les poids de tirage, deux trous connus
+(social/chaos conséquent, audace 4–5).
+
+45/45 tests, `npm run quests` vert (4 points d'attention documentés).

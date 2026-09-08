@@ -19,6 +19,7 @@ Application complète, testée, dans **`www/`** (voir `www/README.md`).
 npm run serve      # http://localhost:8123
 npm test           # moteur + parcours DOM (jsdom)
 npm run sim        # simulation d'une partie de 45 jours
+npm run quests     # rapport santé + couverture de la banque de quêtes
 ```
 
 Empaquetage Android/iOS : `npm install && npx cap add android && npx cap sync`.
@@ -45,6 +46,7 @@ Empaquetage Android/iOS : `npm install && npx cap add android && npx cap sync`.
 |---|---|
 | `docs/DECISIONS.md` | Décisions tranchées (fait autorité en cas de conflit) |
 | `docs/TAXONOMIE.md` | Familles, compétences, matrice, modèle de quête |
+| `docs/QUESTS.md` | Pipeline banque de quêtes : `npm run quests`, comment ajouter |
 | `docs/PRIVACY.md` · `www/privacy.html` | Confidentialité (on-device, 16+) |
 | `docs/STORE.md` | Checklist publication Play / App Store |
 | `docs/REVUE_CRITIQUE.md` | Revue critique des specs + périmètre MVP |
@@ -55,6 +57,11 @@ Empaquetage Android/iOS : `npm install && npx cap add android && npx cap sync`.
 
 Héberger `privacy.html` publiquement (URL à coller dans la console store le
 jour de la soumission) · politique de version Android (`versionCode`/
-`versionName` encore à 1/1.0) · pipeline pour étoffer durablement la banque
-de quêtes. Voir `docs/DECISIONS.md` (D9/D10) pour l'historique des décisions
-produit.
+`versionName` encore à 1/1.0) · `npm i` du plugin IAP + déclaration des
+produits stores quand un accès Play Console permettra de tester un vrai achat
+(l'abstraction `platform/billing.js` est prête, cf. D12). Voir
+`docs/DECISIONS.md` pour l'historique des décisions produit.
+
+Pipeline banque de quêtes : `npm run quests` (rapport santé + couverture, en
+CI) et `docs/QUESTS.md` (mode d'emploi pour ajouter des quêtes sans
+régression).

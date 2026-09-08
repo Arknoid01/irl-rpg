@@ -103,6 +103,20 @@ test('quêtes : intégrité du modèle', () => {
   assert.ok(QUESTS.length >= 90, `banque trop petite : ${QUESTS.length}`);
 });
 
+test('quêtes : pas de doublon de texte (fr / en)', () => {
+  const norm = (s) => String(s || '')
+    .toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
+  for (const lang of ['fr', 'en']) {
+    const seen = new Map();
+    for (const q of QUESTS) {
+      const k = norm(q.text[lang]);
+      assert.ok(!seen.has(k), `doublon de texte ${lang} : ${q.id} ≈ ${seen.get(k)}`);
+      seen.set(k, q.id);
+    }
+  }
+});
+
 test('templates : slots et texte cohérents', () => {
   const ids = new Set();
   for (const t of QUEST_TEMPLATES) {
