@@ -262,6 +262,74 @@
   );
 }
 
+/* ---------- Rattrapage final : filets & fonds encore codés en dur pour un
+   fond de page clair (bruns hérités de nordique dans components.css). Sur les
+   panneaux sombres de ce thème ils sont invisibles ou ternes. Un point de
+   reprise par élément, même logique que le bloc « contrôles secondaires ». --- */
+
+/* Filets de séparation bruns -> filet cyan discret */
+[data-theme="cyberpunk"] .section-label,
+[data-theme="cyberpunk"] .journal-section-title,
+[data-theme="cyberpunk"] .ob-chapter {
+  border-bottom-color: rgba(0, 229, 255, .18);
+}
+[data-theme="cyberpunk"] .journal-timeline {
+  border-left-color: rgba(0, 229, 255, .18);
+}
+
+/* Bouton « autre proposition » : contour pointillé brun -> cyan */
+[data-theme="cyberpunk"] .refresh-btn {
+  border-color: rgba(0, 229, 255, .32);
+  color: var(--text-dim);
+}
+[data-theme="cyberpunk"] .refresh-btn:active {
+  background: rgba(0, 229, 255, .08);
+}
+
+/* Réplique du compagnon : liseré gauche rouge sourd -> néon rose */
+[data-theme="cyberpunk"] .companion-line {
+  border-left-color: rgba(255, 46, 154, .55);
+}
+
+/* Rails de jauges (XP, compétences, progression d'onboarding) : brun 10 %,
+   invisible sur fond sombre */
+[data-theme="cyberpunk"] .bar-track,
+[data-theme="cyberpunk"] .skill-bar {
+  background: rgba(0, 229, 255, .1);
+}
+[data-theme="cyberpunk"] .bar-track {
+  border-color: rgba(0, 229, 255, .16);
+}
+[data-theme="cyberpunk"] .ob-progress i {
+  background: rgba(0, 229, 255, .14);
+}
+
+/* Encart « pas d'autre quête » + petits badges (quête, événement, région,
+   carte de boutique) : bordures brunes invisibles */
+[data-theme="cyberpunk"] .quest-fallback {
+  background: rgba(0, 229, 255, .05);
+  border-color: rgba(0, 229, 255, .28);
+  color: var(--text-dim);
+}
+[data-theme="cyberpunk"] .quest-badge,
+[data-theme="cyberpunk"] .event-fam,
+[data-theme="cyberpunk"] .map-status-chip,
+[data-theme="cyberpunk"] .shop-card {
+  border-color: rgba(0, 229, 255, .28);
+}
+
+/* Butin de montée de niveau : encart pâle -> encart sombre bordé cyan */
+[data-theme="cyberpunk"] .levelup-loot {
+  background: rgba(0, 229, 255, .06);
+  border-color: rgba(0, 229, 255, .28);
+  color: var(--text);
+}
+
+/* Toast : contour brun invisible sur le fond sombre du toast */
+[data-theme="cyberpunk"] #toast {
+  border-color: rgba(0, 229, 255, .3);
+}
+
 /* ---------- Ripple au clic (structure/positionnement : components.css,
    toujours inerte pour les autres thèmes ; ici seulement la couleur/anim) --- */
 [data-theme="cyberpunk"] .ripple {
