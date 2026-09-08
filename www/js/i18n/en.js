@@ -20,6 +20,8 @@ export default {
   map_status_done: 'Done',
   map_status_accepted: 'In progress',
   map_status_proposed: 'Offered',
+  map_not_ready: 'Some regions aren’t ready to be discovered yet.',
+  map_just_revealed: 'You’ve just revealed this part of the world.',
 
   companion_label: 'Your companion',
   day_kicker: 'Day {n}',
@@ -85,6 +87,23 @@ export default {
   stat_quests: 'Quests completed',
   stat_days: 'Days played',
   stat_best_streak: 'Best streak',
+
+  // "My adventure" page (Phase 2)
+  my_adventure: 'My adventure',
+  traits_title: 'Adventurer’s traits',
+  journal_chronicle: 'Your chronicle',
+  path_title: 'Your path',
+  path_days: 'days of adventure',
+  path_streak: 'longest streak',
+  path_moments: 'moments lived',
+  path_returns: 'fresh starts',
+  moments_title: 'Moments',
+  moments_intro: 'The first times of your adventure. Some pages aren’t written yet.',
+  moments_sealed: 'This page has no story yet.',
+  discoveries_title: 'Discoveries',
+  discoveries_intro: 'The places and moments your adventures have taken you through.',
+  discoveries_sealed: 'Not discovered yet.',
+  museum_sealed: 'This case has no story yet.',
 
   journal_title: 'Adventure journal',
   journal_empty: 'Your journal is still blank. Quests, discoveries and levels can leave a trace.',

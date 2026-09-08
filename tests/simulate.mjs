@@ -111,14 +111,18 @@ try {
 // Rendu des chaînes (fonctions pures, pas de DOM) pour éprouver l'UI de contenu
 try {
   const { renderJournal } = await import('../www/js/ui/screens/journal.js');
-  // journal.js importe dates.js (ok) et i18n (ok) — pas de DOM
+  const { renderCharacter } = await import('../www/js/ui/screens/character.js');
   for (const lang of ['fr', 'en']) {
     i18n.setLang(lang);
-    const html = renderJournal(state);
-    if (typeof html !== 'string' || html.length < 10) violations.push(`renderJournal ${lang} vide`);
+    for (const [name, html] of [
+      ['renderJournal', renderJournal(state)],
+      ['renderCharacter', renderCharacter(state)],
+    ]) {
+      if (typeof html !== 'string' || html.length < 10) violations.push(`${name} ${lang} vide`);
+    }
   }
 } catch (e) {
-  violations.push(`renderJournal : ${e.stack || e}`);
+  violations.push(`render écrans : ${e.stack || e}`);
 }
 
 /* ─────────────── Rapport ─────────────── */
@@ -137,6 +141,8 @@ console.log(`  Événements relevés ...... ${eventsDone}`);
 console.log(`  Objets (souvenirs) ...... ${state.inventory.length}`);
 console.log(`  Entrées de journal ...... ${state.journal.length}`);
 console.log(`  Jalons atteints ......... ${Object.keys(state.milestones).length}  (${Object.keys(state.milestones).join(', ') || '—'})`);
+console.log(`  Découvertes ............. ${Object.keys(state.discoveries).length}  (${Object.keys(state.discoveries).join(', ') || '—'})`);
+console.log(`  Reprises (retours) ...... ${state.history.comebacks}`);
 console.log(`  Titres débloqués ........ ${unlockedTitles.join(', ') || '—'}`);
 console.log(`  Jours joués (history) ... ${state.history.daysPlayed}`);
 console.log('─'.repeat(56));

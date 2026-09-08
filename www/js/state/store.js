@@ -92,6 +92,9 @@ export function normalize(state) {
   if (!s.milestones || typeof s.milestones !== 'object' || Array.isArray(s.milestones)) {
     s.milestones = {};
   }
+  if (!s.discoveries || typeof s.discoveries !== 'object' || Array.isArray(s.discoveries)) {
+    s.discoveries = {};
+  }
   s.version = SAVE_VERSION;
   return s;
 }

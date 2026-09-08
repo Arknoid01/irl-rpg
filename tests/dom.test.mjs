@@ -109,9 +109,11 @@ test('parcours complet dans le DOM', async () => {
   await click('.map-node[data-id="foyer"]');
   assert.ok($('.map-detail'), 'panneau détail région');
 
-  // 6. Onglet Personnage + musée
+  // 6. Onglet Personnage — page « Mon aventure »
   await click('[data-action="goto"][data-id="character"]');
-  assert.ok($('.skills-grid'), 'grille de compétences');
+  assert.ok($('.traits-list'), 'traits de l’aventurier');
+  assert.ok($('.collect-grid'), 'collections Moments / Découvertes');
+  assert.ok($('.chronicle-box'), 'chronique en cours');
   assert.match($('#root').textContent, /Testeur/);
   assert.ok($('.museum-empty, .museum-grid'), 'section musée');
 

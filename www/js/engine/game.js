@@ -21,6 +21,8 @@ import { syncRegionUnlocks } from './worldView.js';
 import {
   recordQuestMilestones, recordEventMilestones, applyMilestones,
 } from './milestones.js';
+import { recordDiscoveries } from './discoveries.js';
+import { isComebackDay } from './comeback.js';
 import { THEME_KEYS } from '../data/themes.js';
 
 const RECENT_DONE_MEMORY = 56;
@@ -50,6 +52,14 @@ function applyLevelLoot(s, effects, today) {
     addEntry(s, { date: today, text: levelChapterEntry(fx.level, s.theme), kind: 'chapitre' });
     effects.push({ type: 'chapter', level: fx.level });
   }
+}
+
+/** Compte un retour après absence (KPI rétention local), une fois par jour. */
+function noteComebackReturn(s, now, today) {
+  if (!isComebackDay(s, now)) return;
+  if (s.history.lastComebackDate === today) return;
+  s.history.comebacks = (s.history.comebacks || 0) + 1;
+  s.history.lastComebackDate = today;
 }
 
 function applyRegionReveals(s, effects, today) {
@@ -152,6 +162,7 @@ export function completeQuest(state, { id }, ctx) {
   const effects = [];
   const today = todayStr(now);
   const wasFirst = s.history.totalCompleted === 0;
+  noteComebackReturn(s, now, today);
 
   gainXp(s, effects, q.xp);
   gainSkills(s, effects, skillDeltasFor(q));
@@ -188,8 +199,11 @@ export function completeQuest(state, { id }, ctx) {
 
   applyRegionReveals(s, effects, today);
 
-  // Jalons — après le bookkeeping (totalCompleted à jour).
+  // Jalons + découvertes — après le bookkeeping (totalCompleted à jour).
   applyMilestones(s, effects, recordQuestMilestones(s, q, now), now);
+  for (const key of recordDiscoveries(s, q, now)) {
+    effects.push({ type: 'discovery', key });
+  }
 
   effects.push({ type: 'quest-done', xp: q.xp, first: wasFirst });
   return { state: s, effects };
@@ -205,6 +219,7 @@ export function completeEvent(state, _args, ctx) {
   ev.status = 'done';
   const effects = [];
   const today = todayStr(now);
+  noteComebackReturn(s, now, today);
 
   gainXp(s, effects, ev.xp);
   if (ev.famille) {

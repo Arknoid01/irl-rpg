@@ -240,6 +240,100 @@
 .stats-grid b { display: block; font-family: var(--font-display); font-size: 1.35rem; color: var(--gold); }
 .stats-grid span { font-size: .74rem; color: var(--text-dim); }
 
+/* ---------- Page « Mon aventure » (ROADMAP Phase 2) ---------- */
+.adventure-head { text-align: left; }
+.adv-name {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  color: var(--text);
+  line-height: 1.1;
+}
+.adv-becoming { color: var(--text-dim); font-size: .92rem; margin-top: 2px; }
+.adv-becoming b { color: var(--gold); font-family: var(--font-display); font-weight: 400; font-size: 1.02rem; }
+.adv-word {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--text-dim);
+  border-left: 2px solid currentColor;
+  padding-left: 9px;
+  margin: 10px 0 0;
+  line-height: 1.4;
+}
+
+/* Traits qualitatifs — pas de valeur, pas de « barre à remplir ». */
+.traits-list { display: flex; flex-direction: column; gap: 9px; }
+.trait-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 8px;
+  font-size: .92rem;
+}
+.trait-name { color: var(--text); }
+.trait-tier {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: .86rem;
+  color: var(--text-dim);
+}
+.trait-tier.tier-dominante { color: var(--gold); }
+.trait-tier.tier-emergente { color: var(--accent); }
+.trait-track { display: inline-flex; gap: 3px; }
+.trait-track i {
+  width: 5px; height: 12px; border-radius: 1px;
+  background: currentColor; opacity: .18;
+}
+.trait-track i.on { opacity: .7; }
+
+/* Chronique en cours (reprise du bloc journal, en lecture seule). */
+.chronicle-box { text-align: center; }
+.chronicle-mark {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  letter-spacing: .04em;
+  color: var(--gold);
+}
+.chronicle-blurb { font-style: italic; color: var(--text-dim); margin: 4px 0 0; }
+
+/* Collections « Moments » & « Découvertes » — cartes cochées ou scellées. */
+.collect-intro { margin: 0 0 9px; font-style: italic; }
+.collect-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.collect-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  text-align: center;
+  padding: 10px 8px;
+  border: 1px solid currentColor;
+  border-radius: var(--scrap-radius);
+  min-height: 72px;
+  justify-content: center;
+}
+.collect-card.got { border-color: var(--gold); }
+.collect-card.sealed { border-style: dashed; opacity: .5; }
+.collect-ic { font-size: 1.35rem; line-height: 1; }
+.collect-name { font-size: .82rem; color: var(--text); line-height: 1.25; }
+.collect-date { margin-top: 1px; }
+
+.palier-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.palier-chip {
+  font-size: .74rem;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  color: var(--text-dim);
+  opacity: .45;
+}
+.palier-chip.got { opacity: 1; color: var(--gold); border-color: var(--gold); }
+
+/* Vitrine mystérieuse au musée (Phase 2.5). */
+.museum-card.sealed {
+  border-style: dashed;
+  opacity: .5;
+  cursor: default;
+}
+
 /* ---------- Quêtes ---------- */
 /* Cartes compactées (ROADMAP Phase 0.3) : comparer les 3 propositions avec
    peu de scroll. On ne touche pas à la taille du texte de quête. */
@@ -922,6 +1016,20 @@ input[type="range"] { width: 100%; accent-color: var(--seal); margin: 12px 0 4px
   width: 1.1rem;
   text-align: center;
   flex-shrink: 0;
+}
+
+/* Révélation progressive de la carte (ROADMAP Phase 2.6). */
+.map-not-ready {
+  text-align: center;
+  font-style: italic;
+  margin: 8px 6px 2px;
+}
+.map-detail.just-revealed { border-color: var(--gold); }
+.map-revealed-note {
+  color: var(--gold);
+  font-family: var(--font-display);
+  font-style: italic;
+  margin: 0 0 6px;
 }
 
 /* ---------- Boutique de thèmes ---------- */

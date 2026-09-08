@@ -14,6 +14,19 @@ export const SKILLS = {
 
 export const SKILL_KEYS = Object.keys(SKILLS);
 
+/**
+ * Paliers qualitatifs d'un trait (ROADMAP Phase 2.2 — « des traits, pas des
+ * statistiques à maximiser »). Ordre du plus marqué au plus discret.
+ */
+export const TRAIT_TIERS = {
+  dominante: { fr: 'dominante', en: 'dominant', rank: 4 },
+  emergente: { fr: 'émergente', en: 'emerging', rank: 3 },
+  presente:  { fr: 'présente', en: 'present', rank: 2 },
+  discrete:  { fr: 'discrète', en: 'quiet', rank: 1 },
+};
+
+export const TRAIT_TIER_KEYS = Object.keys(TRAIT_TIERS);
+
 /** Les 6 familles de quêtes (écriture + tirage). */
 export const FAMILIES = {
   social: {

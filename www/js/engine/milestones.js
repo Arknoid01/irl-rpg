@@ -25,6 +25,28 @@ export const MILESTONE_KEYS = [
   ...VOLUME_MILESTONES.map((n) => `volume_${n}`),
 ];
 
+/**
+ * Libellés bilingues pour la collection « Moments » (ROADMAP Phase 2.3).
+ * Évocateurs, jamais une description de la condition de déclenchement — la
+ * surprise fait partie du plaisir. Les paliers de volume sont explicites (ils
+ * n'ont rien de secret) et rendus à part par l'UI.
+ */
+export const MILESTONE_LABELS = {
+  first_quest:   { icon: '📖', fr: 'La première aventure', en: 'The first adventure' },
+  first_outdoor: { icon: '🚪', fr: 'Un pas dehors', en: 'A step outside' },
+  first_social:  { icon: '🤝', fr: 'Un mot à quelqu’un', en: 'A word to someone' },
+  first_evening: { icon: '🌙', fr: 'Sous la lampe du soir', en: 'Under the evening lamp' },
+  first_hidden:  { icon: '🗝', fr: 'Un mystère suivi jusqu’au bout', en: 'A mystery followed to its end' },
+  first_bold:    { icon: '🧗', fr: 'Un pas plus grand que d’habitude', en: 'A step bigger than usual' },
+  first_big:     { icon: '⚓', fr: 'Une aventure qui pesait son poids', en: 'An adventure with real weight' },
+  first_event:   { icon: '✦', fr: 'Un imprévu saisi', en: 'An unexpected turn taken' },
+};
+
+/** Libellé d'un palier de volume (explicite). */
+export function volumeLabel(n, lang = 'fr') {
+  return lang === 'en' ? `${n} adventures` : `${n} aventures`;
+}
+
 function marker(state, dateStr) {
   if (!state.milestones || typeof state.milestones !== 'object') state.milestones = {};
   const hits = [];

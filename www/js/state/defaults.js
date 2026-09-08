@@ -34,6 +34,7 @@ export function defaultState() {
     journal: [],           // { date, text, kind }
 
     milestones: {},        // <clé de jalon> -> 'YYYY-MM-DD' de la première fois
+    discoveries: {},       // <clé de contexte de vie> -> 'YYYY-MM-DD' (Phase 2.4)
 
     history: {
       social: { proposed: 0, skipped: 0, completed: 0 },
@@ -48,6 +49,8 @@ export function defaultState() {
       regionsFresh: [],     // révélations récentes (compagnon / anim)
       daysSinceEvent: 0,    // jours consécutifs sans événement (force une ouverture)
       lastMilestone: null,  // { key, date } — dernier jalon, pour la voix du compagnon
+      comebacks: 0,         // nombre de retours après absence (KPI rétention, local)
+      lastComebackDate: null, // dédup du compteur ci-dessus
     },
 
     seeds: { companion: 0 },

@@ -2,7 +2,7 @@
 // Ces fonctions MUTENT un brouillon d'état et poussent des « effets » que l'UI
 // pourra animer. Aucune pénalité n'est jamais infligée (cf. philosophy.js).
 
-import { xpToNext, SKILL_KEYS } from '../data/taxonomy.js';
+import { xpToNext, SKILL_KEYS, TRAIT_TIERS } from '../data/taxonomy.js';
 import { TITLES, STYLES, STYLE_PAIRS, STYLE_DEFAULT } from '../data/titles.js';
 import { yesterdayStr } from './dates.js';
 
@@ -69,6 +69,33 @@ export function elanDuJour(s) {
 export function xpProgress(s) {
   const need = xpToNext(s.level);
   return { xp: s.xp, need, pct: Math.min(100, Math.round((s.xp / need) * 100)) };
+}
+
+/**
+ * Traduit les 6 compétences en paliers qualitatifs (Phase 2.2).
+ * Relatif à la compétence la plus haute, jamais un score absolu à maximiser.
+ * Tant que rien n'a bougé, tout est « discret » — pas un manque, un début.
+ * @returns {Record<string, 'dominante'|'emergente'|'presente'|'discrete'>}
+ */
+export function traitTierFor(s) {
+  const vals = SKILL_KEYS.map((k) => s.skills[k] || 0);
+  const top = Math.max(0, ...vals);
+  const out = {};
+  for (const k of SKILL_KEYS) {
+    const v = s.skills[k] || 0;
+    if (top === 0 || v === 0) { out[k] = 'discrete'; continue; }
+    const ratio = v / top;
+    if (ratio >= 0.8) out[k] = 'dominante';
+    else if (ratio >= 0.45) out[k] = 'emergente';
+    else if (ratio >= 0.2) out[k] = 'presente';
+    else out[k] = 'discrete';
+  }
+  return out;
+}
+
+/** Rang numérique d'un palier de trait (pour un indicateur visuel non chiffré). */
+export function traitRank(tier) {
+  return (TRAIT_TIERS[tier] || TRAIT_TIERS.discrete).rank;
 }
 
 /** Style d'aventure : 1-2 compétences dominantes. Jamais un jugement. */

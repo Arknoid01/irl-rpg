@@ -29,21 +29,25 @@ import {
 import { companionLineForState, companionLineAfterQuest } from '../www/js/engine/companion.js';
 import {
   recordQuestMilestones, recordEventMilestones, FIRST_MILESTONES, MILESTONE_KEYS,
+  MILESTONE_LABELS,
 } from '../www/js/engine/milestones.js';
 import { isComebackDay, daysAway } from '../www/js/engine/comeback.js';
 import { mulberry32 } from '../www/js/engine/rng.js';
 import {
-  gainXp, gainSkills, bumpStreak, computeStyle, elanDuJour,
+  gainXp, gainSkills, bumpStreak, computeStyle, elanDuJour, traitTierFor,
 } from '../www/js/engine/progression.js';
 import { checkNoPenalty } from '../www/js/engine/philosophy.js';
 import * as game from '../www/js/engine/game.js';
 import { getBilling, billingIsReal, THEME_PRODUCTS } from '../www/js/platform/billing.js';
 import fr from '../www/js/i18n/fr.js';
 import en from '../www/js/i18n/en.js';
+import { i18n } from '../www/js/i18n/index.js';
 import {
-  heroCardHtml, skillsGridHtml, titlesHtml, inventoryHtml, statsHtml,
-  setMuseumFilter, selectMuseumItem,
+  heroCardHtml, traitsHtml, titlesHtml, momentsHtml, discoveriesHtml,
+  pathStatsHtml, inventoryHtml, setMuseumFilter, selectMuseumItem,
 } from '../www/js/ui/components/charBits.js';
+import { recordDiscoveries, DISCOVERY_KEYS } from '../www/js/engine/discoveries.js';
+import { renderCharacter } from '../www/js/ui/screens/character.js';
 
 const bilingual = (v) => v && typeof v === 'object' && typeof v.fr === 'string' && typeof v.en === 'string';
 
@@ -638,11 +642,119 @@ test('charBits : cartes personnage ne plantent pas et reflètent l’état', () 
   s.streak = 2;
 
   assert.match(heroCardHtml(s), /Aria/);
-  assert.match(skillsGridHtml(s), /role="progressbar"/);
   assert.match(titlesHtml(s), /title-chip/);
   assert.equal(titlesHtml(defaultState(), true), '', 'aucun titre -> vide en mode compact');
   assert.match(titlesHtml(defaultState(), false), /no_titles|Aucun titre/);
-  assert.match(statsHtml(s), /stats-grid/);
+  assert.match(pathStatsHtml(s), /stats-grid/);
+});
+
+test('charBits : traits qualitatifs, sans chiffre à maximiser (Phase 2.2)', () => {
+  const s = defaultState();
+  s.skills.curiosite = 200;
+  s.skills.social = 90;
+  const html = traitsHtml(s);
+  assert.match(html, /traits-list/);
+  assert.match(html, /tier-dominante/);
+  assert.doesNotMatch(html, /progressbar/, 'pas une barre de stat');
+  assert.doesNotMatch(html, />\s*200\s*</, 'aucune valeur numérique affichée');
+
+  const tiers = traitTierFor(s);
+  assert.equal(tiers.curiosite, 'dominante');
+  assert.ok(['emergente', 'presente'].includes(tiers.social));
+  assert.equal(tiers.chaos, 'discrete');
+  // rien joué -> tout discret, pas un manque
+  assert.deepEqual(new Set(Object.values(traitTierFor(defaultState()))), new Set(['discrete']));
+});
+
+test('charBits : collections Moments / Découvertes — scellées puis cochées', () => {
+  const s = defaultState();
+  let m = momentsHtml(s);
+  assert.match(m, /collect-card sealed/);
+  assert.doesNotMatch(m, /collect-card got/);
+
+  s.milestones = { first_quest: '2026-09-04', volume_10: '2026-09-12' };
+  s.history.totalCompleted = 12;
+  m = momentsHtml(s);
+  assert.match(m, /collect-card got/);
+  assert.match(m, new RegExp(MILESTONE_LABELS.first_quest.fr.slice(0, 8).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.match(m, /palier-chip got/);
+
+  let d = discoveriesHtml(s);
+  assert.match(d, /collect-card sealed/);
+  s.discoveries = { dehors: '2026-09-05' };
+  d = discoveriesHtml(s);
+  assert.match(d, /collect-card got/);
+});
+
+test('charBits : musée montre des vitrines ??? seulement en vue « tout » (Phase 2.5)', () => {
+  const s = defaultState();
+  s.inventory = [{ id: 'a', item: { fr: 'Plume', en: 'Feather' }, kind: 'fragment', date: '2026-09-01' }];
+  setMuseumFilter(null);
+  selectMuseumItem(null);
+  assert.match(inventoryHtml(s), /museum-card sealed/);
+  setMuseumFilter('fragment');
+  assert.doesNotMatch(inventoryHtml(s), /museum-card sealed/);
+  setMuseumFilter(null);
+});
+
+test('écran Personnage : « Mon aventure » rend toutes les sections', () => {
+  const s = defaultState();
+  s.name = 'Aria';
+  s.level = 4;
+  s.skills.social = 120;
+  s.milestones = { first_quest: '2026-09-04' };
+  s.discoveries = { soir: '2026-09-04' };
+  for (const lang of ['fr', 'en']) {
+    i18n.setLang(lang);
+    const html = renderCharacter(s);
+    assert.match(html, /my_adventure|Mon aventure|My adventure/);
+    assert.match(html, /traits-list/);
+    assert.match(html, /chronicle-box/);
+    assert.match(html, /collect-grid/);
+    assert.match(html, /stats-grid/);
+  }
+  i18n.setLang('fr');
+});
+
+test('découvertes : dérivées du contexte / famille, une seule fois', () => {
+  const s = defaultState();
+  const hits = recordDiscoveries(s, {
+    famille: 'creation', contexte: ['exterieur', 'trajet', 'presence_gens'],
+  }, new Date('2026-09-04T20:00:00'));
+  assert.deepEqual(hits, DISCOVERY_KEYS.filter((k) => hits.includes(k)));
+  for (const k of ['dehors', 'chemin', 'rencontre', 'creer', 'soir']) {
+    assert.ok(hits.includes(k), `découverte manquante : ${k}`);
+  }
+  assert.ok(!hits.includes('matin'));
+  assert.equal(s.discoveries.dehors, '2026-09-04');
+  // rejoué : rien de neuf
+  assert.deepEqual(recordDiscoveries(s, { famille: 'creation', contexte: ['exterieur'] },
+    new Date('2026-09-05T20:00:00')), []);
+});
+
+test('retour après absence : compteur de reprises, une fois par jour', () => {
+  const ctx = (iso, h = 10) => ({ now: new Date(`${iso}T${String(h).padStart(2, '0')}:00:00`), rng: mulberry32(4) });
+  let s = game.finishOnboarding(defaultState(), { name: 'P', comfort: 4, ageAck: true }, ctx('2026-09-01')).state;
+  // joue le 1er
+  for (const q of [...s.quests]) {
+    s = game.acceptQuest(s, { id: q.id }).state;
+    s = game.completeQuest(s, { id: q.id }, ctx('2026-09-01')).state;
+  }
+  assert.equal(s.history.comebacks, 0);
+
+  // revient 8 jours plus tard
+  s.drawDate = null;
+  s = game.newDay(s, {}, ctx('2026-09-09')).state;
+  const first = s.quests[0];
+  s = game.acceptQuest(s, { id: first.id }).state;
+  s = game.completeQuest(s, { id: first.id }, ctx('2026-09-09')).state;
+  assert.equal(s.history.comebacks, 1);
+  // une 2e quête le même jour ne recompte pas
+  if (s.quests[1]) {
+    s = game.acceptQuest(s, { id: s.quests[1].id }).state;
+    s = game.completeQuest(s, { id: s.quests[1].id }, ctx('2026-09-09')).state;
+  }
+  assert.equal(s.history.comebacks, 1);
 });
 
 test('charBits : musée — filtre et sélection', () => {

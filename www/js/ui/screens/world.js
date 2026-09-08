@@ -106,8 +106,12 @@ function detailHtml(view) {
     ? `<span class="tiny muted">${i18n.t('map_completions').replace('{n}', String(r.completions))}</span>`
     : '';
 
+  const revealed = r.justRevealed
+    ? `<p class="map-revealed-note tiny">${esc(i18n.t('map_just_revealed'))}</p>`
+    : '';
+
   return `
-    <div class="map-detail panel">
+    <div class="map-detail panel${r.justRevealed ? ' just-revealed' : ''}">
       <div class="map-detail-head">
         <span class="map-detail-icon">${r.icon}</span>
         <div>
@@ -116,6 +120,7 @@ function detailHtml(view) {
           ${count}
         </div>
       </div>
+      ${revealed}
       <p class="map-blurb">${esc(i18n.loc(r.blurb))}</p>
       ${pinsBlock}
     </div>`;
@@ -127,6 +132,11 @@ export function renderWorld(state) {
     selectedId = view.heroRegionId;
   }
 
+  const hidden = view.stats.fog + view.stats.locked;
+  const notReady = hidden > 0
+    ? `<p class="map-not-ready tiny muted">${esc(i18n.t('map_not_ready'))}</p>`
+    : '';
+
   return `
     <div class="section-label">
       <span>${i18n.t('map_title')}</span>
@@ -136,6 +146,7 @@ export function renderWorld(state) {
     <div class="world-frame">
       ${mapSvg(view)}
     </div>
+    ${notReady}
     ${detailHtml(view)}
   `;
 }

@@ -20,6 +20,8 @@ export default {
   map_status_done: 'Accompli',
   map_status_accepted: 'En cours',
   map_status_proposed: 'Proposées',
+  map_not_ready: 'Certaines régions ne sont pas encore prêtes à être découvertes.',
+  map_just_revealed: 'Tu viens de révéler cette partie du monde.',
 
   companion_label: 'Ton compagnon',
   day_kicker: 'Jour {n}',
@@ -85,6 +87,23 @@ export default {
   stat_quests: 'Quêtes accomplies',
   stat_days: 'Jours joués',
   stat_best_streak: 'Meilleure série',
+
+  // Page « Mon aventure » (Phase 2)
+  my_adventure: 'Mon aventure',
+  traits_title: 'Traits de l’aventurier',
+  journal_chronicle: 'Ta chronique',
+  path_title: 'Ton chemin',
+  path_days: 'jours d’aventure',
+  path_streak: 'plus longue série',
+  path_moments: 'moments vécus',
+  path_returns: 'reprises',
+  moments_title: 'Moments',
+  moments_intro: 'Les premières fois de ton aventure. Certaines pages ne sont pas encore écrites.',
+  moments_sealed: 'Cette page n’a pas encore d’histoire.',
+  discoveries_title: 'Découvertes',
+  discoveries_intro: 'Les endroits et les moments que tes aventures t’ont fait traverser.',
+  discoveries_sealed: 'Pas encore découvert.',
+  museum_sealed: 'Cette vitrine n’a pas encore d’histoire.',
 
   journal_title: 'Journal d’aventure',
   journal_empty: 'Ton journal est encore vierge. Chaque quête, découverte ou niveau peut y laisser une trace.',
