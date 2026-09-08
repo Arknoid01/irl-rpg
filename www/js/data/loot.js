@@ -336,6 +336,34 @@ export const EVENT_LOOT_META = {
       en: 'Three sentences for chapter III. The grimoire thickens.',
     },
   },
+  ev_une_semaine: {
+    kind: 'collectible',
+    lore: {
+      fr: 'Sept jours de petites aventures. Rien d’héroïque — juste tenu.',
+      en: 'Seven days of small adventures. Nothing heroic — just held.',
+    },
+  },
+  ev_un_mois: {
+    kind: 'collectible',
+    lore: {
+      fr: 'Un mois plus tard, tes journées ne se ressemblent plus tout à fait. Ce jeton le note.',
+      en: 'A month on, your days don’t quite look the same. This token notes it.',
+    },
+  },
+  ev_echo_inconnu: {
+    kind: 'souvenir',
+    lore: {
+      fr: 'Le premier mot à un inconnu était dur. Le deuxième, moins.',
+      en: 'The first word to a stranger was hard. The second, less so.',
+    },
+  },
+  ev_echo_mystere: {
+    kind: 'relic',
+    lore: {
+      fr: 'Une braise gardée d’une piste suivie sans en connaître le bout.',
+      en: 'An ember kept from a trail followed without knowing where it led.',
+    },
+  },
   ev_retour_chemin: {
     kind: 'souvenir',
     lore: {

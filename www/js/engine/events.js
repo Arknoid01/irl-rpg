@@ -29,6 +29,9 @@ export function eventEligible(ev, state, now = new Date(), opts = {}) {
   if (ev.minStreak != null && (state.streak || 0) < ev.minStreak) return false;
   if (ev.minComfort != null && state.comfort < ev.minComfort) return false;
   if (ev.maxComfort != null && state.comfort > ev.maxComfort) return false;
+  // Événements spéciaux (Phase 3.4) : temporels + échos de jalon.
+  if (ev.minDaysPlayed != null && ((state.history && state.history.daysPlayed) || 0) < ev.minDaysPlayed) return false;
+  if (ev.requireMilestone && !((state.milestones || {})[ev.requireMilestone])) return false;
   if (ev.moment) {
     if (dayPart(now) !== ev.moment) return false;
   }

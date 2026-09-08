@@ -7,6 +7,9 @@
 //   minLevel?, minStreak?, minComfort?, maxComfort?
 //   moment?      — 'matin' | 'midi' | 'soir' (sinon tout moment)
 //   requireFamily? / requireFamilyN? — débloqué après N quêtes de la famille
+//   minDaysPlayed? — événement temporel (Phase 3.4)
+//   requireMilestone? — écho d'un jalon déjà atteint (Phase 3.4)
+//   comeback?    — accueil au retour après absence, jamais en rotation normale (Phase 1.3)
 
 /** @type {Array<object>} */
 export const EVENTS = [
@@ -330,6 +333,48 @@ export const EVENTS = [
       en: "You’ve already turned pages. Note in 3 sentences what your adventure has changed since the start.",
     },
     item: { fr: '📗 Signet du chapitre III', en: '📗 Chapter III bookmark' },
+  },
+
+  // ── Événements spéciaux (Phase 3.4) : temporels + échos de jalon ──
+  {
+    id: 'ev_une_semaine', famille: 'curiosite', xp: 190, minutes: 15, weight: 8,
+    minDaysPlayed: 7, requireMilestone: 'first_quest',
+    title: { fr: 'Une semaine derrière toi', en: 'A week behind you' },
+    text: {
+      fr: "Ça fait à peu près une semaine que ton compagnon te propose des choses. Prends 3 minutes : note une aventure que tu n’aurais pas vécue sans lui.",
+      en: "It’s been about a week of your companion offering you things. Take 3 minutes: note one adventure you wouldn’t have had without it.",
+    },
+    item: { fr: '📅 Marque de la première semaine', en: '📅 First-week mark' },
+  },
+  {
+    id: 'ev_un_mois', famille: 'curiosite', xp: 240, minutes: 20, weight: 7,
+    minDaysPlayed: 30, requireMilestone: 'volume_10',
+    title: { fr: 'Un mois de chemin', en: 'A month of road' },
+    text: {
+      fr: "Un mois. Relis une page ou deux de ton journal, puis écris une phrase : qu’est-ce qui a changé dans tes journées ?",
+      en: "A month. Reread a page or two of your journal, then write one sentence: what has changed in your days?",
+    },
+    item: { fr: '🌗 Jeton du premier mois', en: '🌗 First-month token' },
+  },
+  {
+    id: 'ev_echo_inconnu', famille: 'social', xp: 220, minutes: 120, weight: 8,
+    requireMilestone: 'first_social',
+    title: { fr: 'L’écho d’une rencontre', en: 'The echo of an encounter' },
+    text: {
+      fr: "Tu as déjà osé parler à quelqu’un que tu ne connaissais pas. Aujourd’hui, si l’occasion vient : refais-le, une fois.",
+      en: "You’ve already dared to talk to someone you didn’t know. Today, if the chance comes: do it again, once.",
+    },
+    item: { fr: '🔗 Second maillon', en: '🔗 Second link' },
+  },
+  {
+    id: 'ev_echo_mystere', famille: 'exploration', xp: 210, minutes: 90, weight: 7,
+    requireMilestone: 'first_hidden',
+    title: { fr: 'La piste qui reste', en: 'The trail that lingers' },
+    text: {
+      fr: "Une quête mystérieuse t’a déjà mené quelque part. Retourne à cet endroit — ou trouves-en un nouveau à explorer sans but.",
+      en: "A mystery quest already led you somewhere. Go back there — or find a new place to wander with no goal.",
+    },
+    item: { fr: '🕯 Braise de curiosité', en: '🕯 Ember of curiosity' },
   },
 
   // ── Accueil au retour (Phase 1.3) ──

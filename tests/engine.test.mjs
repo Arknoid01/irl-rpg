@@ -550,6 +550,25 @@ test('événement d’ouverture : forcé après une longue disette', () => {
   assert.ok(normal < forced, `sans disette le tirage reste partiel : ${normal}/20`);
 });
 
+test('événements spéciaux : temporels + échos de jalon (Phase 3.4)', () => {
+  const semaine = EVENTS.find((e) => e.id === 'ev_une_semaine');
+  const echoSocial = EVENTS.find((e) => e.id === 'ev_echo_inconnu');
+  assert.ok(semaine && echoSocial, 'événements spéciaux présents');
+
+  const s = defaultState();
+  s.history.daysPlayed = 3;
+  assert.equal(eventEligible(semaine, s), false, 'pas avant 7 jours joués');
+  assert.equal(eventEligible(echoSocial, s), false, 'pas sans le jalon first_social');
+
+  s.history.daysPlayed = 9;
+  s.milestones = { first_quest: '2026-09-01', first_social: '2026-09-02' };
+  assert.equal(eventEligible(semaine, s), true);
+  assert.equal(eventEligible(echoSocial, s), true);
+
+  // ces événements ne sortent jamais en mode retour (pas de flag comeback)
+  assert.equal(!!semaine.comeback, false);
+});
+
 test('mini-arcs : contenu bien formé (Phase 3.3)', () => {
   const ids = new Set();
   for (const arc of ARCS) {
