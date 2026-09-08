@@ -294,6 +294,13 @@
   color: var(--gold);
 }
 .chronicle-blurb { font-style: italic; color: var(--text-dim); margin: 4px 0 0; }
+.chronicle-lean {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: .92rem;
+  color: var(--gold);
+  margin: 8px 0 0;
+}
 
 /* Collections « Moments » & « Découvertes » — cartes cochées ou scellées. */
 .collect-intro { margin: 0 0 9px; font-style: italic; }
@@ -485,6 +492,13 @@
   color: var(--ink-dim);
   margin: 0;
   font-size: 1rem;
+}
+.journal-chapter-lean {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--gold);
+  font-size: .9rem;
+  margin: 6px 0 0;
 }
 .journal-section { margin-bottom: 18px; }
 .journal-section-title {

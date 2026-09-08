@@ -9,6 +9,9 @@ const KIND_ICON = {
   evenement: '⚔',
   chapitre: '⚜',
   decouverte: '🗺',
+  jour: '📔',
+  indice: '🧵',
+  revelation: '🗝',
   note: '•',
 };
 
@@ -37,6 +40,7 @@ export function renderJournal(state) {
     <header class="journal-chapter panel">
       <div class="journal-chapter-mark">${esc(i18n.loc(ch.label))}</div>
       <p class="journal-chapter-blurb">${esc(i18n.loc(ch.blurb))}</p>
+      ${ch.lean ? `<p class="journal-chapter-lean">${esc(i18n.loc(ch.lean))}</p>` : ''}
     </header>`;
 
   if (timeline.empty) {
@@ -49,7 +53,7 @@ export function renderJournal(state) {
     const entries = sec.entries.map((e) => `
       <article class="journal-entry kind-${e.kind || 'note'}">
         <span class="journal-date"><span aria-hidden="true">${KIND_ICON[e.kind] || '•'}</span> ${relDate(e.date, today)}</span>
-        <p>${esc(i18n.loc(e.text))}</p>
+        <p>${esc(i18n.loc(e.text)).replace(/\n/g, '<br>')}</p>
       </article>`).join('');
     return `
       <div class="journal-section">

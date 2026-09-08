@@ -1,7 +1,7 @@
 import { i18n } from '../../i18n/index.js';
 import { esc, pctBar } from '../dom.js';
 import { xpProgress, computeStyle } from '../../engine/progression.js';
-import { chapterForLevel } from '../../engine/journal.js';
+import { chapterFor } from '../../engine/journal.js';
 import { companionLineForState } from '../../engine/companion.js';
 import { STYLE_DEFAULT } from '../../data/titles.js';
 import {
@@ -16,7 +16,7 @@ export function renderCharacter(state) {
   const p = xpProgress(state);
   const lang = state.lang || i18n.lang;
   const style = computeStyle(state) || STYLE_DEFAULT;
-  const ch = chapterForLevel(state.level || 1, state.theme);
+  const ch = chapterFor(state, state.theme);
   const line = companionLineForState(state, lang);
 
   return `
@@ -43,6 +43,7 @@ export function renderCharacter(state) {
     <section class="panel chronicle-box">
       <div class="chronicle-mark">${esc(i18n.loc(ch.label))}</div>
       <p class="chronicle-blurb">${esc(i18n.loc(ch.blurb))}</p>
+      ${ch.lean ? `<p class="chronicle-lean">${esc(i18n.loc(ch.lean))}</p>` : ''}
     </section>
 
     <div class="section-label"><span>${i18n.t('path_title')}</span></div>

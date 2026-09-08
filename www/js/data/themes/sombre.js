@@ -244,6 +244,53 @@ export default {
         },
       },
     ],
+
+    chapterLean: {
+      fr: {
+        social: 'Ta route passe surtout par les gens — un mot, un visage croisé dans la nuit.',
+        exploration: 'Ta route quitte souvent les rues que tu connais.',
+        curiosite: 'Ta route est faite de détails que d’autres ne verraient pas.',
+        creation: 'Ta route laisse des choses faites de tes mains.',
+        quotidien: 'Ta route fait des corvées ordinaires des petites victoires.',
+        chaos: 'Ta route aime les règles absurdes et ce que le hasard décide.',
+      },
+      en: {
+        social: 'Your road runs mostly through people — a word, a face passed in the night.',
+        exploration: 'Your road keeps leaving the streets you know.',
+        curiosite: 'Your road is made of details others would miss.',
+        creation: 'Your road leaves things made by your hands.',
+        quotidien: 'Your road turns ordinary chores into small wins.',
+        chaos: 'Your road loves absurd rules and whatever chance decides.',
+      },
+    },
+    dayTitles: {
+      fr: ['Le relevé du jour', 'Les écarts', 'Une nuit de plus', 'La ligne d’aujourd’hui', 'Ce que la nuit a rendu'],
+      en: ['The day’s tally', 'The strays', 'One more night', 'Today’s line', 'What the night gave back'],
+    },
+    dayEntry: {
+      fr: (n, t, tags) => `Nuit ${n} — « ${t} ». Au registre : ${tags}. Souvenir conservé.`,
+      en: (n, t, tags) => `Night ${n} — “${t}”. In the ledger: ${tags}. Kept as a memory.`,
+    },
+    arc: {
+      clue: {
+        fr: (t) => `Une ligne s’ajoute au registre : « ${t} »`,
+        en: (t) => `A line is added to the ledger: “${t}”`,
+      },
+      reveal: {
+        fr: (t) => `L’affaire se referme. « ${t} »`,
+        en: (t) => `The matter closes. “${t}”`,
+      },
+      inProgress: {
+        fr: [
+          'Une affaire te suit depuis quelques nuits — ta compagne ne l’a pas classée.',
+          'Le registre a une entrée à moitié écrite ; elle attend la suite.',
+        ],
+        en: [
+          'A matter has followed you for a few nights — your companion hasn’t filed it.',
+          'The ledger has a half-written entry; it waits for what comes next.',
+        ],
+      },
+    },
   },
 
   // Aperçu boutique (ui/shop.js) : place réservée pour une vidéo d'aperçu, à

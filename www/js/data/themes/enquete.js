@@ -207,6 +207,53 @@ export default {
         fr: 'L’affaire lointaine n’est plus qu’une routine familière.',
         en: 'The distant case is now only a familiar routine.' } },
     ],
+
+    chapterLean: {
+      fr: {
+        social: 'Ton enquête passe surtout par les gens — un mot pris, un visage, un témoin.',
+        exploration: 'Ton enquête sort souvent des rues que tu connais.',
+        curiosite: 'Ton enquête est faite de détails que d’autres laisseraient passer.',
+        creation: 'Ton enquête laisse des choses que tu as faites de tes mains.',
+        quotidien: 'Ton enquête fait de l’ordinaire une série de petites victoires.',
+        chaos: 'Ton enquête aime les règles absurdes et les pistes que rien n’annonçait.',
+      },
+      en: {
+        social: 'Your case runs mostly through people — a word taken, a face, a witness.',
+        exploration: 'Your case keeps leaving the streets you know.',
+        curiosite: 'Your case is made of details others would let slip.',
+        creation: 'Your case leaves things you made with your hands.',
+        quotidien: 'Your case turns the ordinary into a run of small wins.',
+        chaos: 'Your case loves absurd rules and leads nothing announced.',
+      },
+    },
+    dayTitles: {
+      fr: ['Le rapport du jour', 'Les écarts', 'Une journée de plus au dossier', 'La note d’aujourd’hui', 'Ce que la journée a donné'],
+      en: ['The day’s report', 'The detours', 'One more day on file', 'Today’s note', 'What the day turned up'],
+    },
+    dayEntry: {
+      fr: (n, t, tags) => `Jour ${n} — « ${t} ». Versé au dossier : ${tags}. Conservé.`,
+      en: (n, t, tags) => `Day ${n} — “${t}”. Filed to the case: ${tags}. Kept.`,
+    },
+    arc: {
+      clue: {
+        fr: (t) => `Une pièce s’ajoute au tableau : « ${t} »`,
+        en: (t) => `A piece goes up on the board: “${t}”`,
+      },
+      reveal: {
+        fr: (t) => `L’affaire est bouclée. « ${t} »`,
+        en: (t) => `The case is closed. “${t}”`,
+      },
+      inProgress: {
+        fr: [
+          'Une piste te suit depuis quelques jours — ton coéquipier ne l’a pas classée.',
+          'Le dossier a une note à moitié écrite ; elle attend la suite.',
+        ],
+        en: [
+          'A lead has followed you for days — your partner hasn’t shelved it.',
+          'The file has a half-written note; it waits for what comes next.',
+        ],
+      },
+    },
   },
 
   // Aperçu boutique : place réservée, vidéo à enregistrer plus tard (Yannick).

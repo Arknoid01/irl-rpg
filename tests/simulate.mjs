@@ -65,10 +65,9 @@ for (let d = 0; d < DAYS; d++) {
   // langue qui alterne pour éprouver l'i18n
   if (d % 10 === 0) i18n.setLang(i18n.lang === 'fr' ? 'en' : 'fr');
 
-  step(`day ${d} newDay`, () => {
-    state.drawDate = null;
-    return game.newDay(state, {}, ctx);
-  });
+  // rollover naturel : la date avance chaque jour, pas de re-tirage forcé —
+  // ça exerce l'entrée de journal « du jour » (Phase 3.2).
+  step(`day ${d} newDay`, () => game.newDay(state, {}, ctx));
 
   // le joueur accepte ~80 % des quêtes, en ignore le reste
   for (const q of [...state.quests]) {

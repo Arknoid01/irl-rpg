@@ -244,6 +244,53 @@ export default {
         },
       },
     ],
+
+    chapterLean: {
+      fr: {
+        social: 'Ton parcours passe surtout par les gens — un échange, un contact, une présence.',
+        exploration: 'Ton parcours sort souvent des secteurs balisés.',
+        curiosite: 'Ton parcours est fait de choses que tu as regardées de plus près.',
+        creation: 'Ton parcours laisse des choses que tu as assemblées toi-même.',
+        quotidien: 'Ton parcours transforme la routine en petites victoires.',
+        chaos: 'Ton parcours aime les règles absurdes et les glitchs volontaires.',
+      },
+      en: {
+        social: 'Your route runs mostly through people — an exchange, a contact, a presence.',
+        exploration: 'Your route keeps leaving the mapped sectors.',
+        curiosite: 'Your route is made of things you looked at more closely.',
+        creation: 'Your route leaves things you assembled yourself.',
+        quotidien: 'Your route turns routine into small wins.',
+        chaos: 'Your route loves absurd rules and deliberate glitches.',
+      },
+    },
+    dayTitles: {
+      fr: ['Le log du jour', 'Les écarts de trajectoire', 'Un cycle de plus', 'L’entrée d’aujourd’hui', 'Ce que le jour a renvoyé'],
+      en: ['The day’s log', 'Trajectory drift', 'One more cycle', 'Today’s entry', 'What the day returned'],
+    },
+    dayEntry: {
+      fr: (n, t, tags) => `Jour ${n} — « ${t} ». Au log : ${tags}. Sauvegardé.`,
+      en: (n, t, tags) => `Day ${n} — “${t}”. In the log: ${tags}. Saved.`,
+    },
+    arc: {
+      clue: {
+        fr: (t) => `Un fragment se décode : « ${t} »`,
+        en: (t) => `A fragment decodes: “${t}”`,
+      },
+      reveal: {
+        fr: (t) => `Le fil se termine. « ${t} »`,
+        en: (t) => `The thread ends. “${t}”`,
+      },
+      inProgress: {
+        fr: [
+          'Un signal te suit depuis quelques jours — ton compagnon le garde en cache.',
+          'Le log a une entrée incomplète ; elle attend la suite.',
+        ],
+        en: [
+          'A signal has followed you for days — your companion keeps it cached.',
+          'The log has an incomplete entry; it waits for what comes next.',
+        ],
+      },
+    },
   },
 
   // Aperçu boutique (ui/shop.js) : mettre './assets/videos/cyberpunk-preview.mp4'

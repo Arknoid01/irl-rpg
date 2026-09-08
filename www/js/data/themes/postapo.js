@@ -207,6 +207,53 @@ export default {
         fr: 'Le relais lointain n’est plus qu’une silhouette familière.',
         en: 'The distant relay is now only a familiar silhouette.' } },
     ],
+
+    chapterLean: {
+      fr: {
+        social: 'Ta route passe surtout par les gens — un mot, un visage, un contact.',
+        exploration: 'Ta route sort souvent des secteurs que tu connais.',
+        curiosite: 'Ta route est faite de trucs regardés de plus près.',
+        creation: 'Ta route laisse des choses bricolées de tes mains.',
+        quotidien: 'Ta route fait des corvées ordinaires des petites victoires.',
+        chaos: 'Ta route aime les règles absurdes et ce que le hasard décide.',
+      },
+      en: {
+        social: 'Your route runs mostly through people — a word, a face, a contact.',
+        exploration: 'Your route keeps leaving the sectors you know.',
+        curiosite: 'Your route is made of things looked at more closely.',
+        creation: 'Your route leaves things rigged up by your hands.',
+        quotidien: 'Your route turns ordinary chores into small wins.',
+        chaos: 'Your route loves absurd rules and whatever chance decides.',
+      },
+    },
+    dayTitles: {
+      fr: ['Le rapport du jour', 'Les écarts', 'Un jour de plus', 'La ligne d’aujourd’hui', 'Ce que le secteur a rendu'],
+      en: ['The day’s report', 'The strays', 'One more day', 'Today’s line', 'What the sector gave back'],
+    },
+    dayEntry: {
+      fr: (n, t, tags) => `Jour ${n} — « ${t} ». Sur les ondes : ${tags}. Gardé.`,
+      en: (n, t, tags) => `Day ${n} — “${t}”. Over the air: ${tags}. Kept.`,
+    },
+    arc: {
+      clue: {
+        fr: (t) => `Un fragment de signal remonte : « ${t} »`,
+        en: (t) => `A fragment of signal comes through: “${t}”`,
+      },
+      reveal: {
+        fr: (t) => `La piste aboutit. « ${t} »`,
+        en: (t) => `The trail leads home. “${t}”`,
+      },
+      inProgress: {
+        fr: [
+          'Une piste te suit depuis quelques jours — ton guide la garde sur la carte.',
+          'La radio a un message à moitié capté ; il attend la suite.',
+        ],
+        en: [
+          'A trail has followed you for days — your guide keeps it on the map.',
+          'The radio has a half-caught message; it waits for what comes next.',
+        ],
+      },
+    },
   },
 
   // Aperçu boutique : place réservée, vidéo à enregistrer plus tard (Yannick).

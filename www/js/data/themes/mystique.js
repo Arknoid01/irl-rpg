@@ -207,6 +207,53 @@ export default {
         fr: 'La constellation lointaine n’est plus qu’une silhouette familière.',
         en: 'The distant constellation is now only a familiar silhouette.' } },
     ],
+
+    chapterLean: {
+      fr: {
+        social: 'Ton ciel penche vers les autres — un mot, un visage, une présence.',
+        exploration: 'Ton ciel te fait quitter les chemins connus.',
+        curiosite: 'Ton ciel est fait de choses regardées longtemps.',
+        creation: 'Ton ciel laisse des choses nées de tes mains.',
+        quotidien: 'Ton ciel change l’ordinaire en petites victoires.',
+        chaos: 'Ton ciel aime les règles absurdes et ce que le hasard écrit.',
+      },
+      en: {
+        social: 'Your sky leans toward other people — a word, a face, a presence.',
+        exploration: 'Your sky keeps taking you off the known paths.',
+        curiosite: 'Your sky is made of things watched a long while.',
+        creation: 'Your sky leaves things born from your hands.',
+        quotidien: 'Your sky turns the ordinary into small wins.',
+        chaos: 'Your sky loves absurd rules and whatever chance writes.',
+      },
+    },
+    dayTitles: {
+      fr: ['Le relevé du ciel', 'Les écarts', 'Une nuit de plus', 'La ligne d’aujourd’hui', 'Ce que le ciel a rendu'],
+      en: ['The sky’s reading', 'The strays', 'One more night', 'Today’s line', 'What the sky gave back'],
+    },
+    dayEntry: {
+      fr: (n, t, tags) => `Nuit ${n} — « ${t} ». Inscrit au ciel : ${tags}. Souvenir conservé.`,
+      en: (n, t, tags) => `Night ${n} — “${t}”. Written in the sky: ${tags}. Kept as a memory.`,
+    },
+    arc: {
+      clue: {
+        fr: (t) => `Un signe se précise : « ${t} »`,
+        en: (t) => `A sign sharpens: “${t}”`,
+      },
+      reveal: {
+        fr: (t) => `Le présage s’accomplit. « ${t} »`,
+        en: (t) => `The omen is fulfilled. “${t}”`,
+      },
+      inProgress: {
+        fr: [
+          'Un signe te suit depuis quelques nuits — la voix des astres le garde en tête.',
+          'Le ciel a une figure à moitié tracée ; elle attend la suite.',
+        ],
+        en: [
+          'A sign has followed you for a few nights — the voice of the stars keeps it in mind.',
+          'The sky has a half-drawn figure; it waits for what comes next.',
+        ],
+      },
+    },
   },
 
   // Aperçu boutique : place réservée, vidéo à enregistrer plus tard (Yannick).

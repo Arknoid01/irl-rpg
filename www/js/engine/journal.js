@@ -7,6 +7,7 @@
 import { pick, defaultRng } from './rng.js';
 import { loc } from '../i18n/index.js';
 import { voiceFor } from '../data/themes.js';
+import { FAMILIES } from '../data/taxonomy.js';
 import { daysBetween, todayStr } from './dates.js';
 
 export function addEntry(s, { date, text, kind = 'note' }) {
@@ -52,24 +53,87 @@ export function regionRevealEntry(regionLabel, themeKey) {
   };
 }
 
-// Paliers de niveau -> index du chapitre + identifiant stable (l'ordre et les
-// seuils ne changent jamais ; seul le texte est thématisé).
-const CHAPTER_IDS = ['prologue', 'ch1', 'ch2', 'ch3', 'ch4', 'ch5'];
-function chapterIndexForLevel(level) {
-  if (level < 3) return 0;
-  if (level < 5) return 1;
-  if (level < 8) return 2;
-  if (level < 12) return 3;
-  if (level < 15) return 4;
-  return 5;
+/**
+ * Entrée de journal « du jour » (Phase 3.2) — résumé narratif de la veille.
+ * @param {number} dayNo  numéro du jour résumé
+ * @param {string[]} families  familles vécues (distinctes, ordre d'apparition)
+ * @param {string} themeKey
+ * @param {number} seed  fait varier le titre du jour
+ * @returns {{fr:string,en:string}|null} null s'il n'y a rien à raconter
+ */
+export function dailyRecapEntry(dayNo, families, themeKey, seed = 0) {
+  const fams = (families || []).filter((f) => FAMILIES[f]).slice(0, 3);
+  if (!fams.length) return null;
+  const V = voiceFor(themeKey);
+  const titles = V.dayTitles;
+  const pickTitle = (lang) => titles[lang][seed % titles[lang].length];
+  const tagStr = (lang) => fams.map((f) => `${FAMILIES[f].icon} ${loc(FAMILIES[f].label, lang)}`).join(' · ');
+  return {
+    fr: V.dayEntry.fr(dayNo, pickTitle('fr'), tagStr('fr')),
+    en: V.dayEntry.en(dayNo, pickTitle('en'), tagStr('en')),
+  };
 }
 
-/** Chapitre narratif selon le niveau actuel. */
-export function chapterForLevel(level, themeKey) {
-  const idx = chapterIndexForLevel(level);
+// Paliers de chapitre — en NOMBRE DE QUÊTES accomplies (DECISIONS D15, §2.2 :
+// « plus lié à l'activité » qu'au niveau). L'ordre et les identifiants ne
+// changent jamais ; seuls le texte (thématisé) et la nuance de famille varient.
+const CHAPTER_IDS = ['prologue', 'ch1', 'ch2', 'ch3', 'ch4', 'ch5'];
+export const CHAPTER_QUEST_THRESHOLDS = [0, 10, 25, 50, 100, 200];
+
+function chapterIndexFor(state) {
+  const n = (state && state.history && state.history.totalCompleted) || 0;
+  let idx = 0;
+  for (let i = 0; i < CHAPTER_QUEST_THRESHOLDS.length; i += 1) {
+    if (n >= CHAPTER_QUEST_THRESHOLDS[i]) idx = i;
+  }
+  return idx;
+}
+
+/** Famille nettement en tête, ou null si trop tôt / trop équilibré. */
+function dominantFamily(state) {
+  const fc = (state && state.history && state.history.familleCompleted) || {};
+  const ranked = Object.entries(fc).sort((a, b) => b[1] - a[1]);
+  const top = ranked[0];
+  const second = ranked[1];
+  if (!top || top[1] < 5) return null;
+  if (second && second[1] >= top[1] * 0.7) return null;
+  return top[0];
+}
+
+/** Phrase de nuance du chapitre selon la famille dominante (Phase 3.1). */
+function chapterLean(state, themeKey) {
+  const fam = dominantFamily(state);
+  if (!fam) return null;
+  const base = voiceFor().chapterLean;
+  const cl = voiceFor(themeKey).chapterLean || base;
+  return {
+    fr: (cl.fr && cl.fr[fam]) || base.fr[fam],
+    en: (cl.en && cl.en[fam]) || base.en[fam],
+  };
+}
+
+/**
+ * Entrée de journal quand un nouveau chapitre s'ouvre (label + blurb déjà
+ * thématisés par la voix du thème — pas de wrapper par thème à écrire).
+ */
+export function chapterOpenEntry(chap) {
+  return {
+    fr: `— ${loc(chap.label, 'fr')} —\n${loc(chap.blurb, 'fr')}`,
+    en: `— ${loc(chap.label, 'en')} —\n${loc(chap.blurb, 'en')}`,
+  };
+}
+
+/** Chapitre narratif selon le nombre de quêtes accomplies + nuance de famille. */
+export function chapterFor(state, themeKey = state && state.theme) {
+  const idx = chapterIndexFor(state);
   const chapters = voiceFor(themeKey).chapters;
   const ch = chapters[idx] || voiceFor().chapters[idx];
-  return { id: CHAPTER_IDS[idx], label: ch.label, blurb: ch.blurb };
+  return {
+    id: CHAPTER_IDS[idx],
+    label: ch.label,
+    blurb: ch.blurb,
+    lean: chapterLean(state, themeKey),
+  };
 }
 
 function bucketFor(dateStr, today) {
@@ -86,7 +150,7 @@ function bucketFor(dateStr, today) {
  */
 export function buildJournalTimeline(state, now = new Date()) {
   const today = todayStr(now);
-  const chapter = chapterForLevel(state.level || 1, state.theme);
+  const chapter = chapterFor(state, state.theme);
   const raw = (state.journal || []).slice().reverse();
 
   const buckets = {

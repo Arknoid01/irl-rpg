@@ -207,6 +207,53 @@ export default {
         fr: 'La station lointaine n’est plus qu’une silhouette familière.',
         en: 'The distant station is now only a familiar silhouette.' } },
     ],
+
+    chapterLean: {
+      fr: {
+        social: 'Ta trajectoire passe surtout par les gens — un échange, un contact, une présence.',
+        exploration: 'Ta trajectoire quitte souvent les routes connues.',
+        curiosite: 'Ta trajectoire est faite de choses observées de plus près.',
+        creation: 'Ta trajectoire laisse des choses assemblées de tes mains.',
+        quotidien: 'Ta trajectoire change la routine en petites victoires.',
+        chaos: 'Ta trajectoire aime les règles absurdes et les écarts volontaires.',
+      },
+      en: {
+        social: 'Your trajectory runs mostly through people — an exchange, a contact, a presence.',
+        exploration: 'Your trajectory keeps leaving the known routes.',
+        curiosite: 'Your trajectory is made of things observed more closely.',
+        creation: 'Your trajectory leaves things assembled by your hands.',
+        quotidien: 'Your trajectory turns routine into small wins.',
+        chaos: 'Your trajectory loves absurd rules and deliberate deviations.',
+      },
+    },
+    dayTitles: {
+      fr: ['Le journal du jour', 'Les écarts de cap', 'Un segment de plus', 'L’entrée d’aujourd’hui', 'Ce que le jour a renvoyé'],
+      en: ['The day’s log', 'Heading drift', 'One more segment', 'Today’s entry', 'What the day returned'],
+    },
+    dayEntry: {
+      fr: (n, t, tags) => `Jour ${n} — « ${t} ». Au journal de bord : ${tags}. Consigné.`,
+      en: (n, t, tags) => `Day ${n} — “${t}”. In the flight record: ${tags}. Logged.`,
+    },
+    arc: {
+      clue: {
+        fr: (t) => `Un relevé se précise sur la console : « ${t} »`,
+        en: (t) => `A reading sharpens on the console: “${t}”`,
+      },
+      reveal: {
+        fr: (t) => `Le cap aboutit. « ${t} »`,
+        en: (t) => `The heading arrives. “${t}”`,
+      },
+      inProgress: {
+        fr: [
+          'Un cap te suit depuis quelques jours — ton IA de bord le garde en mémoire.',
+          'Le journal de bord a une entrée incomplète ; elle attend la suite.',
+        ],
+        en: [
+          'A heading has followed you for days — your onboard AI keeps it in memory.',
+          'The flight record has an incomplete entry; it waits for what comes next.',
+        ],
+      },
+    },
   },
 
   // Aperçu boutique : place réservée, vidéo à enregistrer plus tard (Yannick).

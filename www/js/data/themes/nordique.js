@@ -244,5 +244,59 @@ export default {
         },
       },
     ],
+
+    // Nuance de chapitre selon la famille dominante (Phase 3.1). Une phrase,
+    // jamais un jugement — c'est une couleur, pas un score.
+    chapterLean: {
+      fr: {
+        social: 'Ton chemin passe surtout par les autres — un mot, un visage, une présence.',
+        exploration: 'Ton chemin s’écarte souvent des sentiers connus.',
+        curiosite: 'Ton chemin est fait de choses regardées de plus près.',
+        creation: 'Ton chemin laisse des traces que tu as faites de tes mains.',
+        quotidien: 'Ton chemin transforme l’ordinaire en petites victoires.',
+        chaos: 'Ton chemin aime les règles absurdes et les détours du hasard.',
+      },
+      en: {
+        social: 'Your path runs mostly through other people — a word, a face, a presence.',
+        exploration: 'Your path keeps stepping off the known trails.',
+        curiosite: 'Your path is made of things looked at more closely.',
+        creation: 'Your path leaves traces you made with your hands.',
+        quotidien: 'Your path turns the ordinary into small wins.',
+        chaos: 'Your path loves absurd rules and the detours of chance.',
+      },
+    },
+
+    // Entrée de journal « du jour » (Phase 3.2) — un résumé de la veille.
+    dayTitles: {
+      fr: ['Le fil du jour', 'Les détours', 'Une journée de plus', 'La page d’aujourd’hui', 'Ce que le jour a donné'],
+      en: ['The day’s thread', 'The detours', 'One more day', 'Today’s page', 'What the day gave'],
+    },
+    dayEntry: {
+      fr: (n, title, tags) => `Jour ${n} — « ${title} ». Tu as vécu : ${tags}. Souvenir conservé.`,
+      en: (n, title, tags) => `Day ${n} — “${title}”. You lived: ${tags}. Kept as a memory.`,
+    },
+
+    // Cadre des mini-arcs secrets (Phase 3.3) — le contenu brut vient de
+    // data/arcs.js ; ici seul l'habillage change.
+    arc: {
+      clue: {
+        fr: (t) => `Un indice se précise dans le grimoire : « ${t} »`,
+        en: (t) => `A clue sharpens in the grimoire: “${t}”`,
+      },
+      reveal: {
+        fr: (t) => `La piste se referme. « ${t} »`,
+        en: (t) => `The trail closes. “${t}”`,
+      },
+      inProgress: {
+        fr: [
+          'Une piste te suit depuis quelques jours — ton compagnon la garde en tête.',
+          'Le grimoire a une page à moitié écrite ; elle attend la suite.',
+        ],
+        en: [
+          'A trail has followed you for a few days — your companion keeps it in mind.',
+          'The grimoire has a half-written page; it waits for what comes next.',
+        ],
+      },
+    },
   },
 };

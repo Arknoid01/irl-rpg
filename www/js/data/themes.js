@@ -61,5 +61,12 @@ export function voiceFor(themeKey) {
     ...v,
     ctx: { ...BASE_VOICE.ctx, ...(v.ctx || {}) },
     milestones: { ...BASE_VOICE.milestones, ...(v.milestones || {}) },
+    chapterLean: {
+      fr: { ...BASE_VOICE.chapterLean.fr, ...(v.chapterLean && v.chapterLean.fr) },
+      en: { ...BASE_VOICE.chapterLean.en, ...(v.chapterLean && v.chapterLean.en) },
+    },
+    arc: { ...BASE_VOICE.arc, ...(v.arc || {}) },
+    dayEntry: v.dayEntry || BASE_VOICE.dayEntry,
+    dayTitles: v.dayTitles || BASE_VOICE.dayTitles,
   };
 }

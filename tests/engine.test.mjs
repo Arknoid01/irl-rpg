@@ -24,8 +24,16 @@ import {
 } from '../www/js/engine/inventory.js';
 import { LOOT_KINDS, EVENT_LOOT_META } from '../www/js/data/loot.js';
 import {
-  buildJournalTimeline, chapterForLevel, levelChapterEntry, eventEntry, regionRevealEntry,
+  buildJournalTimeline, chapterFor, chapterOpenEntry, dailyRecapEntry,
+  levelChapterEntry, eventEntry, regionRevealEntry, CHAPTER_QUEST_THRESHOLDS,
 } from '../www/js/engine/journal.js';
+
+/** Petit helper : un état avec N quêtes accomplies. */
+const withCompleted = (n, extra = {}) => {
+  const s = defaultState();
+  s.history.totalCompleted = n;
+  return Object.assign(s, extra);
+};
 import { companionLineForState, companionLineAfterQuest } from '../www/js/engine/companion.js';
 import {
   recordQuestMilestones, recordEventMilestones, FIRST_MILESTONES, MILESTONE_KEYS,
@@ -302,14 +310,28 @@ test('musée : kinds, lore événements, jalons', () => {
   assert.ok(view.counts.collectible >= 1);
 });
 
-test('journal : timeline et chapitres', () => {
-  const ch = chapterForLevel(1);
+test('journal : timeline et chapitres (seuils en nb de quêtes — Phase 3.1)', () => {
+  const ch = chapterFor(withCompleted(0));
   assert.equal(ch.id, 'prologue');
   assert.ok(bilingual(ch.label));
-  assert.equal(chapterForLevel(8).id, 'ch3');
+  assert.equal(chapterFor(withCompleted(9)).id, 'prologue');
+  assert.equal(chapterFor(withCompleted(10)).id, 'ch1');
+  assert.equal(chapterFor(withCompleted(50)).id, 'ch3');
+  assert.equal(chapterFor(withCompleted(250)).id, 'ch5');
+  assert.deepEqual(CHAPTER_QUEST_THRESHOLDS, [0, 10, 25, 50, 100, 200]);
+
+  // nuance de famille : apparaît quand une famille domine nettement
+  const leaned = withCompleted(30);
+  leaned.history.familleCompleted = { social: 20, exploration: 4, curiosite: 3 };
+  assert.ok(bilingual(chapterFor(leaned).lean), 'nuance présente');
+  assert.equal(chapterFor(withCompleted(30)).lean, null, 'pas de nuance sans dominante');
+
+  // entrée « nouveau chapitre »
+  const open = chapterOpenEntry(chapterFor(withCompleted(25)));
+  assert.ok(bilingual(open) && open.fr.includes('—'));
 
   const s = defaultState();
-  s.level = 4;
+  s.history.totalCompleted = 12;
   s.journal = [
     { date: '2026-09-04', text: { fr: 'A', en: 'A' }, kind: 'moment' },
     { date: '2026-09-03', text: { fr: 'B', en: 'B' }, kind: 'fragment' },
@@ -319,6 +341,43 @@ test('journal : timeline et chapitres', () => {
   assert.equal(tl.chapter.id, 'ch1');
   assert.ok(tl.sections.some((sec) => sec.id === 'today'));
   assert.ok(tl.sections.some((sec) => sec.id === 'yesterday'));
+});
+
+test('journal : entrée « du jour » (Phase 3.2)', () => {
+  const entry = dailyRecapEntry(17, ['exploration', 'social'], 'nordique', 0);
+  assert.ok(bilingual(entry));
+  assert.match(entry.fr, /Jour 17/);
+  assert.match(entry.fr, /Exploration/);
+  assert.equal(dailyRecapEntry(3, [], 'nordique'), null, 'journée vide -> aucune entrée');
+
+  const enq = dailyRecapEntry(5, ['curiosite'], 'enquete', 1);
+  assert.ok(bilingual(enq) && enq.en.includes('Day 5'));
+});
+
+test('game : chapitre-ouvert + entrée du jour au fil de la partie (Phase 3.1-3.2)', () => {
+  const day = (d, h = 9) => ({ now: new Date(`2026-09-${String(d).padStart(2, '0')}T${String(h).padStart(2, '0')}:00:00`), rng: mulberry32(5) });
+  let s = game.finishOnboarding(defaultState(), { name: 'P', comfort: 5, ageAck: true }, day(4)).state;
+
+  // 10e quête -> entrée « chapitre » dans le journal
+  let sawChapter = false;
+  let dnum = 4;
+  while ((s.history.totalCompleted < 12) && dnum < 40) {
+    dnum += 1;
+    s = game.newDay(s, {}, day(dnum)).state; // rollover naturel (pas de re-tirage forcé)
+    for (const q of [...s.quests]) {
+      if (s.history.totalCompleted >= 12) break;
+      s = game.acceptQuest(s, { id: q.id }).state;
+      const r = game.completeQuest(s, { id: q.id }, day(dnum));
+      s = r.state;
+      if (r.effects.some((e) => e.type === 'chapter-open')) sawChapter = true;
+    }
+  }
+  assert.ok(sawChapter, 'effet chapter-open émis au passage de seuil');
+  assert.ok(s.journal.some((e) => e.kind === 'chapitre'), 'entrée chapitre au journal');
+  assert.ok(s.journal.some((e) => e.kind === 'jour'), 'entrée « du jour » au journal');
+  // une seule entrée « jour » par date
+  const jourDates = s.journal.filter((e) => e.kind === 'jour').map((e) => e.date);
+  assert.equal(jourDates.length, new Set(jourDates).size, 'pas de doublon d’entrée du jour');
 });
 
 test('compagnon : répliques contextuelles', () => {
@@ -530,11 +589,34 @@ test('voix par thème (D12) : chaque thème payant a sa propre voix, complète',
     );
 
     // Chapitres : id + seuils stables, label/blurb bilingues et thématisés.
-    const prologue = chapterForLevel(1, theme);
+    const prologue = chapterFor(withCompleted(0), theme);
     assert.equal(prologue.id, 'prologue');
     assert.ok(bilingual(prologue.label) && bilingual(prologue.blurb));
-    assert.equal(chapterForLevel(8, theme).id, 'ch3');
-    assert.equal(chapterForLevel(20, theme).id, 'ch5');
+    assert.equal(chapterFor(withCompleted(50), theme).id, 'ch3');
+    assert.equal(chapterFor(withCompleted(250), theme).id, 'ch5');
+
+    // Nuance de chapitre par famille (Phase 3.1) : 6 familles, bilingues, propres au thème.
+    const cl = voiceFor(theme).chapterLean;
+    const nordCl = voiceFor('nordique').chapterLean;
+    for (const fam of ['social', 'exploration', 'curiosite', 'creation', 'quotidien', 'chaos']) {
+      assert.ok(typeof cl.fr[fam] === 'string' && cl.fr[fam].length > 5, `${theme}.chapterLean.fr.${fam}`);
+      assert.ok(typeof cl.en[fam] === 'string' && cl.en[fam].length > 5, `${theme}.chapterLean.en.${fam}`);
+      assert.notEqual(cl.fr[fam], nordCl.fr[fam], `${theme}.chapterLean.${fam} réécrit pour le thème`);
+    }
+
+    // Entrée « du jour » (Phase 3.2) : bilingue, thématisée (≠ nordique).
+    const day = dailyRecapEntry(9, ['exploration'], theme, 0);
+    assert.ok(bilingual(day) && /9/.test(day.fr));
+    assert.notEqual(day.fr, dailyRecapEntry(9, ['exploration'], 'nordique', 0).fr,
+      `${theme} : entrée du jour propre au thème`);
+
+    // Cadre des mini-arcs (Phase 3.3) : propre au thème.
+    const arc = voiceFor(theme).arc;
+    assert.equal(typeof arc.clue.fr, 'function', `${theme}.arc.clue.fr`);
+    assert.ok(arc.clue.fr('X').includes('X') && arc.reveal.en('Y').includes('Y'));
+    assert.ok(Array.isArray(arc.inProgress.fr) && arc.inProgress.fr.length >= 1);
+    assert.notEqual(arc.clue.fr('X'), voiceFor('nordique').arc.clue.fr('X'),
+      `${theme} : cadre d'arc propre au thème`);
 
     // Entrées de journal générées : bilingues, non vides.
     const lvl = levelChapterEntry(7, theme);
@@ -570,9 +652,10 @@ test('voix par thème (D12) : chaque thème payant a sa propre voix, complète',
   assert.ok(voiceFor('nordique').milestones.first_quest.fr.length > 10);
 
   // Thème inconnu -> retombe sur la voix de nordique sans planter.
-  const fallback = chapterForLevel(1, 'inconnu');
+  const fallback = chapterFor(withCompleted(0), 'inconnu');
   assert.equal(fallback.id, 'prologue');
   assert.ok(bilingual(fallback.label));
+  assert.ok(dailyRecapEntry(1, ['social'], 'inconnu'));
 });
 
 test('billing (D12) : impl dev hors appareil, débloque sans store', async () => {

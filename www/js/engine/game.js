@@ -10,6 +10,7 @@ import { skillDeltasFor } from '../data/taxonomy.js';
 import { todayStr } from './dates.js';
 import {
   addEntry, maybeMemorable, eventEntry, levelChapterEntry, regionRevealEntry,
+  chapterFor, chapterOpenEntry, CHAPTER_QUEST_THRESHOLDS, dailyRecapEntry,
 } from './journal.js';
 import { defaultRng } from './rng.js';
 import { templateHistoryKey } from './generate.js';
@@ -106,6 +107,23 @@ export function newDay(state, _args, ctx) {
   const today = todayStr(now);
   if (s.drawDate === today) return { state: s, effects: [] };
 
+  // Entrée de journal « du jour » pour la veille (Phase 3.2) — seulement si
+  // quelque chose a été vécu, jamais pour une journée vide (aucune pression).
+  if (s.drawDate) {
+    const doneFams = [];
+    for (const q of s.quests || []) {
+      if (q.status === 'done' && !doneFams.includes(q.famille)) doneFams.push(q.famille);
+    }
+    if (s.event && s.event.status === 'done' && s.event.famille && !doneFams.includes(s.event.famille)) {
+      doneFams.push(s.event.famille);
+    }
+    const already = (s.journal || []).some((e) => e.kind === 'jour' && e.date === s.drawDate);
+    if (doneFams.length && !already) {
+      const recap = dailyRecapEntry(s.history.daysPlayed, doneFams, s.theme, s.seeds?.companion || 0);
+      if (recap) addEntry(s, { date: s.drawDate, text: recap, kind: 'jour' });
+    }
+  }
+
   const { quests, event } = drawDaily(s, { now, rng });
   s.quests = quests;
   s.event = event;
@@ -180,6 +198,13 @@ export function completeQuest(state, { id }, ctx) {
     s.history.completedQuestIds = s.history.completedQuestIds.slice(-RECENT_DONE_MEMORY);
   }
   if (q.famille === 'social') s.history.social.completed += 1;
+
+  // Nouveau chapitre de la chronique (Phase 3.1) — seuil en nb de quêtes.
+  if (CHAPTER_QUEST_THRESHOLDS.includes(s.history.totalCompleted)) {
+    const chap = chapterFor(s, s.theme);
+    addEntry(s, { date: today, text: chapterOpenEntry(chap), kind: 'chapitre' });
+    effects.push({ type: 'chapter-open', id: chap.id });
+  }
 
   // Journal
   if (q.fragment) {
