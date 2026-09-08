@@ -47,12 +47,12 @@ reconstruire :
 | Compagnon = fil rouge (Éco §10, UX §22-P2) | ✅ | branches contextuelles dans `companionLineForState` + narration par jalon (Phase 1.2) + accueil au retour (Phase 1.3) |
 | Événements rares (Éco §11) | ✅ | `engine/events.js`, ~30 %/jour, ~34 événements |
 | Quêtes secrètes (Éco §12) | ⚠️ mono-étape | 9 quêtes/templates `hidden`. **Manque** : mini-arcs 3–5 étapes avec indices |
-| Collections de souvenirs (Éco §13, UX §12) | ⚠️ partiel | musée + jalons + loot d'événement. **Manque** : checklist « Moments » (premières fois) + « Découvertes » (nuit/pluie/nature…) + vitrines `???` |
-| Page « Mon aventure » (Éco §14, UX §10-11) | ⚠️ proche | écran Personnage complet mais orienté « stats à optimiser ». **Manque** : recadrage « qui je deviens », traits narratifs, résumé rétention |
+| Collections de souvenirs (Éco §13, UX §12) | ✅ | musée + collection « Moments » (Phase 2.3) + « Découvertes » (Phase 2.4) + vitrines `???` (Phase 2.5) |
+| Page « Mon aventure » (Éco §14, UX §10-11) | ✅ | écran Personnage recadré « qui je deviens » : identité + style en tête, traits qualitatifs, « Ton chemin », chronique, collections (Phase 2.1-2.2) |
 | Retour après absence (Éco §15) | ✅ | toast `streak_break_ok` + tirage allégé, quêtes neuves, événement d'accueil et ligne compagnon dédiée quand `daysAway >= 3` (Phase 1.3) |
 | Gratuit à vie · pas d'abo · pas de pub | ✅ | = D12 |
 | Thèmes payants (Éco §17) | ✅ (forme actuelle) | 1 gratuit + 6 payants (police, palette, texture, cadres, **voix**, cérémonie, effet). `billing.js` prêt |
-| Carte du Monde à révélation progressive (UX §15-16) | ✅ mécanique | `X/10 révélés`, brume, régions liées aux familles. **Manque** : polish présentation (voir Phase 2) |
+| Carte du Monde à révélation progressive (UX §15-16) | ✅ | `X/10 révélés`, brume, régions par famille + polish révélation (phrase « pas encore prêtes », encart « tu viens de révéler… », Phase 2.6) |
 | Hiérarchie de l'accueil (UX §3-4, §20) | ❌ | l'accueil montre hero card (nom/niveau/XP/élan/série/titres) **avant** les quêtes → Phase 0 |
 | « Élan du jour » en % (UX §5) | ❌ | affiché `elan%` → à passer en `0/3 aventures` + phrase |
 | Hauteur des cartes de quête (UX §7) | ❌ | à compacter légèrement pour comparer les 3 sans scroller |
@@ -80,10 +80,9 @@ reconstruire :
    (`chapterForLevel` → `chapterFor(state)`), cosmétique, pas de régression.
 3. **Tagline store (Éco §21.1).** « Chaque jour, ton compagnon te propose 3
    petites aventures à vivre dans le monde réel. » → dans `STORE.md`.
-4. **Compétences : garder les chiffres ou pas (UX §11).** Option A : traits
-   qualitatifs (« dominante / émergente / discrète »). Option B : garder la
-   valeur + une phrase narrative (« Curiosité 18 — *tu sembles toujours
-   vouloir comprendre* »). B est moins risqué et reste informatif.
+4. ~~**Compétences : garder les chiffres ou pas (UX §11).**~~ **Tranché
+   (2026-09-08) : Option A — qualificatif seul, sans chiffre** (`dominante /
+   émergente / présente / discrète`). Livré en Phase 2.2.
 5. **Extensions de contenu payantes (Éco §18)** (packs Nuits / Exploration /
    Chaos / Social, 1,99–2,99 €) : **après** validation de la rétention. Ne
    rien préparer maintenant.
@@ -169,28 +168,36 @@ Faible risque, fort impact lisibilité. Purement `ui/` + CSS + i18n.
   `chance = 1` : il y a toujours une question à l'ouverture au bout de ~4
   jours. Compteur borné (vérifié en sim).
 
-### Phase 2 — Vie du personnage & présentation
+### Phase 2 — Vie du personnage & présentation — ✅ fait (QA visuelle appareil à faire)
 
-- [ ] **2.1 Page « Mon aventure »** (Éco §14, UX §10). Recadrer l'écran
-  Personnage autour de « qui je deviens » : niveau + style en titre, traits
-  en barres, chiffres de rétention (§3), chronique en cours, mot du compagnon
-  au même endroit. Réagencement, pas un nouvel onglet. `ui/screens/character.js`,
-  `ui/components/charBits.js`.
-- [ ] **2.2 Compétences → traits narratifs** (UX §11). Selon décision §2.4 :
-  ajouter une phrase par compétence et/ou un qualificatif (dominante /
-  émergente / discrète). Titre de section « Traits de l'aventurier ».
-- [ ] **2.3 Collection « Moments »** (Éco §13, UX §12). Checklist visible des
-  `milestones` (1.1), cochés au fil du jeu, sans dire quand ça se déclenche.
-- [ ] **2.4 Collection « Découvertes »** (Éco §13). 🌙 nuit / 🌧 pluie / 🌲
-  nature / 🏙 ville / 👥 rencontre / 🎨 création — dérivées des `contexte` des
-  quêtes accomplies.
-- [ ] **2.5 Musée : vitrines `???`** (UX §12). Emplacements vides mystérieux
-  (« Cette vitrine n'a pas encore d'histoire. ») → curiosité sans pression.
-  `ui/components/charBits.js` (`inventoryHtml`), `engine/inventory.js`.
-- [ ] **2.6 Carte du Monde : polish révélation** (UX §15-16). Rendre chaque
-  découverte plus « on a révélé une partie du monde » (transition, phrase
-  « certaines régions ne sont pas encore prêtes »). `ui/screens/world.js`,
-  `styles/`.
+- [x] **2.1 Page « Mon aventure »** (Éco §14, UX §10). `ui/screens/character.js`
+  réagencé : titre « Mon aventure » → en-tête identité (prénom, `Niveau N ·
+  <style>`, fine barre XP, mot du compagnon via `companionLineForState`) →
+  Traits → Titres (si présents) → « Ta chronique » (chapitre en cours) →
+  « Ton chemin » (repères doux, §3) → Moments → Découvertes → Musée. Pas de
+  nouvel onglet. `pathStatsHtml` : jours d'aventure, plus longue série,
+  moments vécus (X / 8), reprises (si > 0).
+- [x] **2.2 Compétences → traits qualitatifs** (UX §11). Décision Yannick :
+  **qualificatif seul, sans chiffre**. `progression.js` `traitTierFor` →
+  `dominante / émergente / présente / discrète`, relatif à la compétence la
+  plus haute (jamais un score absolu). Section « Traits de l'aventurier »,
+  petit indicateur en segments (non chiffré). `data/taxonomy.js` `TRAIT_TIERS`.
+- [x] **2.3 Collection « Moments »** (Éco §13, UX §12). `charBits.momentsHtml` :
+  8 cartes premières fois (`milestones` de 1.1), cochées ou **scellées**
+  (« Cette page n'a pas encore d'histoire. ») sans dire ce qui les ouvre.
+  Ligne de paliers `volume_*` à part (explicites). `MILESTONE_LABELS`.
+- [x] **2.4 Collection « Découvertes »** (Éco §13). Nouveau `engine/discoveries.js` :
+  `state.discoveries` (map clé→date), dérivé du `contexte` / famille des quêtes
+  accomplies. 6 clés **toutes on-device** : `dehors` `chemin` `rencontre`
+  `creer` `matin` `soir`. **`pluie` / `nature` / `ville` écartés** — pas de
+  donnée météo/géo hors-ligne (D11). `charBits.discoveriesHtml`.
+- [x] **2.5 Musée : vitrines `???`** (UX §12). `charBits.inventoryHtml` : 2
+  vitrines scellées après les vraies pièces, **uniquement en vue « tout »**
+  (curiosité sans transformer le musée en checklist).
+- [x] **2.6 Carte du Monde : polish révélation** (UX §15-16). `ui/screens/world.js` :
+  ligne « Certaines régions ne sont pas encore prêtes… » quand il reste du
+  brouillard / verrouillé ; encart « Tu viens de révéler cette partie du
+  monde. » + liseré or sur une région `justRevealed` dans le détail.
 
 ### Phase 3 — Récit
 

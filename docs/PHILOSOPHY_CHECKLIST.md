@@ -30,8 +30,15 @@
   n'affiche ni ne stocke jamais le nombre de jours « manqués » ; la ligne
   d'accueil rassure (« rien à rattraper »). Test `voix par thème` : les
   lignes `comeback` ne contiennent pas de mot de reproche (points 3, 5).
-- `engine/milestones.js` — un jalon jamais atteint ne retire rien et ne
-  s'affiche pas comme un manque (point 2). Couvert par `checkNoPenalty` dans
-  le test `jalons : completeQuest…` et la simulation.
+- `engine/milestones.js` + `engine/discoveries.js` — un jalon / une découverte
+  jamais atteint ne retire rien et s'affiche « scellé », pas « manqué »
+  (point 2). Couvert par `checkNoPenalty` et la simulation.
+- `engine/progression.js: traitTierFor` — les compétences sont présentées en
+  paliers **relatifs** (`dominante`…`discrète`), jamais un score absolu à
+  maximiser ; l'écran Personnage n'affiche aucun chiffre (D14, UX §11).
+  Test `charBits : traits qualitatifs` : pas de `progressbar`, aucune valeur.
+- « Ton chemin » (`charBits.pathStatsHtml`) — n'affiche jamais de jours
+  manqués ; `comebacks` (reprises) n'apparaît que s'il est > 0, formulé
+  positivement (point 3, point 5).
 - `DECISIONS.md` D3 — aucun classement, aucune comparaison de niveau.
 - `DECISIONS.md` D11 — aucune quête créée par le joueur (push, pas pull).

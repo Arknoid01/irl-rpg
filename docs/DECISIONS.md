@@ -542,3 +542,45 @@ secs, `drawDaily` force un événement (`chance = 1`). But : garantir une
 Migration : purement additive (`defaultState` + `normalize`), pas de bump
 `SAVE_VERSION`. 52/52 tests, `npm run quests` vert, sim 45 j (avec 2 absences)
 sans violation.
+
+## D14 — Écran Personnage recadré « qui je deviens » (2026-09-08)
+
+`ROADMAP.md` Phase 2 (« la page doit répondre à : qui suis-je devenu ? », pas
+« quelles stats optimiser »). Réagencement du même contenu, pas de nouvel
+onglet. Ordre : identité (prénom, `Niveau N · <style>`, fine barre XP, mot du
+compagnon) → Traits → Titres → « Ta chronique » → « Ton chemin » → Moments →
+Découvertes → Musée.
+
+**Compétences → traits qualitatifs (décision §2.4, tranchée).** Option A :
+**qualificatif seul, sans chiffre**. `engine/progression.js` `traitTierFor`
+classe les 6 compétences en `dominante / émergente / présente / discrète`,
+**relatif à la plus haute** (ratio ≥ .8 / ≥ .45 / ≥ .2 / reste ; 0 →
+discrète). Jamais un score absolu à atteindre. Petit indicateur en 4 segments,
+non chiffré. Libellés : `data/taxonomy.js` `TRAIT_TIERS`. Les valeurs brutes
+restent dans `state.skills` (titres, style, carte s'appuient dessus) — elles
+ne sont juste plus affichées sur cet écran.
+
+**Collections.** Mécanique commune « clé → date, coché ou scellé, sans dire le
+déclencheur » :
+- **Moments** = `state.milestones` (D13), 8 cartes + paliers de volume à part.
+- **Découvertes** = nouveau `state.discoveries` (`engine/discoveries.js`),
+  dérivé du `contexte` / famille des quêtes accomplies. 6 clés, **toutes
+  strictement on-device** : `dehors` `chemin` `rencontre` `creer` `matin`
+  `soir`. `pluie` / `nature` / `ville` de l'analyse **écartés** (météo/géo
+  indisponibles hors-ligne, D11) — même raison que `first_rain`.
+- **Musée** : 2 vitrines `???` après les vraies pièces, vue « tout »
+  seulement — curiosité sans faire du musée une checklist.
+
+**KPI rétention affichés (§3).** « Ton chemin » : jours d'aventure, plus
+longue série, moments vécus (X / 8), et *reprises* (`history.comebacks`,
+compté une fois par jour de retour) **seulement si > 0**. Aucun décompte de
+jours manqués, aucun rouge, aucun compteur culpabilisant.
+
+**Carte du Monde (2.6).** Phrase « Certaines régions ne sont pas encore prêtes
+à être découvertes. » tant qu'il reste brume/verrou ; encart + liseré or sur
+une région `justRevealed`.
+
+Migration additive (`discoveries: {}`, `history.comebacks`), pas de bump
+`SAVE_VERSION`. Ancien `skillsGridHtml` / `styleHtml` retirés de l'écran ;
+CSS `.hero-*` / `.skill-*` / `.style-*` devient orphelin (nettoyage à faire
+avec la QA appareil). 58/58 tests, sim OK, CSS `css-tree` OK.
