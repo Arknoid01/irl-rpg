@@ -46,7 +46,7 @@ import {
 } from '../www/js/engine/progression.js';
 import { checkNoPenalty } from '../www/js/engine/philosophy.js';
 import * as game from '../www/js/engine/game.js';
-import { getBilling, billingIsReal, THEME_PRODUCTS } from '../www/js/platform/billing.js';
+import { getBilling, billingIsReal, COLLECTION_PRODUCT, COLLECTION_THEMES } from '../www/js/platform/billing.js';
 import fr from '../www/js/i18n/fr.js';
 import en from '../www/js/i18n/en.js';
 import { i18n } from '../www/js/i18n/index.js';
@@ -778,29 +778,49 @@ test('voix par thème (D12) : chaque thème payant a sa propre voix, complète',
   assert.ok(dailyRecapEntry(1, ['social'], 'inconnu'));
 });
 
-test('billing (D12) : impl dev hors appareil, débloque sans store', async () => {
+test('billing (D12/D17) : Collection des Mondes — impl dev hors appareil', async () => {
   // Hors Capacitor natif (cas des tests), getBilling() renvoie l'impl « dev ».
   const b = getBilling();
   assert.equal(b.real, false);
   assert.equal(billingIsReal(), false);
 
-  for (const theme of Object.keys(THEME_PRODUCTS)) {
-    const res = await b.purchase(theme);
-    assert.deepEqual(res, { ok: true, dev: true });
-  }
-  const bad = await b.purchase('nordique');
-  assert.equal(bad.ok, false);
+  // Un seul produit non consommable, jamais nordique (gratuit).
+  assert.equal(COLLECTION_PRODUCT, 'collection_des_mondes');
+  assert.deepEqual([...COLLECTION_THEMES].sort(),
+    ['cockpit', 'cyberpunk', 'enquete', 'mystique', 'postapo', 'sombre']);
+  assert.ok(!COLLECTION_THEMES.includes('nordique'));
+
+  const list = await b.listProducts();
+  assert.equal(list.length, 1);
+  assert.equal(list[0].productId, COLLECTION_PRODUCT);
+
+  const res = await b.purchase();
+  assert.equal(res.ok, true);
+  assert.deepEqual([...res.themes].sort(), [...COLLECTION_THEMES].sort());
 
   const restored = await b.restore();
   assert.deepEqual(restored, { ok: true, themes: [] });
+});
 
-  // Un identifiant produit par thème payant, jamais pour nordique (gratuit).
-  const products = Object.keys(THEME_PRODUCTS).sort();
-  assert.deepEqual(products, ['cockpit', 'cyberpunk', 'enquete', 'mystique', 'postapo', 'sombre']);
-  assert.ok(!products.includes('nordique'));
-  for (const [theme, id] of Object.entries(THEME_PRODUCTS)) {
-    assert.equal(id, `theme_${theme}`);
-  }
+test('game : unlockCollection débloque les 6 thèmes payants d’un coup (D17)', () => {
+  let s = defaultState();
+  assert.deepEqual(s.unlockedThemes, ['nordique']);
+
+  let r = game.unlockCollection(s);
+  s = r.state;
+  assert.deepEqual([...s.unlockedThemes].sort(),
+    ['cockpit', 'cyberpunk', 'enquete', 'mystique', 'nordique', 'postapo', 'sombre']);
+  assert.equal(r.effects[0].type, 'collection-unlocked');
+  assert.equal(r.effects[0].themes.length, 6);
+
+  // idempotent
+  r = game.unlockCollection(s);
+  assert.equal(r.effects.length, 0);
+  assert.equal(r.state.unlockedThemes.length, 7);
+
+  // un thème quelconque de la collection s'active ensuite normalement
+  r = game.setTheme(s, { theme: 'cyberpunk' });
+  assert.equal(r.state.theme, 'cyberpunk');
 });
 
 test('thèmes : chaque fichier respecte le contrat (7 thèmes)', async () => {

@@ -1082,6 +1082,20 @@ input[type="range"] { width: 100%; accent-color: var(--seal); margin: 12px 0 4px
 .shop-status.active { font-size: .82rem; color: var(--gold); font-weight: 600; }
 .shop-error { margin: 6px 2px 0; color: var(--danger); }
 .shop-foot { display: flex; justify-content: center; margin: 4px 0 10px; }
+
+/* Bannière « Collection des Mondes » (D17) */
+.shop-collection {
+  text-align: center;
+  margin: 10px 0 14px;
+  border-color: var(--gold);
+}
+.shop-collection h3 {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  color: var(--gold);
+}
+.shop-collection p { margin: 0 0 10px; }
+.shop-collection .btn { width: 100%; }
 .btn.small { padding: 6px 11px; font-size: .8rem; }
 
 /* ---------- Ripple au clic (structure seulement — inerte tant qu'aucun

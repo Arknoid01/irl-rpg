@@ -27,6 +27,7 @@ import { recordDiscoveries } from './discoveries.js';
 import { advanceArc } from './arcs.js';
 import { isComebackDay } from './comeback.js';
 import { THEME_KEYS } from '../data/themes.js';
+import { COLLECTION_THEMES } from '../platform/billing.js';
 
 const RECENT_DONE_MEMORY = 56;
 const RECENT_FAMILLES_MEMORY = 12;
@@ -303,9 +304,10 @@ export function setTheme(state, { theme }) {
 }
 
 /**
- * Déblocage d'un thème payant (D12). Pour l'instant local/gratuit — aucun
- * paiement réel n'est encore branché (plugin IAP Capacitor à venir) ; ne pas
- * confondre avec un vrai achat validé par un store.
+ * Déblocage d'un thème payant (D12). Le déblocage réel passe par
+ * `unlockCollection` (achat unique « Collection des Mondes », D17) ; cette
+ * fonction reste utile pour la démo et les tests. Ne pas confondre avec un
+ * achat validé par un store.
  */
 export function unlockTheme(state, { theme }) {
   const s = clone(state);
@@ -314,6 +316,26 @@ export function unlockTheme(state, { theme }) {
   }
   s.unlockedThemes.push(theme);
   return { state: s, effects: [{ type: 'theme-unlocked', theme }] };
+}
+
+/**
+ * Débloque la « Collection des Mondes » — les 6 thèmes payants d'un coup
+ * (D17). Appelé après un achat validé (`billing.purchase`) ou une
+ * restauration. Idempotent.
+ */
+export function unlockCollection(state) {
+  const s = clone(state);
+  const added = [];
+  for (const theme of COLLECTION_THEMES) {
+    if (THEME_KEYS.includes(theme) && !s.unlockedThemes.includes(theme)) {
+      s.unlockedThemes.push(theme);
+      added.push(theme);
+    }
+  }
+  return {
+    state: s,
+    effects: added.length ? [{ type: 'collection-unlocked', themes: added }] : [],
+  };
 }
 
 export function setComfort(state, { comfort }) {

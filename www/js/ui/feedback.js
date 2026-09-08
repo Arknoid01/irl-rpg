@@ -105,6 +105,9 @@ function playRemaining(effects) {
       case 'theme-unlocked':
         enqueueToast(i18n.t('toast_theme_unlocked', { label: i18n.loc(THEMES[fx.theme]?.label) }));
         break;
+      case 'collection-unlocked':
+        enqueueToast(i18n.t('toast_collection_unlocked'));
+        break;
       default: break;
     }
   }

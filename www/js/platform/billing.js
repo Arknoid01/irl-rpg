@@ -1,106 +1,158 @@
-// Achats in-app — déblocage des thèmes payants (D12).
+// Achat in-app — la « Collection des Mondes » (DECISIONS D12 + D17).
 //
-// Suit le style des autres modules platform/ : le plugin natif est atteint
-// via window.Capacitor.Plugins, jamais par un import ES du paquet. Le bundle
-// web reste donc sans dépendance, et surtout : le plugin parle directement au
-// Play Store / à StoreKit, aucun serveur tiers — cohérent D11 (zéro cloud).
+// UN seul produit non consommable : `collection_des_mondes` (~6,99 €), qui
+// débloque les 6 thèmes payants d'un coup. Achat unique, à vie, jamais
+// pay-to-win (cosmétique pur).
 //
-// Plugin cible : @capacitor-community/in-app-purchases. À installer quand un
-// accès Play Console / App Store Connect permettra de tester un vrai achat :
-//   npm i @capacitor-community/in-app-purchases && npx cap sync
-// puis déclarer un produit NON consommable par thème payant (achat unique,
-// cf. D12) : theme_sombre · theme_cyberpunk · theme_enquete · theme_mystique
-// · theme_postapo · theme_cockpit
+// Plugin : `capacitor-plugin-cdv-purchase` (édition Capacitor de
+// cordova-plugin-purchase / Fovea). Il parle DIRECTEMENT à Google Play
+// Billing / StoreKit — aucun serveur tiers, cohérent D11. RevenueCat écarté
+// (backend obligatoire).
 //
-// ⚠️ Les noms de méthodes (getProducts / purchaseProduct / restorePurchases)
-// et la forme des réponses ci-dessous sont à revérifier contre la version
-// exacte du plugin au moment du `npm i` — impossible à tester dans cet
-// environnement. Toute la surface incertaine est isolée dans `nativeBilling`.
+// Ce projet n'a pas de bundler : on n'importe donc pas le paquet ES. On passe
+// par le pont natif bas niveau `window.Capacitor.Plugins.PurchasePlugin`
+// (classe `cc.fovea.iap.PurchasePlugin`, enregistrée par `npx cap sync`).
+// L'API bas niveau et la forme des payloads viennent de
+// `android/.../PurchasePlugin.java` du plugin — mais le déroulé complet
+// (flow d'achat, acquittement, événements) reste **à vérifier sur appareil**
+// avec un compte de test Play Console. Toute la surface incertaine est
+// isolée dans `nativeBilling`.
 
-export const THEME_PRODUCTS = {
-  sombre: 'theme_sombre',
-  cyberpunk: 'theme_cyberpunk',
-  enquete: 'theme_enquete',
-  mystique: 'theme_mystique',
-  postapo: 'theme_postapo',
-  cockpit: 'theme_cockpit',
-};
+/** Identifiant du produit à déclarer en Play Console / App Store Connect. */
+export const COLLECTION_PRODUCT = 'collection_des_mondes';
 
-const PRODUCT_THEME = Object.fromEntries(
-  Object.entries(THEME_PRODUCTS).map(([theme, id]) => [id, theme]),
-);
-
-// Prix affichés tant que le store ne renvoie pas les vrais (web, hors ligne,
-// plugin absent). Vide pour l'instant — le store fait foi quand il répond ;
-// un thème sans entrée s'affiche sans prix.
-const PLACEHOLDER_PRICE = {};
+/** Thèmes débloqués par la Collection (tous les payants ; nordique est gratuit). */
+export const COLLECTION_THEMES = ['sombre', 'cyberpunk', 'enquete', 'mystique', 'postapo', 'cockpit'];
 
 function nativePlugin() {
   const cap = typeof window !== 'undefined' ? window.Capacitor : undefined;
   if (!cap || typeof cap.isNativePlatform !== 'function' || !cap.isNativePlatform()) return null;
-  return (cap.Plugins && cap.Plugins.InAppPurchases) || null;
-}
-
-function placeholderList() {
-  return Object.keys(THEME_PRODUCTS).map((theme) => ({
-    theme,
-    productId: THEME_PRODUCTS[theme],
-    price: PLACEHOLDER_PRICE[theme] || null,
-  }));
+  return (cap.Plugins && cap.Plugins.PurchasePlugin) || null;
 }
 
 // ─── Impl « dev » : pas de store, déblocage direct et gratuit ────────────────
-// C'est l'état actuel de la boutique (bouton « Débloquer » sans paiement).
+// C'est l'état actuel de la boutique (bouton « Débloquer la Collection » sans
+// paiement) sur le web et tant que le store n'est pas branché.
 const devBilling = {
   mode: 'dev',
   real: false,
   async listProducts() {
-    return placeholderList();
+    return [{ productId: COLLECTION_PRODUCT, price: null }];
   },
-  async purchase(theme) {
-    if (!THEME_PRODUCTS[theme]) return { ok: false, error: 'unknown-product' };
-    return { ok: true, dev: true };
+  async purchase() {
+    return { ok: true, dev: true, themes: COLLECTION_THEMES.slice() };
   },
   async restore() {
     return { ok: true, themes: [] };
   },
 };
 
-// ─── Impl native : @capacitor-community/in-app-purchases ─────────────────────
+// ─── Impl native : window.Capacitor.Plugins.PurchasePlugin ───────────────────
 function nativeBilling(plugin) {
+  let initPromise = null;
+  const ensureInit = () => {
+    if (!initPromise) initPromise = Promise.resolve(plugin.init({})).catch(() => {});
+    return initPromise;
+  };
+
+  const isOurPurchase = (p) => {
+    if (!p) return false;
+    const ids = p.productIds || (p.productId ? [p.productId] : []);
+    return Array.isArray(ids) && ids.includes(COLLECTION_PRODUCT);
+  };
+  const isOwned = (p) => {
+    if (!p) return false;
+    // getPurchaseState : 1 = purchased, 2 = pending (cf. PurchasePlugin.java).
+    const st = p.getPurchaseState ?? p.purchaseState ?? p.state;
+    if (st === 1 || st === 'purchased') return true;
+    if (st === 2 || st === 'pending' || p.pending) return false;
+    return true; // pas d'info d'état : présent dans getPurchases = possédé
+  };
+  const tokenOf = (p) => (p && (p.purchaseToken || p.token)) || null;
+
+  async function acknowledgeIfNeeded(purchases) {
+    for (const p of purchases || []) {
+      if (isOurPurchase(p) && !p.acknowledged && tokenOf(p)) {
+        try { await plugin.acknowledgePurchase({ purchaseToken: tokenOf(p) }); } catch { /* réessayé au prochain lancement */ }
+      }
+    }
+  }
+
+  /** Interroge les achats existants (résultat via l'événement `setPurchases`). */
+  function queryPurchases(timeoutMs = 8000) {
+    return new Promise((resolve) => {
+      let done = false;
+      let handle = null;
+      const finish = (list) => {
+        if (done) return;
+        done = true;
+        if (handle && typeof handle.remove === 'function') handle.remove();
+        resolve(list || []);
+      };
+      Promise.resolve(plugin.addListener('setPurchases', (data) => finish((data && data.purchases) || [])))
+        .then((h) => { handle = h; })
+        .catch(() => {});
+      Promise.resolve(plugin.getPurchases()).catch(() => finish([]));
+      setTimeout(() => finish([]), timeoutMs);
+    });
+  }
+
+  /** Attend l'issue du flux d'achat déclenché par buy(). */
+  function waitForPurchase(timeoutMs = 180000) {
+    return new Promise((resolve) => {
+      let done = false;
+      let handle = null;
+      const finish = (res) => {
+        if (done) return;
+        done = true;
+        if (handle && typeof handle.remove === 'function') handle.remove();
+        resolve(res);
+      };
+      Promise.resolve(plugin.addListener('purchasesUpdated', (data) => {
+        const list = (data && data.purchases) || [];
+        if (list.some(isOurPurchase)) finish({ ok: true, purchases: list });
+      })).then((h) => { handle = h; }).catch(() => {});
+      setTimeout(() => finish({ ok: false, error: 'timeout' }), timeoutMs);
+    });
+  }
+
   return {
     mode: 'native',
     real: true,
 
     async listProducts() {
       try {
-        const res = await plugin.getProducts({ productIds: Object.values(THEME_PRODUCTS) });
-        const raw = (res && (res.products || res.data)) || [];
-        const mapped = raw
-          .map((p) => {
-            const id = p.id || p.productId;
-            return {
-              theme: PRODUCT_THEME[id],
-              productId: id,
-              price: p.priceString || p.price || null,
-            };
-          })
-          .filter((p) => p.theme);
-        return mapped.length ? mapped : placeholderList();
+        await ensureInit();
+        const res = await plugin.getAvailableProducts({ inAppSkus: [COLLECTION_PRODUCT], subsSkus: [] });
+        const raw = (res && res.products) || [];
+        const p = raw.find((x) => (x.productId || x.id) === COLLECTION_PRODUCT) || raw[0];
+        const price = p && (p.formatted_price || p.priceString || p.price || null);
+        return [{ productId: COLLECTION_PRODUCT, price: price || null }];
       } catch {
-        return placeholderList();
+        return [{ productId: COLLECTION_PRODUCT, price: null }];
       }
     },
 
-    async purchase(theme) {
-      const productId = THEME_PRODUCTS[theme];
-      if (!productId) return { ok: false, error: 'unknown-product' };
+    async purchase() {
       try {
-        const res = await plugin.purchaseProduct({ productId });
-        if (res && (res.cancelled || res.userCancelled || res.responseCode === 1)) {
-          return { ok: false, cancelled: true };
+        await ensureInit();
+        const existing = await queryPurchases();
+        if (existing.some((p) => isOurPurchase(p) && isOwned(p))) {
+          await acknowledgeIfNeeded(existing);
+          return { ok: true, themes: COLLECTION_THEMES.slice() };
         }
-        return { ok: true, transaction: res || null };
+        const settled = waitForPurchase();
+        try {
+          await plugin.buy({ productId: COLLECTION_PRODUCT });
+        } catch (e) {
+          const msg = String((e && e.message) || e);
+          if (/cancel/i.test(msg)) return { ok: false, cancelled: true };
+          return { ok: false, error: msg };
+        }
+        const r = await settled;
+        if (!r.ok) return { ok: false, error: r.error || 'purchase-failed' };
+        await acknowledgeIfNeeded(r.purchases);
+        return { ok: true, themes: COLLECTION_THEMES.slice() };
       } catch (e) {
         const msg = String((e && e.message) || e);
         if (/cancel/i.test(msg)) return { ok: false, cancelled: true };
@@ -110,12 +162,11 @@ function nativeBilling(plugin) {
 
     async restore() {
       try {
-        const res = await plugin.restorePurchases();
-        const owned = (res && (res.purchases || res.data)) || [];
-        const themes = [...new Set(
-          owned.map((p) => PRODUCT_THEME[p.productId || p.id]).filter(Boolean),
-        )];
-        return { ok: true, themes };
+        await ensureInit();
+        const list = await queryPurchases();
+        const owns = list.some((p) => isOurPurchase(p) && isOwned(p));
+        if (owns) await acknowledgeIfNeeded(list);
+        return { ok: true, themes: owns ? COLLECTION_THEMES.slice() : [] };
       } catch (e) {
         return { ok: false, error: String((e && e.message) || e) };
       }

@@ -185,6 +185,13 @@ async function dispatch(action, args = {}) {
       softRerenderShop();
       break;
     }
+    case 'unlockCollection': {
+      const r = game.unlockCollection(state);
+      state = r.state; persist(); render();
+      playEffects(r.effects, state);
+      softRerenderShop();
+      break;
+    }
     case 'setLang':
       state.lang = args.lang === 'en' ? 'en' : 'fr';
       i18n.setLang(state.lang); persist(); render(); softRerenderSettings();
