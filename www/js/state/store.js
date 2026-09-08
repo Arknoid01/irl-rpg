@@ -89,6 +89,9 @@ export function normalize(state) {
   s.level = Math.max(1, Math.round(s.level) || 1);
   s.xp = Math.max(0, Math.round(s.xp) || 0);
   s.inventory = normalizeInventory(s.inventory).slice(0, 200);
+  if (!s.milestones || typeof s.milestones !== 'object' || Array.isArray(s.milestones)) {
+    s.milestones = {};
+  }
   s.version = SAVE_VERSION;
   return s;
 }

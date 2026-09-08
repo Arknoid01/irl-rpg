@@ -336,4 +336,18 @@ export const EVENT_LOOT_META = {
       en: 'Three sentences for chapter III. The grimoire thickens.',
     },
   },
+  ev_retour_chemin: {
+    kind: 'souvenir',
+    lore: {
+      fr: 'Un repère planté un jour de reprise. Il ne dit pas combien de temps tu es parti — seulement que tu es revenu.',
+      en: 'A marker set down on a day you came back. It doesn’t say how long you were gone — only that you returned.',
+    },
+  },
+  ev_retour_page: {
+    kind: 'souvenir',
+    lore: {
+      fr: 'Un signet qui n’a pas bougé. La page t’a attendu sans compter les jours.',
+      en: 'A bookmark that never moved. The page waited for you without counting the days.',
+    },
+  },
 };

@@ -51,9 +51,14 @@ let completedTotal = 0;
 let ignoredTotal = 0;
 let eventsDone = 0;
 
+// Deux absences volontaires pour éprouver le retour après absence (Phase 1.3).
+const GAPS = { [Math.floor(DAYS * 0.4)]: 6, [Math.floor(DAYS * 0.75)]: 4 };
+let skew = 0;
+
 for (let d = 0; d < DAYS; d++) {
+  if (GAPS[d]) skew += GAPS[d];
   const day = new Date('2026-09-04T12:00:00Z');
-  day.setUTCDate(day.getUTCDate() + d);
+  day.setUTCDate(day.getUTCDate() + d + skew);
   const iso = day.toISOString().slice(0, 10);
   const ctx = dCtx(iso, 8 + (d % 12));
 
@@ -89,6 +94,20 @@ for (let d = 0; d < DAYS; d++) {
   // rendu des écrans : ne doit jamais planter (import dynamique pour éviter le DOM au top-level)
 }
 
+// Voix du compagnon sur les 7 thèmes : ne doit jamais planter (jalons, retour…).
+try {
+  const { companionLineForState } = await import('../www/js/engine/companion.js');
+  const { THEME_KEYS } = await import('../www/js/data/themes.js');
+  for (const theme of THEME_KEYS) {
+    for (const lang of ['fr', 'en']) {
+      const l = companionLineForState({ ...state, theme }, lang, new Date());
+      if (typeof l !== 'string' || l.length < 5) violations.push(`companionLine ${theme}/${lang} vide`);
+    }
+  }
+} catch (e) {
+  violations.push(`companionLine : ${e.stack || e}`);
+}
+
 // Rendu des chaînes (fonctions pures, pas de DOM) pour éprouver l'UI de contenu
 try {
   const { renderJournal } = await import('../www/js/ui/screens/journal.js');
@@ -117,6 +136,7 @@ console.log(`  Quêtes accomplies ....... ${completedTotal}  (ignorées ${ignore
 console.log(`  Événements relevés ...... ${eventsDone}`);
 console.log(`  Objets (souvenirs) ...... ${state.inventory.length}`);
 console.log(`  Entrées de journal ...... ${state.journal.length}`);
+console.log(`  Jalons atteints ......... ${Object.keys(state.milestones).length}  (${Object.keys(state.milestones).join(', ') || '—'})`);
 console.log(`  Titres débloqués ........ ${unlockedTitles.join(', ') || '—'}`);
 console.log(`  Jours joués (history) ... ${state.history.daysPlayed}`);
 console.log('─'.repeat(56));

@@ -6,6 +6,7 @@ import { computeStyle } from './progression.js';
 import { STYLE_DEFAULT } from '../data/titles.js';
 import { loc } from '../i18n/index.js';
 import { todayStr } from './dates.js';
+import { isComebackDay } from './comeback.js';
 
 // Le texte de saveur (contextuel + réaction après quête) vit désormais dans
 // data/themes/<thème>.js sous `voice` : voiceFor(state.theme) renvoie la voix
@@ -54,6 +55,27 @@ export function companionLineForState(state, lang = 'fr', now = new Date()) {
   if (!quests.length) {
     const lines = C.emptyDay[lang] || C.emptyDay.fr;
     return lines[seed % lines.length];
+  }
+
+  // Jalon franchi aujourd'hui : le compagnon le relève (Phase 1.2). Prioritaire
+  // — c'est le moment le plus « il a remarqué » de la journée.
+  const lm = state.history?.lastMilestone;
+  if (lm && lm.key && lm.date === todayStr(now)) {
+    const M = voiceFor(state.theme).milestones || {};
+    if (lm.key.startsWith('volume_')) {
+      const n = Number(lm.key.slice('volume_'.length));
+      const fn = M.volume && (M.volume[lang] || M.volume.fr);
+      if (fn) return fn(n);
+    } else if (M[lm.key]) {
+      const v = M[lm.key];
+      return v[lang] || v.fr;
+    }
+  }
+
+  // Retour après absence : ligne d'accueil dédiée, jamais un reproche (Phase 1.3).
+  if (isComebackDay(state, now)) {
+    const lines = C.comeback && (C.comeback[lang] || C.comeback.fr);
+    if (lines && lines.length) return lines[seed % lines.length];
   }
 
   if (quests.length && active.length === 0 && done.length > 0) {

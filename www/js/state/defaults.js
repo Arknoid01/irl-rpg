@@ -33,6 +33,8 @@ export function defaultState() {
     inventory: [],         // { item, date, from }
     journal: [],           // { date, text, kind }
 
+    milestones: {},        // <clé de jalon> -> 'YYYY-MM-DD' de la première fois
+
     history: {
       social: { proposed: 0, skipped: 0, completed: 0 },
       familleCompleted: {},   // famille -> total
@@ -44,6 +46,8 @@ export function defaultState() {
       recentEventIds: [],   // anti-répétition événements
       regionsUnlocked: [],  // ids de régions découvertes
       regionsFresh: [],     // révélations récentes (compagnon / anim)
+      daysSinceEvent: 0,    // jours consécutifs sans événement (force une ouverture)
+      lastMilestone: null,  // { key, date } — dernier jalon, pour la voix du compagnon
     },
 
     seeds: { companion: 0 },

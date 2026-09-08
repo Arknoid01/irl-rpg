@@ -91,6 +91,16 @@ export default {
           `What you did isn’t lost: “${t}”`,
         ],
       },
+      comeback: {
+        fr: [
+          'Quelques jours de silence radio. Le secteur n’a pas changé sans toi — rien à rattraper, on reprend une mission quand tu veux.',
+          'Te revoilà sur les ondes. L’émetteur a tenu tout seul ; il attendait juste ton signal, sans presser.',
+        ],
+        en: [
+          'A few days of radio silence. The sector didn’t change without you — nothing to catch up on, we take a run whenever you like.',
+          'There you are, back on the air. The transmitter held on its own; it was just waiting for your signal, no rush.',
+        ],
+      },
     },
 
     afterQuest: {
@@ -100,6 +110,45 @@ export default {
     afterQuestFirst: {
       fr: 'La radio grésille : « J’aurai un run pour toi. Repasse demain. »',
       en: 'The radio crackles: “I’ll have a run for you. Come back tomorrow.”',
+    },
+
+    milestones: {
+      first_quest: {
+        fr: 'Première ligne notée de ta main. Ton guide la relit une fois, sur les ondes.',
+        en: 'First line noted in your own hand. Your guide reads it back once, over the air.',
+      },
+      first_outdoor: {
+        fr: 'Tu es sorti dans le secteur pour de vrai. Ce qui se fait dehors compte double, ici.',
+        en: 'You actually went out into the sector. What’s done outside counts double out here.',
+      },
+      first_social: {
+        fr: 'Un mot échangé avec quelqu’un. Ton guide le note : dans le secteur, un contact, ça compte.',
+        en: 'A word exchanged with someone. Your guide notes it: out here, a contact counts.',
+      },
+      first_evening: {
+        fr: 'Une mission bouclée de nuit. C’est quand la radio se calme que le secteur se lit le mieux.',
+        en: 'A run finished at night. It’s when the radio goes quiet that the sector reads best.',
+      },
+      first_hidden: {
+        fr: 'Tu as suivi un signal sans savoir où il menait. C’est comme ça qu’on trouve les bons.',
+        en: 'You followed a signal without knowing where it led. That’s how the good ones turn up.',
+      },
+      first_bold: {
+        fr: 'Celle-là demandait du cran. Tu l’as prise quand même — ton guide l’a notée sur la carte.',
+        en: 'That one took guts. You took it anyway — your guide marked it on the map.',
+      },
+      first_big: {
+        fr: 'Un run qui pesait lourd. Tu es allé au bout.',
+        en: 'A run that weighed heavy. You saw it through.',
+      },
+      first_event: {
+        fr: 'Ta première alerte hors programme. Ça ne prévient jamais — c’est ce qui fait bouger le secteur.',
+        en: 'Your first off-schedule alert. It never warns you — that’s what moves the sector.',
+      },
+      volume: {
+        fr: (n) => `${n} missions au compteur. Le secteur, tu commences à le connaître — et toi, tu as une histoire.`,
+        en: (n) => `${n} runs on the counter. You’re starting to know the sector — and you have a story.`,
+      },
     },
 
     memorable: [

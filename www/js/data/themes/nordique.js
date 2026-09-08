@@ -84,6 +84,17 @@ export default {
           `What you did isn’t forgotten: “${t}”`,
         ],
       },
+      // Retour après absence (Phase 1.3) — accueil, jamais un reproche.
+      comeback: {
+        fr: [
+          'Ça faisait quelques jours. Le grimoire est resté ouvert à ta page — rien à rattraper, on reprend là où tu veux.',
+          'Te revoilà, voyageur. Le feu ne s’est pas éteint ; il attendait juste qu’on le ranime, sans se presser.',
+        ],
+        en: [
+          'It’s been a few days. The grimoire stayed open at your page — nothing to catch up on, we pick up wherever you like.',
+          'There you are, traveller. The fire didn’t go out; it was just waiting to be stirred back up, no rush.',
+        ],
+      },
     },
 
     // Réaction courte après une quête accomplie (cérémonie de validation).
@@ -106,6 +117,47 @@ export default {
     afterQuestFirst: {
       fr: 'Ton compagnon sourit : « J’ai quelque chose pour toi. Reviens demain. »',
       en: 'Your companion smiles: “I’ll have something for you. Come back tomorrow.”',
+    },
+
+    // Réactions du compagnon aux jalons — « premières fois » + paliers de volume
+    // (engine/milestones.js, Phase 1.2). Rare, une phrase, jamais une exigence.
+    milestones: {
+      first_quest: {
+        fr: 'Première page écrite de ta main. Ton compagnon la relit une fois, pour le plaisir.',
+        en: 'First page written in your own hand. Your companion rereads it once, just for the pleasure.',
+      },
+      first_outdoor: {
+        fr: 'Tu as passé la porte pour de vrai. Ce qui se vit dehors compte double dans le grimoire.',
+        en: 'You actually stepped out the door. What’s lived outside counts double in the grimoire.',
+      },
+      first_social: {
+        fr: 'Un mot échangé avec quelqu’un. Ton compagnon le note : ce genre de chose laisse une trace.',
+        en: 'A word exchanged with someone. Your companion notes it: this kind of thing leaves a mark.',
+      },
+      first_evening: {
+        fr: 'Une quête bouclée à la lueur du soir. Les meilleures histoires se passent souvent après le coucher du soleil.',
+        en: 'A quest finished by evening light. The best stories often happen after sundown.',
+      },
+      first_hidden: {
+        fr: 'Tu as suivi une piste sans en connaître le bout. C’est exactement comme ça qu’on trouve les bonnes.',
+        en: 'You followed a trail without knowing where it led. That’s exactly how the good ones are found.',
+      },
+      first_bold: {
+        fr: 'Celle-là demandait un peu de cran. Tu l’as prise quand même — ton compagnon s’en souviendra.',
+        en: 'That one took some nerve. You took it anyway — your companion will remember.',
+      },
+      first_big: {
+        fr: 'Une quête qui pesait son poids. Tu l’as portée jusqu’au bout.',
+        en: 'A quest with real weight. You carried it all the way.',
+      },
+      first_event: {
+        fr: 'Ton premier détour hors du chemin tracé. Les événements ne préviennent jamais — c’est ce qui les rend précieux.',
+        en: 'Your first step off the marked path. Events never announce themselves — that’s what makes them precious.',
+      },
+      volume: {
+        fr: (n) => `${n} quêtes derrière toi. Le grimoire commence à avoir de l’épaisseur — et toi, une histoire.`,
+        en: (n) => `${n} quests behind you. The grimoire is starting to have some heft — and you, a story.`,
+      },
     },
 
     // Journal — « moments mémorables » (engine/journal.js). fr et en appariés.

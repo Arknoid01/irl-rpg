@@ -92,6 +92,16 @@ export default {
           `What you did is on record: “${t}”`,
         ],
       },
+      comeback: {
+        fr: [
+          'Quelques nuits sans toi. Le registre est resté ouvert à ta ligne — rien à rattraper, on reprend quand tu veux.',
+          'Te revoilà. La braise a tenu sous la cendre ; elle attendait juste qu’on souffle dessus, sans hâte.',
+        ],
+        en: [
+          'A few nights without you. The ledger stayed open at your line — nothing to catch up on, we resume whenever you like.',
+          'There you are. The ember held under the ash; it was just waiting to be breathed on, no haste.',
+        ],
+      },
     },
 
     afterQuest: {
@@ -113,6 +123,45 @@ export default {
     afterQuestFirst: {
       fr: 'Ta compagne esquisse un sourire : « J’aurai quelque chose pour toi. Reviens demain. »',
       en: 'Your companion half-smiles: “I’ll have something for you. Come back tomorrow.”',
+    },
+
+    milestones: {
+      first_quest: {
+        fr: 'Première ligne portée de ta main au registre. Ta compagne la relit une fois.',
+        en: 'First line entered in your own hand in the ledger. Your companion rereads it once.',
+      },
+      first_outdoor: {
+        fr: 'Tu es sorti dans la nuit pour de vrai. Ce qui se fait dehors pèse double au registre.',
+        en: 'You actually went out into the night. What’s done outside weighs double in the ledger.',
+      },
+      first_social: {
+        fr: 'Un mot dit à quelqu’un. Ta compagne le note : ça laisse une trace, même bref.',
+        en: 'A word said to someone. Your companion notes it: it leaves a mark, however brief.',
+      },
+      first_evening: {
+        fr: 'Un contrat rempli à la nuit tombée. C’est l’heure où la cité endormie raconte le plus.',
+        en: 'A contract fulfilled after dark. That’s the hour the sleeping city says the most.',
+      },
+      first_hidden: {
+        fr: 'Tu as suivi une affaire sans en connaître le fond. C’est comme ça qu’on démêle les bonnes.',
+        en: 'You followed a matter without knowing its bottom. That’s how the good ones get untangled.',
+      },
+      first_bold: {
+        fr: 'Celle-là demandait du cran. Tu l’as prise quand même — ta compagne s’en souviendra.',
+        en: 'That one took nerve. You took it anyway — your companion will remember.',
+      },
+      first_big: {
+        fr: 'Un contrat qui pesait lourd. Tu l’as tenu jusqu’au bout.',
+        en: 'A contract that weighed heavy. You held it to the end.',
+      },
+      first_event: {
+        fr: 'Ta première affaire hors des sentiers. Ça ne prévient jamais — c’est ce qui compte.',
+        en: 'Your first matter off the beaten track. It never warns you — that’s what matters.',
+      },
+      volume: {
+        fr: (n) => `${n} contrats derrière toi. Le registre s’alourdit — et toi, tu as une histoire.`,
+        en: (n) => `${n} contracts behind you. The ledger grows heavier — and you have a story.`,
+      },
     },
 
     memorable: [

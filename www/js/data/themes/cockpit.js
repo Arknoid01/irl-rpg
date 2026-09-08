@@ -91,6 +91,16 @@ export default {
           `What you did is logged: “${t}”`,
         ],
       },
+      comeback: {
+        fr: [
+          'Quelques jours hors connexion. Le journal de bord est resté à ta dernière entrée — rien à resynchroniser, on trace un cap quand tu veux.',
+          'Te revoilà aux commandes. Les systèmes ont tenu en veille ; ils attendaient juste ta reconnexion, sans précipitation.',
+        ],
+        en: [
+          'A few days disconnected. The flight record stayed at your last entry — nothing to resync, we plot a heading whenever you like.',
+          'There you are, back at the controls. Systems held on standby; they were just waiting for you to reconnect, no rush.',
+        ],
+      },
     },
 
     afterQuest: {
@@ -100,6 +110,45 @@ export default {
     afterQuestFirst: {
       fr: 'Ton IA de bord : « J’aurai un cap pour toi. Reconnecte-toi demain. »',
       en: 'Your onboard AI: “I’ll have a heading for you. Reconnect tomorrow.”',
+    },
+
+    milestones: {
+      first_quest: {
+        fr: 'Première entrée consignée de ta main au journal de bord. Ton IA de bord la relit une fois.',
+        en: 'First entry logged in your own hand in the flight record. Your onboard AI reads it back once.',
+      },
+      first_outdoor: {
+        fr: 'Tu es sorti pour de vrai. Ce qui se fait hors du poste compte double au journal.',
+        en: 'You actually went out. What’s done away from the console counts double in the record.',
+      },
+      first_social: {
+        fr: 'Un échange avec quelqu’un. Ton IA de bord le consigne : un contact, ça se note.',
+        en: 'An exchange with someone. Your onboard AI logs it: a contact is worth recording.',
+      },
+      first_evening: {
+        fr: 'Un objectif atteint de nuit. C’est quand les scanners se calment que la trajectoire se lit le mieux.',
+        en: 'An objective met at night. It’s when the scanners quiet down that the trajectory reads best.',
+      },
+      first_hidden: {
+        fr: 'Tu as suivi un cap sans en connaître la destination. C’est comme ça qu’on trouve les bonnes routes.',
+        en: 'You held a heading without knowing the destination. That’s how the good routes are found.',
+      },
+      first_bold: {
+        fr: 'Celui-là demandait du sang-froid. Tu l’as pris quand même — c’est au journal.',
+        en: 'That one took a steady hand. You took it anyway — it’s in the record.',
+      },
+      first_big: {
+        fr: 'Un objectif lourd à mener. Tu es allé au bout de la trajectoire.',
+        en: 'A heavy objective to run. You flew the trajectory to the end.',
+      },
+      first_event: {
+        fr: 'Ton premier incident hors plan de vol. Ça n’apparaît jamais au programme — c’est ce qui compte.',
+        en: 'Your first incident off the flight plan. It never shows on the schedule — that’s what matters.',
+      },
+      volume: {
+        fr: (n) => `${n} objectifs derrière nous. Le journal de bord se remplit — et toi, tu as une trajectoire.`,
+        en: (n) => `${n} objectives behind us. The flight record fills up — and you have a trajectory.`,
+      },
     },
 
     memorable: [

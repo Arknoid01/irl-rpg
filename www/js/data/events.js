@@ -331,4 +331,27 @@ export const EVENTS = [
     },
     item: { fr: '📗 Signet du chapitre III', en: '📗 Chapter III bookmark' },
   },
+
+  // ── Accueil au retour (Phase 1.3) ──
+  // `comeback: true` : jamais tiré en rotation normale (voir eventEligible),
+  // seulement le jour où le joueur revient après une absence. Ton d'accueil,
+  // jamais de reproche — le chemin est simplement resté ouvert.
+  {
+    id: 'ev_retour_chemin', comeback: true, xp: 150, minutes: 20, weight: 10,
+    title: { fr: 'Le chemin est resté ouvert', en: 'The path stayed open' },
+    text: {
+      fr: "Ça faisait un moment. Rien n’a bougé sans toi. Reprends par une seule petite chose — celle que tu veux, aussi légère que tu veux.",
+      en: "It’s been a while. Nothing moved on without you. Pick just one small thing back up — whichever you like, as light as you like.",
+    },
+    item: { fr: '🪧 Repère laissé en chemin', en: '🪧 Marker left on the path' },
+  },
+  {
+    id: 'ev_retour_page', comeback: true, xp: 150, minutes: 15, weight: 9,
+    title: { fr: 'La page t’attendait', en: 'The page was waiting' },
+    text: {
+      fr: "Le grimoire s’est rouvert exactement où tu l’avais laissé. Pas de rattrapage à faire : aujourd’hui compte à partir de maintenant.",
+      en: "The book fell open right where you left it. Nothing to catch up on: today counts from now.",
+    },
+    item: { fr: '🔖 Signet resté en place', en: '🔖 Bookmark still in place' },
+  },
 ];

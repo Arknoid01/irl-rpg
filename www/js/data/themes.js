@@ -60,5 +60,6 @@ export function voiceFor(themeKey) {
     ...BASE_VOICE,
     ...v,
     ctx: { ...BASE_VOICE.ctx, ...(v.ctx || {}) },
+    milestones: { ...BASE_VOICE.milestones, ...(v.milestones || {}) },
   };
 }

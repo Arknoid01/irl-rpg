@@ -92,6 +92,16 @@ export default {
           `What you did isn’t wiped: “${t}”`,
         ],
       },
+      comeback: {
+        fr: [
+          'Quelques jours hors ligne. Le log est resté ouvert à ta dernière entrée — rien à resynchroniser, on reprend quand tu veux.',
+          'Signal retrouvé. La connexion n’a jamais vraiment coupé ; elle attendait juste que tu repasses, sans urgence.',
+        ],
+        en: [
+          'A few days offline. The log stayed open at your last entry — nothing to resync, we resume whenever you like.',
+          'Signal reacquired. The connection never really dropped; it was just waiting for you to come back, no rush.',
+        ],
+      },
     },
 
     afterQuest: {
@@ -113,6 +123,45 @@ export default {
     afterQuestFirst: {
       fr: 'Ton compagnon envoie un ping : « J’aurai quelque chose pour toi. Repasse demain. »',
       en: 'Your companion sends a ping: “I’ll have something for you. Come back tomorrow.”',
+    },
+
+    milestones: {
+      first_quest: {
+        fr: 'Première entrée écrite par toi dans le log. Ton compagnon la relit une fois.',
+        en: 'First entry written by you in the log. Your companion rereads it once.',
+      },
+      first_outdoor: {
+        fr: 'Tu es sorti dans le secteur pour de vrai. Ce qui se fait hors ligne compte double.',
+        en: 'You actually went out into the sector. What’s done offline counts double.',
+      },
+      first_social: {
+        fr: 'Un échange avec quelqu’un, en vrai. Ton compagnon le tague : ça laisse une trace.',
+        en: 'A real exchange with someone. Your companion tags it: it leaves a trace.',
+      },
+      first_evening: {
+        fr: 'Une mission bouclée de nuit. C’est l’heure où la ville qui ne dort pas est la plus lisible.',
+        en: 'A mission closed at night. That’s the hour the city that never sleeps reads clearest.',
+      },
+      first_hidden: {
+        fr: 'Tu as suivi un signal sans savoir où il menait. C’est comme ça qu’on trouve les bons.',
+        en: 'You followed a signal without knowing where it led. That’s how the good ones are found.',
+      },
+      first_bold: {
+        fr: 'Celle-là demandait du nerf. Tu l’as prise quand même — c’est loggé.',
+        en: 'That one took some nerve. You took it anyway — it’s logged.',
+      },
+      first_big: {
+        fr: 'Une mission lourde à traiter. Tu es allé au bout du run.',
+        en: 'A heavy mission to process. You ran it to the end.',
+      },
+      first_event: {
+        fr: 'Ton premier incident hors script. Ça n’apparaît jamais au planning — c’est ce qui le rend utile.',
+        en: 'Your first off-script incident. It never shows on the schedule — that’s what makes it useful.',
+      },
+      volume: {
+        fr: (n) => `${n} missions au compteur. Le log s’étoffe — et toi, tu as un historique.`,
+        en: (n) => `${n} missions on the counter. The log fills out — and you have a history.`,
+      },
     },
 
     memorable: [

@@ -11,6 +11,7 @@ import { dayPart } from './dates.js';
 import { weightedPick, shuffle, defaultRng } from './rng.js';
 import { expandTemplates } from './generate.js';
 import { drawEvent, adaptiveFamilyBonus } from './events.js';
+import { isComebackDay } from './comeback.js';
 
 // Exactement 3 propositions/jour (plan UX : « choisis ton aventure », D9/D10
 // du 2026-09-05) — le moteur de tirage/budget/accept-multiple reste inchangé,
@@ -19,6 +20,10 @@ const MIN_QUESTS = 3;
 const MAX_QUESTS = 3;
 const HIDDEN_SWAP_CHANCE = 0.25;
 const EVENT_CHANCE = 0.32;
+const COMEBACK_EVENT_CHANCE = 0.8;
+// Après ce nombre de jours sans événement, on en force un : il faut qu'il y ait
+// une question à l'ouverture (« aujourd'hui, quelque chose est différent »).
+const EVENT_DROUGHT_MAX = 4;
 const PREF_FAMILY_BONUS = 12;
 const RECENT_DONE_MEMORY = 56;
 
@@ -77,6 +82,7 @@ export function drawDaily(state, { now = new Date(), rng = defaultRng } = {}) {
   const part = dayPart(now);
   const recentDone = new Set(state.history.completedQuestIds.slice(-RECENT_DONE_MEMORY));
   const ceiling = Math.min(5, state.comfort + 1);
+  const comeback = isComebackDay(state, now);
 
   const curated = QUESTS.filter(
     (q) => !q.hidden && q.audace <= ceiling && momentOk(q, part),
@@ -84,7 +90,9 @@ export function drawDaily(state, { now = new Date(), rng = defaultRng } = {}) {
   const generated = expandTemplates({ ceiling, part, recentDone, rng, hidden: false });
   const eligible = curated.concat(generated);
   const fresh = eligible.filter((q) => !recentDone.has(q.id));
-  const base = fresh.length >= 10 ? fresh : eligible;
+  // Au retour, on privilégie franchement des quêtes jamais faites dès qu'il y en
+  // a de quoi remplir la journée (sinon le seuil habituel de 10).
+  const base = (comeback ? fresh.length >= 3 : fresh.length >= 10) ? fresh : eligible;
   const poolFor = (fam) => shuffle(base.filter((q) => q.famille === fam), rng);
 
   const chosen = [];
@@ -112,12 +120,17 @@ export function drawDaily(state, { now = new Date(), rng = defaultRng } = {}) {
     effortUsed += EFFORT_POINTS[q.effort];
     if (q.effort === 'consequent') consequentUsed = true;
   };
+  // Au retour après absence, on vise l'effort léger tant que c'est possible.
+  const pickFrom = (pool) => (
+    comeback ? (pool.find((q) => canAdd(q) && q.effort === 'leger') || pool.find(canAdd))
+      : pool.find(canAdd)
+  );
 
   // 1. Toujours au moins une entrée sociale.
   if (wantsGentleSocial(state)) {
     add(gentleSocialQuest());
   } else {
-    const s = poolFor('social').find(canAdd);
+    const s = pickFrom(poolFor('social'));
     if (s) add(s);
   }
 
@@ -138,7 +151,7 @@ export function drawDaily(state, { now = new Date(), rng = defaultRng } = {}) {
     if (weights.every((x) => x.weight <= 0)) break;
 
     const fam = weightedPick(weights, rng);
-    const cand = poolFor(fam).find(canAdd);
+    const cand = pickFrom(poolFor(fam));
     if (cand) add(cand);
 
     if (chosen.length >= MIN_QUESTS && effortUsed >= DAILY_EFFORT_BUDGET - 1) break;
@@ -176,9 +189,12 @@ export function drawDaily(state, { now = new Date(), rng = defaultRng } = {}) {
     if (hiddenPool.length) chosen[idx] = { ...hiddenPool[0], status: 'proposed' };
   }
 
-  // 4. Événement contextuel (hors budget d'effort).
+  // 4. Événement contextuel (hors budget d'effort). Au retour, un événement
+  //    d'accueil est très probable ; après une longue disette, on en force un.
   let event = null;
-  const drawn = drawEvent(state, { now, rng, chance: EVENT_CHANCE });
+  const drought = (state.history?.daysSinceEvent || 0) >= EVENT_DROUGHT_MAX;
+  const chance = comeback ? COMEBACK_EVENT_CHANCE : (drought ? 1 : EVENT_CHANCE);
+  const drawn = drawEvent(state, { now, rng, chance, comeback });
   if (drawn) event = { ...drawn, status: 'active' };
 
   assignProposalRoles(chosen);

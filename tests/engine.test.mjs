@@ -8,7 +8,7 @@ import {
 import { QUESTS } from '../www/js/data/quests.js';
 import { EVENTS } from '../www/js/data/events.js';
 import { TITLES } from '../www/js/data/titles.js';
-import { THEME_KEYS } from '../www/js/data/themes.js';
+import { THEME_KEYS, voiceFor } from '../www/js/data/themes.js';
 import { defaultState } from '../www/js/state/defaults.js';
 import { normalize, loadState, memoryStorage, importState, exportState } from '../www/js/state/store.js';
 import { drawDaily, wantsGentleSocial } from '../www/js/engine/draw.js';
@@ -27,6 +27,10 @@ import {
   buildJournalTimeline, chapterForLevel, levelChapterEntry, eventEntry, regionRevealEntry,
 } from '../www/js/engine/journal.js';
 import { companionLineForState, companionLineAfterQuest } from '../www/js/engine/companion.js';
+import {
+  recordQuestMilestones, recordEventMilestones, FIRST_MILESTONES, MILESTONE_KEYS,
+} from '../www/js/engine/milestones.js';
+import { isComebackDay, daysAway } from '../www/js/engine/comeback.js';
 import { mulberry32 } from '../www/js/engine/rng.js';
 import {
   gainXp, gainSkills, bumpStreak, computeStyle, elanDuJour,
@@ -366,6 +370,133 @@ test('compagnon : réaction après quête (cérémonie de validation)', () => {
   assert.ok(typeof enLine === 'string' && enLine.length > 5);
 });
 
+/* ─────────────── Phase 1 — rétention ─────────────── */
+
+test('jalons : premières fois marquées une seule fois, + paliers de volume', () => {
+  const s = defaultState();
+  s.history.totalCompleted = 1;
+  const q = {
+    famille: 'social', audace: 4, effort: 'consequent', hidden: true, contexte: ['exterieur'],
+  };
+  const hits = recordQuestMilestones(s, q, new Date('2026-09-04T20:00:00'));
+  for (const k of ['first_quest', 'first_outdoor', 'first_social', 'first_evening',
+    'first_hidden', 'first_bold', 'first_big']) {
+    assert.ok(hits.includes(k), `jalon manquant : ${k}`);
+  }
+  assert.equal(hits[0], 'first_quest', 'la toute première quête passe devant');
+  assert.equal(s.milestones.first_quest, '2026-09-04');
+
+  // rejoué le lendemain : plus rien à débloquer
+  s.history.totalCompleted = 2;
+  assert.deepEqual(recordQuestMilestones(s, q, new Date('2026-09-05T20:00:00')), []);
+
+  // palier de volume
+  s.history.totalCompleted = 10;
+  assert.deepEqual(
+    recordQuestMilestones(s, { famille: 'curiosite', effort: 'leger', contexte: [] },
+      new Date('2026-09-12T12:00:00')),
+    ['volume_10'],
+  );
+
+  // événement -> first_event, une seule fois
+  const s2 = defaultState();
+  assert.deepEqual(recordEventMilestones(s2, {}, new Date('2026-09-04T12:00:00')), ['first_event']);
+  assert.deepEqual(recordEventMilestones(s2, {}, new Date('2026-09-05T12:00:00')), []);
+});
+
+test('jalons : completeQuest émet les effets et nourrit la voix du compagnon', () => {
+  const ctx = { now: new Date('2026-09-04T10:00:00'), rng: mulberry32(7) };
+  let s = game.finishOnboarding(defaultState(), { name: 'P', comfort: 5, ageAck: true }, ctx).state;
+  const q = s.quests.find((x) => !x.hidden) || s.quests[0];
+  s = game.acceptQuest(s, { id: q.id }).state;
+  const r = game.completeQuest(s, { id: q.id }, ctx);
+  s = r.state;
+
+  assert.ok(r.effects.some((e) => e.type === 'milestone' && e.key === 'first_quest'));
+  assert.equal(s.milestones.first_quest, '2026-09-04');
+  assert.equal(s.history.lastMilestone.key, 'first_quest');
+  assert.deepEqual(checkNoPenalty(structuredClone(defaultState()), s), []);
+
+  // le compagnon relève le jalon le jour même…
+  const line = companionLineForState(s, 'fr', new Date('2026-09-04T12:00:00'));
+  assert.match(line, /page/i, 'voix nordique de first_quest');
+  // …mais plus le lendemain
+  const later = companionLineForState(s, 'fr', new Date('2026-09-05T12:00:00'));
+  assert.doesNotMatch(later, /Première page écrite/);
+});
+
+test('retour après absence : détection + tirage allégé', () => {
+  const away = { ...defaultState(), lastActiveDate: '2026-09-01' };
+  assert.equal(daysAway(away, new Date('2026-09-08T10:00:00')), 7);
+  assert.equal(isComebackDay(away, new Date('2026-09-08T10:00:00')), true);
+  assert.equal(isComebackDay(away, new Date('2026-09-03T10:00:00')), false, 'moins de 3 jours');
+  assert.equal(isComebackDay(defaultState(), new Date('2026-09-08T10:00:00')), false, 'jamais joué');
+
+  const s = defaultState();
+  s.comfort = 4;
+  s.lastActiveDate = '2026-09-01';
+  const now = new Date('2026-09-08T10:00:00');
+  for (let seed = 1; seed <= 20; seed++) {
+    const { quests } = drawDaily(s, { now, rng: mulberry32(seed) });
+    assert.equal(quests.length, 3);
+    assert.ok(!quests.some((q) => q.effort === 'consequent'), `reprise sans conséquent (seed ${seed})`);
+    assert.ok(quests.filter((q) => q.effort === 'leger').length >= 2, `reprise surtout légère (seed ${seed})`);
+  }
+
+  // ligne du compagnon dédiée
+  s.quests = drawDaily(s, { now, rng: mulberry32(1) }).quests;
+  assert.match(companionLineForState(s, 'fr', now), /rattraper|revoilà|attendait/i);
+});
+
+test('événement d’accueil : hors rotation normale, tiré au retour', () => {
+  const s = defaultState();
+  s.comfort = 3;
+  const now = new Date('2026-09-08T10:00:00');
+
+  // jamais en temps normal
+  for (let seed = 1; seed <= 25; seed++) {
+    const ev = drawEvent(s, { now, rng: mulberry32(seed), chance: 1, comeback: false });
+    assert.ok(!ev || !ev.comeback, `pas d’événement d’accueil hors retour (seed ${seed})`);
+  }
+  // au retour, l’événement d’accueil passe devant
+  const cb = drawEvent(s, { now, rng: mulberry32(2), chance: 1, comeback: true });
+  assert.ok(cb && cb.comeback, 'un événement d’accueil est proposé au retour');
+});
+
+test('événement d’ouverture : forcé après une longue disette', () => {
+  const s = defaultState();
+  s.comfort = 3;
+  const now = new Date('2026-09-04T10:00:00');
+
+  s.history.daysSinceEvent = 4;
+  let forced = 0;
+  for (let seed = 1; seed <= 20; seed++) {
+    if (drawDaily(s, { now, rng: mulberry32(seed) }).event) forced += 1;
+  }
+  assert.ok(forced >= 19, `disette -> événement quasi garanti : ${forced}/20`);
+
+  s.history.daysSinceEvent = 0;
+  let normal = 0;
+  for (let seed = 1; seed <= 20; seed++) {
+    if (drawDaily(s, { now, rng: mulberry32(seed) }).event) normal += 1;
+  }
+  assert.ok(normal < forced, `sans disette le tirage reste partiel : ${normal}/20`);
+});
+
+test('newDay : compteur de disette d’événement', () => {
+  const ctx = (iso) => ({ now: new Date(`${iso}T09:00:00`), rng: mulberry32(11) });
+  let s = game.finishOnboarding(defaultState(), { name: 'P', comfort: 3, ageAck: true }, ctx('2026-09-04')).state;
+  const seen = [];
+  for (let d = 5; d < 20; d++) {
+    s.drawDate = null;
+    s = game.newDay(s, {}, ctx(`2026-09-${String(d).padStart(2, '0')}`)).state;
+    seen.push({ event: !!s.event, since: s.history.daysSinceEvent });
+  }
+  // le compteur ne dépasse jamais le plafond (un événement est forcé avant)
+  assert.ok(seen.every((x) => x.since <= 4), 'la disette est bornée');
+  assert.ok(seen.some((x) => x.event), 'des événements sortent bien');
+});
+
 test('voix par thème (D12) : chaque thème payant a sa propre voix, complète', () => {
   const paid = THEME_KEYS.filter((k) => k !== 'nordique');
   assert.ok(paid.length >= 6, 'catalogue payant complet');
@@ -408,7 +539,31 @@ test('voix par thème (D12) : chaque thème payant a sa propre voix, complète',
     assert.ok(bilingual(evt) && evt.fr.includes('X') && evt.fr.includes('Y'));
     const reg = regionRevealEntry({ fr: 'Les Docks', en: 'The Docks' }, theme);
     assert.ok(bilingual(reg) && reg.fr.includes('Les Docks'));
+
+    // Jalons (Phase 1.2) : voix propre et complète, bilingue.
+    const M = voiceFor(theme).milestones;
+    for (const key of FIRST_MILESTONES) {
+      assert.ok(M[key] && bilingual(M[key]), `${theme}.milestones.${key} bilingue`);
+    }
+    assert.equal(typeof M.volume.fr, 'function', `${theme}.milestones.volume.fr`);
+    assert.ok(M.volume.fr(25).includes('25') && M.volume.en(25).includes('25'), `${theme} volume(n)`);
+    assert.notEqual(
+      M.first_quest.fr, voiceFor('nordique').milestones.first_quest.fr,
+      `${theme} : jalon réécrit pour le thème`,
+    );
+
+    // Retour après absence (Phase 1.3) : accueil bilingue, jamais un reproche.
+    const cbLines = voiceFor(theme).ctx.comeback;
+    assert.ok(Array.isArray(cbLines.fr) && cbLines.fr.length >= 2, `${theme}.ctx.comeback.fr`);
+    assert.ok(Array.isArray(cbLines.en) && cbLines.en.length >= 2, `${theme}.ctx.comeback.en`);
+    for (const l of [...cbLines.fr, ...cbLines.en]) {
+      assert.doesNotMatch(l, /manqué|raté\b|missed/i, `${theme} : accueil sans reproche`);
+    }
   }
+
+  // Le catalogue des jalons est stable (les tests / la voix s'appuient dessus).
+  assert.equal(MILESTONE_KEYS.length, FIRST_MILESTONES.length + 4);
+  assert.ok(voiceFor('nordique').milestones.first_quest.fr.length > 10);
 
   // Thème inconnu -> retombe sur la voix de nordique sans planter.
   const fallback = chapterForLevel(1, 'inconnu');

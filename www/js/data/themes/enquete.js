@@ -91,6 +91,16 @@ export default {
           `What you did is on record: “${t}”`,
         ],
       },
+      comeback: {
+        fr: [
+          'Quelques jours sans passer au bureau. Le dossier est resté ouvert à ta page — rien à rattraper, on le reprend quand tu veux.',
+          'Te revoilà. La piste n’a pas refroidi ; elle attendait juste qu’on s’y remette, tranquillement.',
+        ],
+        en: [
+          'A few days away from the office. The file stayed open at your page — nothing to catch up on, we pick it back up whenever you like.',
+          'There you are. The lead didn’t go cold; it was just waiting for us to get back to it, calmly.',
+        ],
+      },
     },
 
     afterQuest: {
@@ -100,6 +110,45 @@ export default {
     afterQuestFirst: {
       fr: 'Ton coéquipier pose une tasse : « J’aurai une piste pour toi. Repasse demain. »',
       en: 'Your partner sets down a mug: “I’ll have a lead for you. Come by tomorrow.”',
+    },
+
+    milestones: {
+      first_quest: {
+        fr: 'Première note versée au dossier de ta main. Ton coéquipier la relit une fois.',
+        en: 'First note filed in your own hand. Your partner rereads it once.',
+      },
+      first_outdoor: {
+        fr: 'Tu es sorti sur le terrain pour de vrai. Ce qui se vérifie dehors pèse double au dossier.',
+        en: 'You actually went out into the field. What’s checked outside weighs double in the file.',
+      },
+      first_social: {
+        fr: 'Un mot pris à quelqu’un. Ton coéquipier le consigne : un témoignage, même court, ça compte.',
+        en: 'A word taken from someone. Your partner logs it: a statement, however short, counts.',
+      },
+      first_evening: {
+        fr: 'Une piste suivie en soirée. C’est souvent après la fermeture que les choses se disent.',
+        en: 'A lead followed in the evening. It’s often after closing time that things get said.',
+      },
+      first_hidden: {
+        fr: 'Tu as suivi une piste sans en connaître l’issue. C’est comme ça qu’on boucle les vraies affaires.',
+        en: 'You followed a lead without knowing its outcome. That’s how real cases get closed.',
+      },
+      first_bold: {
+        fr: 'Celle-là demandait du culot. Tu l’as prise quand même — ton coéquipier l’a noté.',
+        en: 'That one took some nerve. You took it anyway — your partner noted it.',
+      },
+      first_big: {
+        fr: 'Une piste qui demandait du temps. Tu l’as suivie jusqu’au bout.',
+        en: 'A lead that took time. You followed it all the way.',
+      },
+      first_event: {
+        fr: 'Ton premier développement imprévu. Ça n’arrive jamais sur rendez-vous — c’est ce qui fait avancer.',
+        en: 'Your first unplanned development. It never comes by appointment — that’s what moves things.',
+      },
+      volume: {
+        fr: (n) => `${n} pistes suivies. Le dossier s’épaissit — et toi, tu as une méthode.`,
+        en: (n) => `${n} leads followed. The file grows thicker — and you have a method.`,
+      },
     },
 
     memorable: [

@@ -18,6 +18,9 @@ import {
   addLoot, lootFromEvent, lootFromHiddenQuest, milestoneLootForLevel,
 } from './inventory.js';
 import { syncRegionUnlocks } from './worldView.js';
+import {
+  recordQuestMilestones, recordEventMilestones, applyMilestones,
+} from './milestones.js';
 import { THEME_KEYS } from '../data/themes.js';
 
 const RECENT_DONE_MEMORY = 56;
@@ -102,6 +105,9 @@ export function newDay(state, _args, ctx) {
     const recent = (s.history.recentEventIds || []).slice();
     recent.push(event.id);
     s.history.recentEventIds = recent.slice(-RECENT_EVENT_MEMORY);
+    s.history.daysSinceEvent = 0;
+  } else {
+    s.history.daysSinceEvent = (s.history.daysSinceEvent || 0) + 1;
   }
   // Foyer toujours connu ; sync sans spam journal au new day
   syncRegionUnlocks(s);
@@ -182,6 +188,9 @@ export function completeQuest(state, { id }, ctx) {
 
   applyRegionReveals(s, effects, today);
 
+  // Jalons — après le bookkeeping (totalCompleted à jour).
+  applyMilestones(s, effects, recordQuestMilestones(s, q, now), now);
+
   effects.push({ type: 'quest-done', xp: q.xp, first: wasFirst });
   return { state: s, effects };
 }
@@ -210,6 +219,8 @@ export function completeEvent(state, _args, ctx) {
   addLoot(s, loot);
   addEntry(s, { date: today, text: eventEntry(ev, s.theme), kind: 'evenement' });
   applyRegionReveals(s, effects, today);
+
+  applyMilestones(s, effects, recordEventMilestones(s, ev, now), now);
 
   effects.push({ type: 'event-done', xp: ev.xp, item: ev.item });
   return { state: s, effects };

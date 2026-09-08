@@ -91,6 +91,16 @@ export default {
           `What you did is written in the sky: “${t}”`,
         ],
       },
+      comeback: {
+        fr: [
+          'Quelques nuits sans lecture. Le ciel est resté à la même page — rien à rattraper, on interroge les signes quand tu veux.',
+          'Te revoilà sous les étoiles. Elles n’ont pas bougé sans toi ; elles attendaient juste ton regard, sans hâte.',
+        ],
+        en: [
+          'A few nights without a reading. The sky stayed on the same page — nothing to catch up on, we question the signs whenever you like.',
+          'There you are under the stars. They didn’t move on without you; they were just waiting for your gaze, no haste.',
+        ],
+      },
     },
 
     afterQuest: {
@@ -100,6 +110,45 @@ export default {
     afterQuestFirst: {
       fr: 'Une voix venue des astres : « Un signe se prépare pour toi. Reviens demain. »',
       en: 'A voice from the stars: “A sign is forming for you. Come back tomorrow.”',
+    },
+
+    milestones: {
+      first_quest: {
+        fr: 'Premier signe répondu de ta main. La voix des astres le relit une fois.',
+        en: 'First sign answered in your own hand. The voice of the stars rereads it once.',
+      },
+      first_outdoor: {
+        fr: 'Tu es sorti sous le ciel pour de vrai. Ce qui se vit dehors pèse double dans les signes.',
+        en: 'You actually went out under the sky. What’s lived outside weighs double in the signs.',
+      },
+      first_social: {
+        fr: 'Un mot partagé avec quelqu’un. La voix des astres le note : les rencontres laissent une trace au ciel.',
+        en: 'A word shared with someone. The voice of the stars notes it: encounters leave a mark in the sky.',
+      },
+      first_evening: {
+        fr: 'Un présage lu à la nuit tombée. C’est l’heure où le ciel parle le plus clairement.',
+        en: 'An omen read after nightfall. That’s the hour the sky speaks most clearly.',
+      },
+      first_hidden: {
+        fr: 'Tu as suivi un signe sans en connaître le sens. C’est ainsi qu’on lit les vrais présages.',
+        en: 'You followed a sign without knowing its meaning. That’s how true omens are read.',
+      },
+      first_bold: {
+        fr: 'Celui-là demandait du courage. Tu l’as suivi quand même — le ciel s’en souviendra.',
+        en: 'That one took courage. You followed it anyway — the sky will remember.',
+      },
+      first_big: {
+        fr: 'Un signe qui demandait de la patience. Tu l’as lu jusqu’au bout.',
+        en: 'A sign that took patience. You read it all the way through.',
+      },
+      first_event: {
+        fr: 'Ton premier signe venu sans être appelé. Les astres ne préviennent jamais — c’est ce qui les rend justes.',
+        en: 'Your first sign that came unbidden. The stars never warn you — that’s what makes them true.',
+      },
+      volume: {
+        fr: (n) => `${n} présages lus. Le ciel se remplit de tes lignes — et toi, tu as une carte.`,
+        en: (n) => `${n} omens read. The sky fills with your lines — and you have a chart.`,
+      },
     },
 
     memorable: [

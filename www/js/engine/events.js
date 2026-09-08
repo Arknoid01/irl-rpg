@@ -21,8 +21,10 @@ function avgFamilyCompletions(state) {
 }
 
 /** Éligibilité dure (hors poids). */
-export function eventEligible(ev, state, now = new Date()) {
+export function eventEligible(ev, state, now = new Date(), opts = {}) {
   if (!ev) return false;
+  // Les événements d'accueil ne sortent qu'au retour après absence (Phase 1.3).
+  if (ev.comeback && !opts.comeback) return false;
   if (ev.minLevel != null && state.level < ev.minLevel) return false;
   if (ev.minStreak != null && (state.streak || 0) < ev.minStreak) return false;
   if (ev.minComfort != null && state.comfort < ev.minComfort) return false;
@@ -58,10 +60,15 @@ export function eventWeight(ev, state) {
  * Tire un événement ou null.
  * @returns {object|null} événement sans status
  */
-export function drawEvent(state, { now = new Date(), rng = defaultRng, chance = 0.32 } = {}) {
+export function drawEvent(state, {
+  now = new Date(), rng = defaultRng, chance = 0.32, comeback = false,
+} = {}) {
   if (rng() >= chance) return null;
-  const pool = EVENTS.filter((ev) => eventEligible(ev, state, now));
-  if (!pool.length) return null;
+  const eligible = EVENTS.filter((ev) => eventEligible(ev, state, now, { comeback }));
+  if (!eligible.length) return null;
+  // Au retour, si un événement d'accueil est disponible, il passe devant.
+  const cb = comeback ? eligible.filter((ev) => ev.comeback) : [];
+  const pool = cb.length ? cb : eligible;
   const weighted = pool.map((ev) => ({ value: ev, weight: eventWeight(ev, state) }));
   if (weighted.every((x) => x.weight <= 0)) return null;
   const picked = weightedPick(weighted, rng);
