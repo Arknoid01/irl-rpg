@@ -22,6 +22,7 @@ export default {
   map_status_proposed: 'Offered',
 
   companion_label: 'Your companion',
+  day_kicker: 'Day {n}',
   quests_today: 'Today’s quests',
   choose_adventure: 'Choose your adventure.',
   q_role_principale: 'Main pick',
@@ -38,6 +39,10 @@ export default {
 
   elan_jour: 'Today’s momentum',
   elan_hint: 'An indicator, not a gauge — it never blocks anything.',
+  elan_unit: 'adventures',
+  elan_phrase_start: 'The world is still waiting for your first choice.',
+  elan_phrase_mid: 'Your adventure for today is taking shape.',
+  elan_phrase_done: 'Your adventure for today is complete.',
   streak: 'Streak',
   streak_days: '{n} day(s)',
   streak_break_ok: 'A streak starting over costs nothing.',
@@ -60,7 +65,7 @@ export default {
   q_effort_leger: 'light',
   q_effort_moyen: 'medium',
   q_effort_consequent: 'bigger',
-  q_send_friend: 'send to a friend',
+  q_send_friend: '↗ Share',
   q_mystery: '❓ Mystery quest — its meaning shows once you accept it.',
 
   skills: 'Skills',

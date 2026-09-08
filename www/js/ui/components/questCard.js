@@ -32,7 +32,7 @@ export function questCardHtml(quest, themeKey) {
   if (quest.status === 'proposed') {
     actions = `
       <div class="quest-actions">
-        <button class="btn ghost" data-action="ignore-quest" data-id="${quest.id}">${i18n.t('q_ignore')}</button>
+        <button class="btn ghost small" data-action="ignore-quest" data-id="${quest.id}">${i18n.t('q_ignore')}</button>
         <button class="btn primary" data-action="accept-quest" data-id="${quest.id}">${i18n.t('q_accept')}</button>
       </div>`;
   } else if (quest.status === 'accepted') {

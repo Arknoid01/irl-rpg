@@ -107,38 +107,36 @@ culpabilisant.
 
 ## 4. Roadmap
 
-### Phase 0 — Hiérarchie UX (quick wins, aucun changement moteur)
+### Phase 0 — Hiérarchie UX (quick wins, aucun changement moteur) — ✅ fait (QA visuelle appareil à faire)
 
 Faible risque, fort impact lisibilité. Purement `ui/` + CSS + i18n.
 
-- [ ] **0.1 Accueil : quêtes au centre** (UX §3-4, §20). Nouvel ordre :
-  topbar → `JOUR N` + « Les signes du jour / Trois chemins se présentent à
-  toi » → **les 3 quêtes** → résumé léger de progression en bas. Sortir la
-  hero card volumineuse du haut ; garder niveau/XP/série accessibles mais
-  discrets (ligne compacte ou repliés). `ui/screens/adventure.js`,
-  `ui/components/charBits.js` (`heroCardHtml`), `styles/`.
-- [ ] **0.2 « Élan du jour » : fraction + phrase** (UX §5). Remplacer
-  `elan %` par `🌱 0 / 3 aventures` + une ligne narrative selon l'avancement
-  (« Le monde attend encore ton premier choix. » → « ✨ Ton aventure du jour
-  est complète. »). `elanDuJour` peut rester pour la barre ; c'est
-  l'affichage qui change. `heroCardHtml`/`adventure.js`, i18n.
-- [ ] **0.3 Compacter les cartes de quête** (UX §7). Réduire marges internes,
-  interlignes des métadonnées, espaces entre cartes — **sans** toucher à la
-  taille du texte de quête. But : voir les 3 propositions avec très peu de
-  scroll. `styles/components.css` (`.quest-card`, `.quest-meta`, `.quest-top`).
-- [ ] **0.4 Hiérarchie des boutons** (UX §8). « Accepter » nettement
-  dominant, « Ignorer » plus discret (déjà `ghost` vs `primary` — vérifier le
-  contraste réel sur appareil, ajuster si besoin).
-- [ ] **0.5 « envoyer à un ami » → `↗ Partager`** (UX §9). Simplifier le
-  libellé (i18n `q_send_friend`) ou passer à une icône ; la quête reste « ton
-  aventure » avant d'être une fonction sociale.
-- [ ] **0.6 Moins de cadres** (UX §18). Titres de section, intros, chapitres,
-  transitions narratives → **sans panneau**. Garder les cadres pour cartes de
-  quête, objets, récompenses, infos importantes. `styles/`.
-- [ ] **0.7 Couleur = langage** (UX §19). Formaliser dans `base-tokens.css` /
-  doc : violet = navigation/action, or = XP/progression/rareté, bleu =
-  monde/découverte, couleur de famille = catégorie. Vérifier que chaque thème
-  respecte ces rôles.
+- [x] **0.1 Accueil : quêtes au centre** (UX §3-4, §20). Ordre :
+  `Jour N` → le compagnon plante le décor → **les 3 quêtes** → événement →
+  résumé de progression discret en bas. La grosse hero card a été remplacée
+  par `.prog-strip` (prénom · niveau · fine barre XP · série · lien perso).
+  `ui/screens/adventure.js`, `ui/components/charBits.js` (`heroCardHtml`
+  repurposé), `styles/components.css`.
+- [x] **0.2 « Élan du jour » : fraction + phrase** (UX §5). Plus de `%` ni de
+  jauge : `.elan-line` = `🌱 n / d aventures` + phrase narrative selon
+  l'avancement (`elan_phrase_start` / `_mid` / `_done`). Le panneau encadré
+  `.elan-chest` est supprimé.
+- [x] **0.3 Compacter les cartes de quête** (UX §7). Marges/paddings réduits
+  sur `.quest-card`, `.quest-top`, `.quest-text`, `.quest-meta`,
+  `.quest-role` — texte de quête inchangé.
+- [x] **0.4 Hiérarchie des boutons** (UX §8). `.quest-actions` : primaire
+  (`Accepter` / `Terminé`) `flex: 2`, ghost (`Ignorer` / `Abandonner`)
+  `flex: 1` + `small`.
+- [x] **0.5 « envoyer à un ami » → `↗ Partager`** (UX §9). i18n
+  `q_send_friend`, soulignement retiré dans `.quest-meta`.
+- [x] **0.6 Moins de cadres** (UX §18). `.section-label` : filet du bas
+  retiré. `.elan-chest` supprimé.
+- [x] **0.7 Couleur = langage** (UX §19). Rôles formalisés en commentaire
+  dans `styles/themes/base-tokens.css` (accent/seal = action, gold = XP,
+  bleu = monde, fam-color = catégorie).
+
+**À faire avant de clore la phase** : QA visuelle sur appareil des 7 thèmes
+(l'accueil, les cartes compactées, la `.prog-strip`).
 
 ### Phase 1 — Rétention (priorité absolue)
 

@@ -1,12 +1,15 @@
 import { companionLineForState } from '../../engine/companion.js';
 import { i18n } from '../../i18n/index.js';
 import { themeText } from '../themeText.js';
-import { esc, pctBar } from '../dom.js';
+import { esc } from '../dom.js';
 import { heroCardHtml } from '../components/charBits.js';
 import { questCardHtml } from '../components/questCard.js';
 import { eventCardHtml } from '../components/eventCard.js';
-import { elanDuJour } from '../../engine/progression.js';
 
+// Accueil : les aventures d'abord (ROADMAP Phase 0). Ordre = jour → le
+// compagnon plante le décor → les 3 propositions → l'événement → un résumé
+// de progression discret en bas. Les chiffres de perso (niveau, XP, série)
+// ne dominent plus le haut de l'écran.
 export function renderAdventure(state) {
   const line = companionLineForState(state, state.lang || i18n.lang);
   const allDoneTitle = themeText('allDone', 'all_done_title');
@@ -14,8 +17,6 @@ export function renderAdventure(state) {
   const active = state.quests.filter((q) => q.status === 'proposed' || q.status === 'accepted');
   const done = state.quests.filter((q) => q.status === 'done');
   const ignored = state.quests.filter((q) => q.status === 'ignored');
-  const elan = elanDuJour(state);
-  const hasProposals = state.quests.some((q) => q.status === 'proposed');
 
   let questsBlock;
   if (state.quests.length === 0) {
@@ -40,29 +41,31 @@ export function renderAdventure(state) {
     }
   }
 
-  const chest = state.quests.length > 0
-    ? (() => {
-      const denom = Math.max(1, state.quests.length - ignored.length);
-      return `<div class="elan-chest" title="${i18n.t('elan_hint')}">
-        <span class="chest-ic" aria-hidden="true">🗃</span>
-        <div style="flex:1">
-          <div class="bar-label"><span>${i18n.t('elan_jour')}</span><span>${done.length}/${denom}</span></div>
-          ${pctBar(elan, 'elan', `${i18n.t('elan_jour')} ${done.length}/${denom}`)}
-        </div>
-      </div>`;
-    })()
-    : '';
+  const dayNo = Math.max(1, state.history?.daysPlayed || 1);
+
+  // Élan du jour : une fraction + une phrase narrative, jamais un %.
+  // Indicateur, pas une contrainte (ROADMAP Phase 0.2).
+  let elanLine = '';
+  if (state.quests.length > 0) {
+    const denom = Math.max(1, state.quests.length - ignored.length);
+    const n = done.length;
+    let phrase;
+    if (n === 0) phrase = i18n.t('elan_phrase_start');
+    else if (n >= denom) phrase = i18n.t('elan_phrase_done');
+    else phrase = i18n.t('elan_phrase_mid');
+    elanLine = `<p class="elan-line"><span class="elan-count">🌱 ${n} / ${denom} ${i18n.t('elan_unit')}</span> — ${phrase}</p>`;
+  }
 
   return `
+    <p class="day-kicker">${i18n.t('day_kicker', { n: dayNo })}</p>
     <p class="companion-line">${esc(line)}</p>
-    ${heroCardHtml(state)}
     <div class="section-label">
       <span>${themeText('questsHeading', 'quests_today')}</span>
       <button class="refresh-btn" data-action="new-day" title="${i18n.t('new_day_hint')}">↻ ${i18n.t('new_day')}</button>
     </div>
-    ${chest}
-    ${hasProposals ? `<p class="choose-line">${i18n.t('choose_adventure')}</p>` : ''}
+    ${elanLine}
     ${questsBlock}
     ${eventCardHtml(state.event)}
+    ${heroCardHtml(state)}
   `;
 }

@@ -1,7 +1,15 @@
 /* Tokens partagés, valeurs par défaut avant tout thème. Doit être importé en
  * premier dans ../themes.css : un thème qui redéfinit --paper/--ink/--font-*
  * doit gagner sur ces valeurs pour le même élément (<html> correspond à la
- * fois à :root et à [data-theme="..."], même spécificité — l'ordre décide). */
+ * fois à :root et à [data-theme="..."], même spécificité — l'ordre décide).
+ *
+ * Couleur = langage (ROADMAP Phase 0.7). Chaque thème doit garder ces rôles :
+ *   --accent / --seal  → navigation, actions, boutons primaires
+ *   --gold             → XP, progression, rareté, série
+ *   --bar-xp + bleu de --nav-active → le Monde, la découverte, la carte
+ *   --fam-color (par famille, cf. data/taxonomy.js) → la catégorie d'une quête
+ *   --ok / --danger    → réussite douce / zone qui demande un pas de côté
+ * Ne pas réutiliser une de ces couleurs pour un autre rôle dans un thème. */
 
 :root {
   --maxw: 440px;

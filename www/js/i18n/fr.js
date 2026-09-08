@@ -22,6 +22,7 @@ export default {
   map_status_proposed: 'Proposées',
 
   companion_label: 'Ton compagnon',
+  day_kicker: 'Jour {n}',
   quests_today: 'Quêtes du jour',
   choose_adventure: 'Choisis ton aventure.',
   q_role_principale: 'Principale',
@@ -38,6 +39,10 @@ export default {
 
   elan_jour: 'Élan du jour',
   elan_hint: 'Indicateur, pas une jauge — ça ne bloque jamais rien.',
+  elan_unit: 'aventures',
+  elan_phrase_start: 'Le monde attend encore ton premier choix.',
+  elan_phrase_mid: 'Ton aventure du jour se dessine.',
+  elan_phrase_done: 'Ton aventure du jour est complète.',
   streak: 'Série',
   streak_days: '{n} jour(s)',
   streak_break_ok: 'Une série qui repart ne coûte rien.',
@@ -60,7 +65,7 @@ export default {
   q_effort_leger: 'léger',
   q_effort_moyen: 'moyen',
   q_effort_consequent: 'conséquent',
-  q_send_friend: 'envoyer à un ami',
+  q_send_friend: '↗ Partager',
   q_mystery: '❓ Quête mystérieuse — son sens se révélera si tu l’acceptes.',
 
   skills: 'Compétences',

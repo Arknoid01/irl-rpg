@@ -21,6 +21,8 @@
   margin-bottom: 12px;
 }
 
+/* Titre de section : pas de cadre ni de filet (ROADMAP Phase 0.6) — un
+   titre, pas un panneau de dashboard. */
 .section-label {
   display: flex; align-items: center; justify-content: space-between;
   font-family: var(--font-display);
@@ -28,9 +30,7 @@
   font-weight: 400;
   font-style: italic;
   color: var(--ink);
-  margin: 16px 2px 10px;
-  padding-bottom: 4px;
-  border-bottom: 1px solid rgba(80, 55, 30, .2);
+  margin: 14px 2px 8px;
 }
 
 .refresh-btn {
@@ -51,9 +51,61 @@
   color: var(--ink-dim);
   border-left: 2px solid rgba(139, 58, 50, .45);
   padding: 2px 4px 2px 10px;
-  margin: 10px 2px 12px;
+  margin: 6px 2px 10px;
   line-height: 1.45;
 }
+
+/* ---------- Accueil : en-tête de jour + élan (ROADMAP Phase 0) ---------- */
+.day-kicker {
+  font-family: var(--font-display);
+  font-size: .82rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin: 2px 2px 0;
+}
+
+/* Élan du jour : une ligne, jamais un % ni une jauge (Phase 0.2). */
+.elan-line {
+  font-size: .9rem;
+  font-style: italic;
+  color: var(--text-dim);
+  margin: 0 2px 12px;
+  line-height: 1.4;
+}
+.elan-count {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--ok);
+}
+
+/* Résumé de progression discret, en bas de l'accueil — pas un panneau. */
+.prog-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  margin: 20px 2px 2px;
+  padding-top: 10px;
+  border-top: 1px solid color-mix(in srgb, var(--text-dim) 28%, transparent);
+  font-size: .82rem;
+  color: var(--text-dim);
+}
+.prog-strip .prog-hero b {
+  color: var(--text);
+  font-family: var(--font-display);
+  font-weight: 400;
+}
+.prog-strip .prog-xp {
+  flex: 1 1 90px;
+  min-width: 84px;
+}
+.prog-strip .prog-xp .bar-track {
+  margin: 0;
+  height: 5px;
+}
+.prog-strip .prog-streak { color: var(--gold); }
+.prog-strip .linkbtn { margin-left: auto; }
 
 /* ---------- Hero ---------- */
 .hero-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
@@ -189,9 +241,11 @@
 .stats-grid span { font-size: .74rem; color: var(--text-dim); }
 
 /* ---------- Quêtes ---------- */
+/* Cartes compactées (ROADMAP Phase 0.3) : comparer les 3 propositions avec
+   peu de scroll. On ne touche pas à la taille du texte de quête. */
 .quest-card {
-  padding: 12px 12px 11px;
-  margin-bottom: 11px;
+  padding: 10px 12px 9px;
+  margin-bottom: 9px;
   border-left: 3px solid var(--fam-color, var(--gold));
   animation: scrap-in .4s ease both;
   overflow: hidden;
@@ -231,7 +285,7 @@
   font-style: italic;
   font-size: .74rem;
   letter-spacing: .01em;
-  margin: 0 0 6px;
+  margin: 0 0 3px;
 }
 .quest-role.role-principale { color: var(--gold); }
 .quest-role.role-tranquille { color: var(--ok); }
@@ -245,7 +299,7 @@
   margin: 0 2px 10px;
 }
 
-.quest-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+.quest-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 4px; }
 .quest-cat {
   display: inline-flex; align-items: center; gap: 4px;
   font-size: .7rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
@@ -264,7 +318,7 @@
   font-style: italic;
 }
 .xp-suffix { opacity: .55; font-size: .88em; font-weight: 400; }
-.quest-text { font-size: 1.12rem; line-height: 1.45; margin: 4px 0 8px; color: var(--text); }
+.quest-text { font-size: 1.12rem; line-height: 1.4; margin: 3px 0 6px; color: var(--text); }
 .quest-text.muted { font-style: italic; color: var(--text-dim); }
 .quest-fallback {
   font-size: .8rem; color: var(--text-dim);
@@ -277,22 +331,13 @@
   border: 1px solid rgba(42, 34, 24, .22); color: var(--text-dim);
   border-radius: 3px; padding: 2px 7px; margin-bottom: 4px;
 }
-.quest-meta { font-size: .76rem; color: var(--text-dim); margin: 6px 0 10px; }
-.quest-actions { display: flex; gap: 8px; }
+.quest-meta { font-size: .76rem; color: var(--text-dim); margin: 4px 0 8px; }
+.quest-meta .linkbtn { text-decoration: none; }
+/* « Accepter » domine, « Ignorer » reste discret (ROADMAP Phase 0.4). */
+.quest-actions { display: flex; gap: 8px; align-items: stretch; }
 .quest-actions .btn { flex: 1; }
+.quest-actions .btn.primary, .quest-actions .btn.done { flex: 2; }
 .done-line { margin: 10px 2px; color: var(--ink-dim); }
-
-.elan-chest {
-  display: flex; align-items: center; gap: 10px;
-  margin: 8px 0 14px;
-  padding: 10px 12px;
-  border: 1.5px dashed rgba(70, 45, 20, .28);
-  border-radius: 8px;
-  background: rgba(255,255,255,.3);
-  color: var(--ink);
-}
-.elan-chest .chest-ic { font-size: 1.4rem; }
-.elan-chest .bar-track { flex: 1; margin: 0; }
 
 .event-panel { border-color: color-mix(in srgb, var(--danger) 45%, rgba(70,45,20,.28)); }
 .event-top { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 2px; }

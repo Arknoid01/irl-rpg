@@ -1,6 +1,6 @@
 import { SKILLS, SKILL_KEYS } from '../../data/taxonomy.js';
 import { TITLES, STYLE_DEFAULT, TITLE_TIER2 } from '../../data/titles.js';
-import { xpProgress, elanDuJour, computeStyle } from '../../engine/progression.js';
+import { xpProgress, computeStyle } from '../../engine/progression.js';
 import { buildMuseumView, lootGlyph, lootTitle } from '../../engine/inventory.js';
 import { LOOT_KINDS } from '../../data/loot.js';
 import { i18n } from '../../i18n/index.js';
@@ -21,28 +21,18 @@ export function selectMuseumItem(id) {
   museumSelected = id || null;
 }
 
+// Résumé de progression discret pour le bas de l'écran Aventure (ROADMAP
+// Phase 0.1) : prénom + niveau, une fine barre d'XP, la série, un lien vers
+// le personnage. Plus de gros panneau de stats en haut de l'accueil.
 export function heroCardHtml(state) {
   const p = xpProgress(state);
-  const elan = elanDuJour(state);
   return `
-  <section class="panel hero-card">
-    <div class="hero-head">
-      <div class="hero-name">${esc(state.name)}</div>
-      <div class="hero-level">${i18n.t('level')} <b>${state.level}</b></div>
-    </div>
-    <div class="bar-row">
-      <div class="bar-label"><span>${i18n.t('xp')}</span><span>${p.xp} / ${p.need}</span></div>
-      ${pctBar(p.pct, 'xp', `${i18n.t('xp')} ${p.xp}/${p.need}`)}
-    </div>
-    <div class="bar-row">
-      <div class="bar-label"><span>${i18n.t('elan_jour')}</span><span>${elan}%</span></div>
-      ${pctBar(elan, 'elan', `${i18n.t('elan_jour')} ${elan}%`)}
-      <p class="tiny muted">${i18n.t('elan_hint')}</p>
-    </div>
-    <div class="streak-row">🔥 ${i18n.t('streak')} : <b>${i18n.t('streak_days', { n: state.streak })}</b></div>
-    ${titlesHtml(state, true)}
-    <button class="btn ghost full" data-action="goto" data-id="character">${i18n.t('see_character')}</button>
-  </section>`;
+  <div class="prog-strip">
+    <span class="prog-hero">${esc(state.name)} · <b>${i18n.t('level')} ${state.level}</b></span>
+    <span class="prog-xp">${pctBar(p.pct, 'xp', `${i18n.t('xp')} ${p.xp}/${p.need}`)}</span>
+    <span class="prog-streak">🔥 ${i18n.t('streak_days', { n: state.streak })}</span>
+    <button class="linkbtn" data-action="goto" data-id="character">${i18n.t('see_character')} →</button>
+  </div>`;
 }
 
 export function skillsGridHtml(state) {
