@@ -18,6 +18,9 @@ export function defaultState() {
 
     notifications: { enabled: false, hour: 9 },
 
+    // Bulles d'aide affichées une seule fois (découverte de fonctionnalités).
+    hints: { themeTip: false },
+
     level: 1,
     xp: 0,
     skills: { curiosite: 0, social: 0, audace: 0, creativite: 0, discipline: 0, chaos: 0 },

@@ -787,6 +787,22 @@ input[type="range"] { width: 100%; accent-color: var(--seal); margin: 12px 0 4px
   padding: 8px 10px;
   margin: 0 0 16px;
 }
+
+/* Bulle d'aide unique (découverte des thèmes) — réutilise la carte .levelup */
+.coach-tip { max-width: 21rem; }
+.coach-tip .levelup-kicker {
+  font-size: 1.5rem;
+  line-height: 1.15;
+  margin-bottom: 6px;
+}
+.coach-tip-body {
+  font-family: var(--font-display);
+  color: var(--ink-dim);
+  font-size: 1rem;
+  line-height: 1.45;
+  margin: 0 0 18px;
+}
+
 @keyframes levelup-page {
   from { transform: rotate(-2deg) scale(.94); opacity: 0; }
   to { transform: rotate(0) scale(1); opacity: 1; }

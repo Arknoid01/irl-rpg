@@ -8,7 +8,7 @@ import { renderAdventure } from './ui/screens/adventure.js';
 import { renderWorld, selectWorldRegion } from './ui/screens/world.js';
 import { renderJournal } from './ui/screens/journal.js';
 import { renderCharacter } from './ui/screens/character.js';
-import { playEffects, closeOverlay, showToast } from './ui/feedback.js';
+import { playEffects, closeOverlay, showToast, themeTipOverlay } from './ui/feedback.js';
 import { startOnboarding } from './ui/onboarding.js';
 import { openSettings } from './ui/settings.js';
 import { openShop } from './ui/shop.js';
@@ -63,6 +63,7 @@ function boot() {
       render();
       playEffects(r.effects.filter((e) => e.type !== 'onboarded'), state);
       syncDailyReminder(state);
+      maybeShowThemeTip();
     });
     return;
   }
@@ -72,6 +73,18 @@ function boot() {
   if (SCREENS[hash]) view = hash;
   render();
   syncDailyReminder(state);
+  maybeShowThemeTip();
+}
+
+// Bulle d'aide unique : on peut changer de thème. Montrée après l'onboarding
+// (et une fois pour les sauvegardes d'avant cette version), puis jamais plus.
+function maybeShowThemeTip() {
+  if (!state.onboarded || state.hints?.themeTip) return;
+  themeTipOverlay((choice) => {
+    state.hints = { ...state.hints, themeTip: true };
+    persist();
+    if (choice === 'shop') dispatch('open-shop');
+  });
 }
 
 function ensureDay() {

@@ -1118,6 +1118,15 @@ test('normalize : migre les thèmes legacy', () => {
   assert.ok(THEME_KEYS.includes(normalize({ theme: 'inconnu' }).theme));
 });
 
+test('normalize : le flag d’astuce thème est toujours booléen', () => {
+  assert.equal(defaultState().hints.themeTip, false);
+  assert.equal(normalize({}).hints.themeTip, false);
+  assert.equal(normalize({ hints: { themeTip: true } }).hints.themeTip, true);
+  assert.equal(normalize({ hints: 'corrompu' }).hints.themeTip, false);
+  // une sauvegarde d'avant la fonctionnalité : l'astuce reste à montrer
+  assert.equal(normalize({ onboarded: true, name: 'X' }).hints.themeTip, false);
+});
+
 test('loadState : migration depuis v1', () => {
   const storage = memoryStorage({
     irlrpg_save_v1: JSON.stringify({
