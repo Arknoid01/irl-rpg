@@ -33,6 +33,7 @@ import {
 } from '../www/js/engine/progression.js';
 import { checkNoPenalty } from '../www/js/engine/philosophy.js';
 import * as game from '../www/js/engine/game.js';
+import { getBilling, billingIsReal, THEME_PRODUCTS } from '../www/js/platform/billing.js';
 import fr from '../www/js/i18n/fr.js';
 import en from '../www/js/i18n/en.js';
 import {
@@ -394,6 +395,26 @@ test('voix par thème (D12) : chaque thème payant a sa propre voix, complète',
   const fallback = chapterForLevel(1, 'inconnu');
   assert.equal(fallback.id, 'prologue');
   assert.ok(bilingual(fallback.label));
+});
+
+test('billing (D12) : impl dev hors appareil, débloque sans store', async () => {
+  // Hors Capacitor natif (cas des tests), getBilling() renvoie l'impl « dev ».
+  const b = getBilling();
+  assert.equal(b.real, false);
+  assert.equal(billingIsReal(), false);
+
+  for (const theme of Object.keys(THEME_PRODUCTS)) {
+    const res = await b.purchase(theme);
+    assert.deepEqual(res, { ok: true, dev: true });
+  }
+  const bad = await b.purchase('nordique');
+  assert.equal(bad.ok, false);
+
+  const restored = await b.restore();
+  assert.deepEqual(restored, { ok: true, themes: [] });
+
+  // Les identifiants produits correspondent aux thèmes payants (jamais nordique).
+  assert.deepEqual(Object.keys(THEME_PRODUCTS).sort(), ['cyberpunk', 'sombre']);
 });
 
 test('titres : compétences valides, bilingues', () => {

@@ -174,6 +174,8 @@ export default {
   shop_owned: 'Owned',
   shop_activate: 'Activate',
   shop_unlock: 'Unlock',
+  shop_restore: 'Restore my purchases',
+  shop_purchase_error: 'The purchase didn’t go through. Try again later.',
   shop_unlock_dev_note: 'Local demo — real purchase not wired up yet.',
   toast_theme_unlocked: 'Theme unlocked: {label}',
 

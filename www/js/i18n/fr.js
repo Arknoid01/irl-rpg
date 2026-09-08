@@ -176,6 +176,8 @@ export default {
   shop_owned: 'Débloqué',
   shop_activate: 'Activer',
   shop_unlock: 'Débloquer',
+  shop_restore: 'Restaurer mes achats',
+  shop_purchase_error: 'L’achat n’a pas abouti. Réessaie plus tard.',
   shop_unlock_dev_note: 'Démo locale — achat réel pas encore branché.',
   toast_theme_unlocked: 'Thème débloqué : {label}',
 

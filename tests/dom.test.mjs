@@ -162,6 +162,17 @@ test('boutique de thèmes : ouverture depuis Réglages, déblocage puis activati
   assert.equal(saved.theme, 'cyberpunk');
   assert.ok(saved.unlockedThemes.includes('cyberpunk'));
 
+  // Bouton « Restaurer » : présent, et sans plugin natif (impl dev) il ne
+  // débloque rien de plus mais ne casse pas la boutique.
+  assert.ok($('[data-shop="restore"]'), 'bouton restaurer présent');
+  await click('[data-shop="restore"]');
+  await tick();
+  assert.ok($('.shop-sheet'), 'la boutique tient après une restauration');
+  assert.ok(
+    $('.tiny.muted') && [...$$('.tiny.muted')].some((n) => /démo locale|local demo/i.test(n.textContent)),
+    'note « démo locale » affichée tant que l’achat réel n’est pas branché',
+  );
+
   // reviens à nordique pour ne pas polluer les tests suivants de ce fichier.
   await click('[data-shop="activate"][data-v="nordique"]');
   assert.equal(window.document.documentElement.dataset.theme, 'nordique');

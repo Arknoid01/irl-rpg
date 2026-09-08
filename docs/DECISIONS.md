@@ -409,3 +409,33 @@ thème**, sous la clé `voice` de `data/themes/<thème>.js` :
   id/seuils stables, et qu'un thème inconnu retombe proprement sur nordique.
 
 43/43 tests, simulation 45 j inchangée.
+
+### Addendum 2026-09-08 (suite) — achat in-app derrière une abstraction
+
+Le déblocage passe maintenant par `www/js/platform/billing.js`, interface
+`{ listProducts, purchase, restore }` :
+
+- **impl « dev »** (web, pas de plugin) : déblocage local gratuit — l'état
+  d'avant, inchangé pour l'expérience actuelle et les tests.
+- **impl native** : `@capacitor-community/in-app-purchases`, atteinte via
+  `window.Capacitor.Plugins.InAppPurchases` (même style que
+  `platform/notifications.js` — aucun import ES du paquet, bundle web sans
+  dépendance). Le plugin parle au Play Store / à StoreKit **en direct, sans
+  serveur tiers** → cohérent D11. RevenueCat écarté pour cette raison.
+- Produits : deux **non-consommables** (achat unique, D12) —
+  `theme_sombre`, `theme_cyberpunk`. Jamais de produit lié au contenu de jeu.
+- `ui/shop.js` ne connaît que l'interface : `billing.purchase(themeKey)`,
+  `billing.restore()`. Bouton « Restaurer mes achats » ajouté (obligatoire
+  pour des non-consommables). La note « démo locale » ne s'affiche que tant
+  que `billing.real` est faux.
+
+**Pas encore fait** (nécessite un accès Play Console / App Store Connect
+pour être écrit et testé d'un bloc) : `npm i @capacitor-community/in-app-purchases`,
+`npx cap sync`, déclaration des deux produits côté stores, permission
+`com.android.vending.BILLING`, et vérification des noms de méthodes/réponses
+réels du plugin (les appels dans `nativeBilling` sont des hypothèses isolées,
+marquées comme telles). Prix : renseignés côté stores, l'app affiche ce que
+le store renvoie (placeholder `null` sinon).
+
+44/44 tests (dont `billing (D12)` : impl dev + parité des identifiants
+produits), simulation 45 j inchangée.

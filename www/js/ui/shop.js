@@ -1,18 +1,34 @@
 // Boutique de thèmes (D12). Aperçu vidéo si le thème en a une
 // (`previewVideo`, cf. data/themes/*.js), sinon repli sur un mini panneau
-// rendu en live avec le vrai thème (police, couleurs, halo animé). Le
-// déblocage est local pour l'instant, aucun paiement réel n'est encore
-// branché (voir DECISIONS.md D12) — débloquer active aussi immédiatement le
-// thème (sinon rien ne semble se passer à l'écran).
+// rendu en live avec le vrai thème (police, couleurs, halo animé).
+//
+// L'achat passe par platform/billing.js : impl « dev » (déblocage local
+// gratuit, état actuel) sur le web / sans plugin, impl native (plugin IAP
+// Capacitor) sur appareil quand le store est branché. La boutique ne connaît
+// que l'interface { listProducts, purchase, restore } — brancher le vrai
+// plugin ne touche pas ce fichier.
 
 import { i18n } from '../i18n/index.js';
 import { THEMES, THEME_KEYS, companionLineFor } from '../data/themes.js';
+import { getBilling } from '../platform/billing.js';
 import { $, hideOverlay } from './dom.js';
 
 const PREVIEW_XP = 120;
 
 export function openShop({ getState, dispatch, close }) {
   const ov = $('#overlay');
+  const billing = getBilling();
+  const prices = {};      // themeKey -> prix affichable (string) ou undefined
+  let busy = false;       // un achat / une restauration est en cours
+  let errorKey = null;    // thème dont le dernier achat a échoué
+
+  billing.listProducts().then((list) => {
+    let changed = false;
+    for (const p of list) {
+      if (p.price && prices[p.theme] !== p.price) { prices[p.theme] = p.price; changed = true; }
+    }
+    if (changed) render();
+  }).catch(() => { /* prix indisponibles : on affiche sans */ });
 
   function previewHtml(key) {
     const t = THEMES[key];
@@ -32,14 +48,19 @@ export function openShop({ getState, dispatch, close }) {
       </div>`;
   }
 
+  function unlockLabel(key) {
+    const price = prices[key];
+    return price ? `${i18n.t('shop_unlock')} · ${price}` : i18n.t('shop_unlock');
+  }
+
   function statusHtml(key, s) {
     if (s.theme === key) {
       return `<span class="shop-status active">${i18n.t('shop_active')}</span>`;
     }
     if (s.unlockedThemes.includes(key)) {
-      return `<button class="btn ghost small" data-shop="activate" data-v="${key}">${i18n.t('shop_activate')}</button>`;
+      return `<button class="btn ghost small" data-shop="activate" data-v="${key}"${busy ? ' disabled' : ''}>${i18n.t('shop_activate')}</button>`;
     }
-    return `<button class="btn primary small" data-shop="unlock" data-v="${key}">${i18n.t('shop_unlock')}</button>`;
+    return `<button class="btn primary small" data-shop="unlock" data-v="${key}"${busy ? ' disabled' : ''}>${unlockLabel(key)}</button>`;
   }
 
   function render() {
@@ -59,27 +80,58 @@ export function openShop({ getState, dispatch, close }) {
                 <h3>${i18n.loc(THEMES[k].label)}</h3>
                 ${statusHtml(k, s)}
               </div>
+              ${errorKey === k ? `<p class="shop-error tiny">${i18n.t('shop_purchase_error')}</p>` : ''}
             </div>`).join('')}
         </div>
-        <p class="tiny muted">${i18n.t('shop_unlock_dev_note')}</p>
+        <div class="shop-foot">
+          <button class="btn ghost small" data-shop="restore"${busy ? ' disabled' : ''}>${i18n.t('shop_restore')}</button>
+        </div>
+        ${billing.real ? '' : `<p class="tiny muted">${i18n.t('shop_unlock_dev_note')}</p>`}
         <button class="btn ghost full" data-shop="close">${i18n.t('set_close')}</button>
       </div>`;
     ov.classList.add('show', 'sheet-mode');
   }
 
-  function onClick(e) {
+  async function onClick(e) {
     const el = e.target.closest('[data-shop]');
-    if (!el) return;
+    if (!el || busy) return;
     const k = el.dataset.shop;
+
     if (k === 'close') { teardown(); close(); return; }
+
+    if (k === 'activate') { dispatch('setTheme', { theme: el.dataset.v }); return; }
+
     if (k === 'unlock') {
-      // Débloquer sans activer laisserait l'écran inchangé (confusion vécue
-      // en test réel) : on active tout de suite le thème qu'on vient
-      // d'acheter. Le bouton « Activer » reste utile pour rebasculer plus
-      // tard entre deux thèmes déjà possédés.
-      dispatch('unlockTheme', { theme: el.dataset.v });
-      dispatch('setTheme', { theme: el.dataset.v });
-    } else if (k === 'activate') dispatch('setTheme', { theme: el.dataset.v });
+      const theme = el.dataset.v;
+      busy = true; errorKey = null; render();
+      const res = await billing.purchase(theme);
+      busy = false;
+      if (res.ok) {
+        // Débloquer sans activer laisserait l'écran inchangé (confusion vécue
+        // en test réel) : on active tout de suite le thème acheté. « Activer »
+        // reste utile pour rebasculer plus tard entre thèmes possédés.
+        dispatch('unlockTheme', { theme });
+        dispatch('setTheme', { theme });
+      } else if (res.error) {
+        errorKey = theme; render();
+      } else {
+        render(); // annulation : on réaffiche simplement les boutons actifs
+      }
+      return;
+    }
+
+    if (k === 'restore') {
+      busy = true; errorKey = null; render();
+      const res = await billing.restore();
+      busy = false;
+      if (res.ok) {
+        const owned = new Set(getState().unlockedThemes);
+        for (const theme of res.themes || []) {
+          if (!owned.has(theme)) dispatch('unlockTheme', { theme });
+        }
+      }
+      render();
+    }
   }
 
   function teardown() {

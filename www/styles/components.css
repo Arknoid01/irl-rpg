@@ -908,6 +908,8 @@ input[type="range"] { width: 100%; accent-color: var(--seal); margin: 12px 0 4px
 }
 .shop-card-foot h3 { margin: 0; font-size: 1rem; }
 .shop-status.active { font-size: .82rem; color: var(--gold); font-weight: 600; }
+.shop-error { margin: 6px 2px 0; color: var(--danger); }
+.shop-foot { display: flex; justify-content: center; margin: 4px 0 10px; }
 .btn.small { padding: 6px 11px; font-size: .8rem; }
 
 /* ---------- Ripple au clic (structure seulement — inerte tant qu'aucun
