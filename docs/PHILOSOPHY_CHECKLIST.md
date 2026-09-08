@@ -46,5 +46,10 @@
 - `data/arcs.js` — les étapes de mini-arc sont toujours à effort léger,
   audace 2, avec un `safe_fallback` ; un arc jamais commencé ou abandonné ne
   coûte rien et ne s'affiche pas comme un manque (points 1, 5).
+- `platform/billing.js` (D17) — l'achat « Collection des Mondes » est
+  **cosmétique pur** : thèmes visuels + voix du compagnon, jamais de contenu
+  de jeu, d'XP, de quête ou d'avantage. Le jeu reste entièrement jouable et
+  complet sans (point 1). Le plugin parle direct au store — aucune donnée de
+  paiement chez nous ni un tiers (point 4).
 - `DECISIONS.md` D3 — aucun classement, aucune comparaison de niveau.
 - `DECISIONS.md` D11 — aucune quête créée par le joueur (push, pas pull).

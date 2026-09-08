@@ -51,7 +51,7 @@ reconstruire :
 | Page « Mon aventure » (Éco §14, UX §10-11) | ✅ | écran Personnage recadré « qui je deviens » : identité + style en tête, traits qualitatifs, « Ton chemin », chronique, collections (Phase 2.1-2.2) |
 | Retour après absence (Éco §15) | ✅ | toast `streak_break_ok` + tirage allégé, quêtes neuves, événement d'accueil et ligne compagnon dédiée quand `daysAway >= 3` (Phase 1.3) |
 | Gratuit à vie · pas d'abo · pas de pub | ✅ | = D12 |
-| Thèmes payants (Éco §17) | ✅ (forme actuelle) | 1 gratuit + 6 payants (police, palette, texture, cadres, **voix**, cérémonie, effet). `billing.js` prêt |
+| Thèmes payants (Éco §17) | ✅ | 1 gratuit + 6 payants (police, palette, texture, cadres, **voix**, cérémonie, effet), vendus en **bundle** « Collection des Mondes » (D17). Achat réel : plugin branché, vérif appareil en attente (Phase 4.2) |
 | Carte du Monde à révélation progressive (UX §15-16) | ✅ | `X/10 révélés`, brume, régions par famille + polish révélation (phrase « pas encore prêtes », encart « tu viens de révéler… », Phase 2.6) |
 | Hiérarchie de l'accueil (UX §3-4, §20) | ❌ | l'accueil montre hero card (nom/niveau/XP/élan/série/titres) **avant** les quêtes → Phase 0 |
 | « Élan du jour » en % (UX §5) | ❌ | affiché `elan%` → à passer en `0/3 aventures` + phrase |
@@ -69,14 +69,9 @@ thèmes) au fil des retours.
 
 ## 2. Décisions produit à trancher (Yannick) — avant Phase 3-4
 
-1. **Pricing (Éco §17).** `billing.js` a **un produit non-consommable par
-   thème** aujourd'hui. L'analyse propose **un bundle « Collection des Mondes »
-   à 6,99 €** pour les 6.
-   - Bundle : plus simple, meilleur message, 1 fiche produit ; perd l'entrée
-     à petit prix.
-   - Compromis : bundle + thèmes à l'unité (plus de SKU).
-   - `unlockTheme`/`setTheme`/`billing.purchase` supportent les deux sans
-     changement — à décider avant de déclarer les produits en Play Console.
+1. ~~**Pricing (Éco §17).**~~ **Tranché (2026-09-08) : bundle unique
+   « Collection des Mondes »** (`collection_des_mondes`, ~6,99 €, non
+   consommable) — débloque les 6 thèmes. Livré en Phase 4.2 (D17).
 2. ~~**Seuils de chapitre (Éco §7).**~~ **Tranché (2026-09-08) : nb de quêtes**
    (0/10/25/50/100/200). Livré en Phase 3.1 (`chapterFor(state)`).
 3. **Tagline store (Éco §21.1).** « Chaque jour, ton compagnon te propose 3
@@ -227,12 +222,17 @@ Faible risque, fort impact lisibilité. Purement `ui/` + CSS + i18n.
 ### Phase 4 — Monétisation
 
 - [x] **4.1 Système de thèmes** — fait (6 payants, archi `voice` + `ui` + CSS).
-- [ ] **4.2 Achat réel** (Éco §17). `npm i @capacitor-community/in-app-purchases`,
-  `npx cap sync`, déclarer le(s) produit(s) selon décision §2.1, permission
-  `com.android.vending.BILLING`, vérifier l'API réelle du plugin.
-  `platform/billing.js` est prêt.
+- [x] **4.2 Achat réel** (Éco §17) — **code + wiring natif faits ; vérification
+  appareil en attente (besoin Play Console)**. Décision §2.1 tranchée :
+  **bundle unique** `collection_des_mondes` (~6,99 €, non consommable) débloque
+  les 6 thèmes (D17). Plugin : **`capacitor-plugin-cdv-purchase`** (le paquet
+  visé n'existait pas), `npx cap sync` fait, permission `BILLING` ajoutée,
+  `nativeBilling` réécrit sur le pont bas niveau `PurchasePlugin`.
+  **Reste (manuel, hors env)** : déclarer le produit en Play Console, AAB
+  signé sur piste de test, dérouler la checklist `STORE.md` (achat / restore /
+  acquittement / annulation / noms d'événements).
 - [ ] **4.3 Extensions de contenu** (Éco §18). Packs thématiques —
-  **seulement après** un D30 Return Rate correct.
+  **seulement après** un D30 Return Rate correct. Ne rien préparer maintenant.
 
 ---
 

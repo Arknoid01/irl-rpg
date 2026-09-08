@@ -638,3 +638,43 @@ L'événement de retour reste D13/1.3.
 Migration : additive (`arcs: {active:null,step:0,completed:[]}` + `normalize`),
 pas de bump `SAVE_VERSION`. 65/65 tests, sim 45 j (2 arcs terminés + 1 en
 cours) sans violation, CSS `css-tree` OK.
+
+## D17 — Achat in-app : « Collection des Mondes » (bundle) + plugin réel (2026-09-08)
+
+`ROADMAP.md` Phase 4.2. Deux décisions.
+
+**Pricing (§2.1, tranchée : bundle).** Un **seul** produit **non consommable**
+`collection_des_mondes` (~6,99 €) débloque les **6 thèmes payants** d'un coup.
+Plus de SKU par thème (`theme_sombre`…). Raisons : message plus simple, une
+seule fiche produit, meilleure conversion probable ; on accepte de perdre
+l'entrée à petit prix. Reste cosmétique pur, jamais pay-to-win (D12).
+`engine/game.js` : `unlockCollection` (idempotent) ; `unlockTheme` conservé
+pour la démo / les tests. `www/js/platform/billing.js` :
+`COLLECTION_PRODUCT` + `COLLECTION_THEMES`.
+
+**Plugin.** Le paquet visé par les sessions précédentes
+(`@capacitor-community/in-app-purchases`) **n'existe pas sur npm**. Retenu :
+**`capacitor-plugin-cdv-purchase`** (édition Capacitor de
+`cordova-plugin-purchase` / Fovea, v13). Il parle **directement** à Google
+Play Billing / StoreKit — **aucun serveur tiers** (D11). RevenueCat écarté
+(exige leur backend). `npx cap sync` enregistre la classe native
+`cc.fovea.iap.PurchasePlugin` ; les fichiers gradle générés
+(`android/app/capacitor.build.gradle`, `android/capacitor.settings.gradle`)
+sont commités.
+
+**Intégration.** Ce projet n'a **pas de bundler** (les modules `www/js` sont
+chargés bruts). On n'importe donc pas le paquet ES : `nativeBilling` passe par
+le pont bas niveau `window.Capacitor.Plugins.PurchasePlugin` (mêmes méthodes
+que le source Android du plugin : `init`, `getAvailableProducts`,
+`getPurchases`, `buy`, `acknowledgePurchase`, événements `purchasesUpdated` /
+`setPurchases`). **Non testable ici** (pas de Play Console, pas d'appareil) —
+le flow d'achat / acquittement / la forme exacte des payloads sont à vérifier
+sur une piste de test fermée (checklist dans `STORE.md`). Toute la surface
+incertaine est isolée dans `nativeBilling` et commentée.
+
+**Manifeste.** `com.android.vending.BILLING` ajouté.
+
+**4.3 (extensions de contenu payantes).** Pas maintenant — *après* un D30
+Return Rate correct (roadmap §18 / Phase 4).
+
+66/66 tests, sim OK, `css-tree` OK, zéro appel réseau dans `billing.js`.
