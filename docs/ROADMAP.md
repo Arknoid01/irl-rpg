@@ -41,15 +41,15 @@ reconstruire :
 |---|---|---|
 | Push, pas pull · pas de punition · zéro cloud · archi séparée | ✅ | D3, D11, tests |
 | Souvenir dans la boucle | ✅ en grande partie | musée, fragments+moments de journal, régions |
-| Mémoire légère du compagnon (Éco §6) | ⚠️ partiel | `state.history` + `computeStyle` ; le compagnon **cite déjà** un fragment de journal passé. **Manque** : `state.milestones` (premières fois) + réactions par jalon de volume |
+| Mémoire légère du compagnon (Éco §6) | ✅ | `state.history` + `computeStyle` + `state.milestones` (Phase 1.1) ; le compagnon cite un fragment passé **et** réagit aux premières fois / paliers de volume (Phase 1.2) |
 | Journal → Chronique (Éco §7, UX §13-14) | ⚠️ partiel | `chapterForLevel` : 6 chapitres **par thème**. **Manque** : seuils en nb de quêtes, entrée de journal « du jour » qui résume ce qui a été vécu |
 | Styles d'aventurier (Éco §9) | ✅ | `computeStyle`, affiché sur Personnage |
-| Compagnon = fil rouge (Éco §10, UX §22-P2) | ⚠️ partiel | 7 branches contextuelles dans `companionLineForState`. **Manque** : narration par jalon |
+| Compagnon = fil rouge (Éco §10, UX §22-P2) | ✅ | branches contextuelles dans `companionLineForState` + narration par jalon (Phase 1.2) + accueil au retour (Phase 1.3) |
 | Événements rares (Éco §11) | ✅ | `engine/events.js`, ~30 %/jour, ~34 événements |
 | Quêtes secrètes (Éco §12) | ⚠️ mono-étape | 9 quêtes/templates `hidden`. **Manque** : mini-arcs 3–5 étapes avec indices |
 | Collections de souvenirs (Éco §13, UX §12) | ⚠️ partiel | musée + jalons + loot d'événement. **Manque** : checklist « Moments » (premières fois) + « Découvertes » (nuit/pluie/nature…) + vitrines `???` |
 | Page « Mon aventure » (Éco §14, UX §10-11) | ⚠️ proche | écran Personnage complet mais orienté « stats à optimiser ». **Manque** : recadrage « qui je deviens », traits narratifs, résumé rétention |
-| Retour après absence (Éco §15) | ⚠️ partiel | toast `streak_break_ok`. **Manque** : tirage adapté quand `lastActive > 3j` |
+| Retour après absence (Éco §15) | ✅ | toast `streak_break_ok` + tirage allégé, quêtes neuves, événement d'accueil et ligne compagnon dédiée quand `daysAway >= 3` (Phase 1.3) |
 | Gratuit à vie · pas d'abo · pas de pub | ✅ | = D12 |
 | Thèmes payants (Éco §17) | ✅ (forme actuelle) | 1 gratuit + 6 payants (police, palette, texture, cadres, **voix**, cérémonie, effet). `billing.js` prêt |
 | Carte du Monde à révélation progressive (UX §15-16) | ✅ mécanique | `X/10 révélés`, brume, régions liées aux familles. **Manque** : polish présentation (voir Phase 2) |
@@ -138,24 +138,36 @@ Faible risque, fort impact lisibilité. Purement `ui/` + CSS + i18n.
 **À faire avant de clore la phase** : QA visuelle sur appareil des 7 thèmes
 (l'accueil, les cartes compactées, la `.prog-strip`).
 
-### Phase 1 — Rétention (priorité absolue)
+### Phase 1 — Rétention (priorité absolue) — ✅ fait (QA visuelle appareil à faire)
 
-- [ ] **1.1 `state.milestones`** (Éco §6, §13). Tableau des premières fois
-  (`first_quest`, `first_night_quest`, `first_hidden_quest`, `first_outdoor`,
-  `first_rain`, `first_stranger`, …), rempli par les reducers à la
-  complétion. `state/defaults.js`, `engine/game.js`, migration `state/store.js`.
-- [ ] **1.2 Compagnon par jalon** (Éco §10, UX §22-P2). Branche dans
-  `companionLineForState` calée sur `totalCompleted` (10/20/50…) et sur une
-  famille nettement dominante. Texte **par thème** (`voice.milestones` dans
-  `data/themes/*.js`, fallback nordique via `voiceFor`).
-- [ ] **1.3 Retour après absence** (Éco §15). Si `daysSinceActive >= 3` :
-  `draw.js` biaisé vers `effort` léger + quêtes/templates jamais faits + 1
-  event de retour possible ; ligne compagnon dédiée (`voice`) ; jamais de
-  reproche. `engine/draw.js`, `engine/companion.js`, i18n.
-- [ ] **1.4 Événement d'ouverture occasionnel** (Éco §11). Après N quêtes
-  sans event, forcer une carte « aujourd'hui, quelque chose est différent »
-  pour créer la question à l'ouverture. Réglage du tirage existant
-  (`engine/events.js`).
+- [x] **1.1 `state.milestones`** (Éco §6, §13). `state.milestones` = map
+  `<clé> -> 'YYYY-MM-DD'` (première occurrence). Détection dans
+  `engine/milestones.js` : 8 premières fois (`first_quest`, `first_outdoor`,
+  `first_social`, `first_evening`, `first_hidden`, `first_bold`, `first_big`,
+  `first_event`) + paliers de volume (`volume_10/25/50/100`). `first_rain` /
+  météo écartés (pas de donnée on-device). Marqué par les reducers de
+  `game.js` après le bookkeeping ; `state.history.lastMilestone = { key, date }`
+  pour la voix. Migration : additif, `defaultState` + `normalize` (pas de bump
+  `SAVE_VERSION`). L'UI checklist « Moments » reste en Phase 2.3.
+- [x] **1.2 Compagnon par jalon** (Éco §10, UX §22-P2). Branche prioritaire
+  dans `companionLineForState` : le jour où `history.lastMilestone.date` vaut
+  aujourd'hui, le compagnon relève le jalon (le premier de la liste l'emporte
+  — une toute première quête passe devant « tu es sorti »). Texte **par thème**
+  sous `voice.milestones` dans les 7 `data/themes/*.js` (`voiceFor` fusionne
+  en profondeur, fallback nordique). `volume` = `(n) => string`.
+- [x] **1.3 Retour après absence** (Éco §15). `engine/comeback.js` :
+  `isComebackDay` = `daysAway(state) >= 3` (s'éteint dès que le joueur valide
+  quelque chose). `draw.js` : `pickFrom` privilégie l'effort léger, pool
+  restreint aux quêtes jamais faites, `chance` d'événement montée à 0.8.
+  2 événements `comeback: true` (`ev_retour_chemin`, `ev_retour_page`) —
+  jamais tirés hors retour (`eventEligible` + `drawEvent` les met devant).
+  Ligne compagnon dédiée sous `voice.ctx.comeback` (7 thèmes), jamais de
+  reproche (D3).
+- [x] **1.4 Événement d'ouverture occasionnel** (Éco §11).
+  `history.daysSinceEvent` incrémenté à chaque `newDay` sans événement, remis
+  à 0 sinon. Après `EVENT_DROUGHT_MAX` (4) jours secs, `drawDaily` force
+  `chance = 1` : il y a toujours une question à l'ouverture au bout de ~4
+  jours. Compteur borné (vérifié en sim).
 
 ### Phase 2 — Vie du personnage & présentation
 

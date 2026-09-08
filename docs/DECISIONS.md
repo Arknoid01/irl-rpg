@@ -503,3 +503,42 @@ Repris de la session parallèle, adapté :
 - `demo.html` débloque les 7 thèmes pour la revue visuelle.
 
 46/46 tests, `npm run quests` vert, simulation 45 j inchangée, CSS validé.
+
+## D13 — Rétention long terme : jalons, retour après absence, anti-disette (2026-09-08)
+
+`ROADMAP.md` Phase 1 (« le risque n°1 est la rétention »). Trois briques,
+toutes on-device (D11), toutes sans pression (D3 — passées à la
+`PHILOSOPHY_CHECKLIST`).
+
+**Jalons (`state.milestones`)** — map `<clé> -> 'YYYY-MM-DD'` de la première
+occurrence. Ensemble figé (les tests et la voix des thèmes s'appuient dessus,
+`engine/milestones.js` `MILESTONE_KEYS`) :
+
+- 8 premières fois : `first_quest`, `first_outdoor`, `first_social`,
+  `first_evening`, `first_hidden`, `first_bold` (audace ≥ 4), `first_big`
+  (effort conséquent), `first_event`.
+- 4 paliers de volume : `volume_10 / 25 / 50 / 100`.
+- Écartés : tout ce qui suppose une donnée non disponible hors-ligne (météo,
+  géoloc) — pas de `first_rain`.
+
+Marqués par les reducers (`completeQuest` / `completeEvent`) **après** le
+bookkeeping. Un jalon jamais atteint ne coûte rien. La collection visible
+« Moments » est Phase 2.3 — pour l'instant les jalons ne servent qu'à la voix
+du compagnon (`history.lastMilestone`, mis en avant le jour même, le premier
+de la liste l'emporte).
+
+**Retour après absence** — `engine/comeback.js` : seuil **3 jours** sans
+activité (`daysAway`). Aucun décompte de jours « manqués » n'est affiché ni
+stocké. Effets le jour du retour : tirage biaisé effort léger + quêtes jamais
+faites (`draw.js`), un des 2 événements `comeback: true` très probable (jamais
+tirés en rotation normale), une ligne compagnon dédiée
+(`voice.ctx.comeback`, 7 thèmes). Le mode s'éteint dès la première validation
+(`bumpStreak` remet `lastActiveDate`).
+
+**Anti-disette d'événement** — `history.daysSinceEvent` ; après **4** jours
+secs, `drawDaily` force un événement (`chance = 1`). But : garantir une
+« question à l'ouverture » au moins tous les ~4 jours.
+
+Migration : purement additive (`defaultState` + `normalize`), pas de bump
+`SAVE_VERSION`. 52/52 tests, `npm run quests` vert, sim 45 j (avec 2 absences)
+sans violation.

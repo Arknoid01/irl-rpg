@@ -26,5 +26,12 @@
 - `progression.js: bumpStreak` — une rupture réelle (`broke: true`) déclenche
   un toast de réassurance (`streak_break_ok`), jamais un message négatif
   (point 3).
+- `engine/comeback.js` + `voice.ctx.comeback` — au retour après absence, on
+  n'affiche ni ne stocke jamais le nombre de jours « manqués » ; la ligne
+  d'accueil rassure (« rien à rattraper »). Test `voix par thème` : les
+  lignes `comeback` ne contiennent pas de mot de reproche (points 3, 5).
+- `engine/milestones.js` — un jalon jamais atteint ne retire rien et ne
+  s'affiche pas comme un manque (point 2). Couvert par `checkNoPenalty` dans
+  le test `jalons : completeQuest…` et la simulation.
 - `DECISIONS.md` D3 — aucun classement, aucune comparaison de niveau.
 - `DECISIONS.md` D11 — aucune quête créée par le joueur (push, pas pull).
