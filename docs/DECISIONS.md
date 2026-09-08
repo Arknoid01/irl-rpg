@@ -463,3 +463,43 @@ familles globalement alignées sur les poids de tirage, deux trous connus
 (social/chaos conséquent, audace 4–5).
 
 45/45 tests, `npm run quests` vert (4 points d'attention documentés).
+
+### Addendum 2026-09-08 (suite) — réconciliation avec la session parallèle
+
+Une autre session Claude (panneau tmux parallèle, `session_0173Fo…`, commits
+du 2026-09-06) avait poussé sur `main` 4 commits sur les mêmes sujets :
+4 thèmes payants de plus, une voix de compagnon par thème (archi différente),
+un vocabulaire d'UI par thème, un effet ambiant par thème. Tranché par
+Yannick : **on garde l'archi de cette session-ci** (voix = clé `voice` +
+`voiceFor()` dans `themes.js`, qui thématise aussi journal et chapitres ;
+abstraction IAP `platform/billing.js` ; pipeline quêtes) et **on récupère les
+4 thèmes en plus**, adaptés au contrat `voice`.
+
+Les 4 commits de la session parallèle sont conservés hors `main` sous le tag
+`parallel-session-20260906` (rien de perdu).
+
+Repris de la session parallèle, adapté :
+
+- **4 thèmes payants** : `enquete` (bureau + chemise, Special Elite),
+  `mystique` (ciel étoilé, Cinzel), `postapo` (plaque rivetée, Black Ops
+  One), `cockpit` (console HUD sombre, Chakra Petch — seul des 4 dont le
+  panneau passe au sombre, d'où des rattrapages de contrôles comme
+  cyberpunk). CSS verbatim de la session parallèle (effet ambiant inclus).
+  **Catalogue : 1 gratuit + 6 payants.**
+- **Polices** : Special Elite (Apache 2.0), Black Ops One + Chakra Petch (SIL
+  OFL), latin seul, embarquées en local (`assets/fonts/LICENSES.md`). Cinzel
+  garde le fichier de cette session (latin + latin-ext, 400→700).
+- **`ui` par thème** (`ui/themeText.js`) : mot de saveur pour le titre de
+  section « Quêtes du jour », le badge « Événement » (carte + carte du monde)
+  et le titre « tout est fait ». Habillage uniquement — aucun texte de
+  sécurité / d'optionnalité touché (spec §22). Ajouté aussi à `sombre` et
+  `cyberpunk` pour la cohérence.
+- **`voice` complète** écrite pour chacun des 4 (répliques contextuelles +
+  réaction après quête depuis leur `ctx`, plus `chapters` / `eventEntry` /
+  `levelChapter` / `regionReveal` / `memorable` thématisés — parité avec
+  sombre et cyberpunk).
+- `platform/billing.js` : un produit non-consommable par thème payant
+  (`theme_enquete` … `theme_cockpit`).
+- `demo.html` débloque les 7 thèmes pour la revue visuelle.
+
+46/46 tests, `npm run quests` vert, simulation 45 j inchangée, CSS validé.

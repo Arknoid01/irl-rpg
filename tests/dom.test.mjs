@@ -143,7 +143,7 @@ test('boutique de thèmes : ouverture depuis Réglages, déblocage puis activati
   await click('[data-action="open-settings"]');
   await click('[data-set="shop"]');
   assert.ok($('.shop-sheet'), 'feuille boutique affichée');
-  assert.equal($$('.shop-card').length, 3, 'les 3 thèmes sont listés');
+  assert.equal($$('.shop-card').length, 7, 'les 7 thèmes sont listés');
   assert.ok($('.shop-status.active'), 'un thème actif est marqué');
   assert.ok($('[data-shop="unlock"][data-v="cyberpunk"]'), 'cyberpunk pas encore débloqué');
   const preview = $('.shop-preview-video video');
@@ -154,6 +154,8 @@ test('boutique de thèmes : ouverture depuis Réglages, déblocage puis activati
   // passer à l'écran — retour direct d'un test réel sur appareil).
   await click('[data-shop="unlock"][data-v="cyberpunk"]');
   assert.equal(window.document.documentElement.dataset.theme, 'cyberpunk', 'thème appliqué au document');
+  // Vocabulaire de thème : le titre de section suit le thème actif.
+  assert.match($('.section-label span').textContent, /Missions du jour/, 'vocab cyberpunk sur l’écran');
   assert.ok(
     $('[data-shop="activate"][data-v="nordique"]'),
     'nordique redevient « activer » une fois qu’il n’est plus le thème actif',
@@ -161,6 +163,12 @@ test('boutique de thèmes : ouverture depuis Réglages, déblocage puis activati
   const saved = JSON.parse(window.localStorage.getItem('irlrpg_save_v2'));
   assert.equal(saved.theme, 'cyberpunk');
   assert.ok(saved.unlockedThemes.includes('cyberpunk'));
+
+  // Un thème « léger » (panneau clair, aperçu live CSS) suit le même chemin.
+  assert.ok($('.shop-card [data-theme="mystique"]'), 'aperçu live CSS pour mystique');
+  await click('[data-shop="unlock"][data-v="mystique"]');
+  assert.equal(window.document.documentElement.dataset.theme, 'mystique');
+  assert.ok(JSON.parse(window.localStorage.getItem('irlrpg_save_v2')).unlockedThemes.includes('mystique'));
 
   // Bouton « Restaurer » : présent, et sans plugin natif (impl dev) il ne
   // débloque rien de plus mais ne casse pas la boutique.
@@ -176,6 +184,7 @@ test('boutique de thèmes : ouverture depuis Réglages, déblocage puis activati
   // reviens à nordique pour ne pas polluer les tests suivants de ce fichier.
   await click('[data-shop="activate"][data-v="nordique"]');
   assert.equal(window.document.documentElement.dataset.theme, 'nordique');
+  assert.match($('.section-label span').textContent, /Quêtes du jour/, 'vocab par défaut restauré');
   await click('[data-shop="close"]');
 });
 

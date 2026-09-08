@@ -368,6 +368,7 @@ test('compagnon : réaction après quête (cérémonie de validation)', () => {
 
 test('voix par thème (D12) : chaque thème payant a sa propre voix, complète', () => {
   const paid = THEME_KEYS.filter((k) => k !== 'nordique');
+  assert.ok(paid.length >= 6, 'catalogue payant complet');
   assert.ok(paid.includes('sombre') && paid.includes('cyberpunk'));
 
   for (const theme of paid) {
@@ -387,7 +388,11 @@ test('voix par thème (D12) : chaque thème payant a sa propre voix, complète',
       { theme, streak: 6, seeds: { companion: 0 }, quests: [{ id: 'a', status: 'proposed' }] },
       'fr',
     );
-    assert.match(streak, /sans pression|no pressure|ton rythme|your pace/i);
+    assert.match(
+      streak,
+      /sans pression|sans rien exiger|ton rythme|ton pas|te presse|no pressure|your pace|pushing you/i,
+      `${theme} : anti-pression préservée sur la série chaude`,
+    );
 
     // Chapitres : id + seuils stables, label/blurb bilingues et thématisés.
     const prologue = chapterForLevel(1, theme);
@@ -427,8 +432,35 @@ test('billing (D12) : impl dev hors appareil, débloque sans store', async () =>
   const restored = await b.restore();
   assert.deepEqual(restored, { ok: true, themes: [] });
 
-  // Les identifiants produits correspondent aux thèmes payants (jamais nordique).
-  assert.deepEqual(Object.keys(THEME_PRODUCTS).sort(), ['cyberpunk', 'sombre']);
+  // Un identifiant produit par thème payant, jamais pour nordique (gratuit).
+  const products = Object.keys(THEME_PRODUCTS).sort();
+  assert.deepEqual(products, ['cockpit', 'cyberpunk', 'enquete', 'mystique', 'postapo', 'sombre']);
+  assert.ok(!products.includes('nordique'));
+  for (const [theme, id] of Object.entries(THEME_PRODUCTS)) {
+    assert.equal(id, `theme_${theme}`);
+  }
+});
+
+test('thèmes : chaque fichier respecte le contrat (7 thèmes)', async () => {
+  const { THEMES, THEME_KEYS, companionLineFor } = await import('../www/js/data/themes.js');
+  assert.ok(THEME_KEYS.length >= 7, 'catalogue complet');
+  for (const key of THEME_KEYS) {
+    const t = THEMES[key];
+    assert.ok(bilingual(t.label), `${key}.label bilingue`);
+    assert.ok(typeof t.dot === 'string' && t.dot.length, `${key}.dot`);
+    assert.ok(bilingual(t.xpSuffix), `${key}.xpSuffix bilingue`);
+    for (const lang of ['fr', 'en']) {
+      assert.ok(Array.isArray(t.companionLines[lang]) && t.companionLines[lang].length >= 3,
+        `${key}.companionLines.${lang}`);
+      assert.equal(typeof companionLineFor(key, lang, 1), 'string');
+    }
+    // `ui` optionnel ; s'il existe, chaque slot est bilingue.
+    if (t.ui) {
+      for (const slot of Object.keys(t.ui)) {
+        assert.ok(bilingual(t.ui[slot]), `${key}.ui.${slot} bilingue`);
+      }
+    }
+  }
 });
 
 test('titres : compétences valides, bilingues', () => {

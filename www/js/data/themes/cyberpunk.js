@@ -21,6 +21,15 @@ export default {
   },
   xpSuffix: { fr: '— données', en: '— data' },
 
+  ui: {
+    questsHeading: { fr: 'Missions du jour', en: 'Today’s missions' },
+    eventLabel: { fr: 'Incident', en: 'Incident' },
+    allDone: {
+      fr: 'Toutes les missions du jour sont bouclées 🏆',
+      en: 'Every mission today is closed 🏆',
+    },
+  },
+
   voice: {
     ctx: {
       allDone: {

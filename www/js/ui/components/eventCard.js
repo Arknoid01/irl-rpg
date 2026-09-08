@@ -1,4 +1,5 @@
 import { i18n } from '../../i18n/index.js';
+import { themeText } from '../themeText.js';
 import { esc } from '../dom.js';
 import { FAMILIES } from '../../data/taxonomy.js';
 
@@ -11,7 +12,7 @@ export function eventCardHtml(event) {
   return `
   <article class="panel event-panel">
     <div class="event-top">
-      <span class="event-badge">⚠️ ${i18n.t('event_badge')}</span>
+      <span class="event-badge">⚠️ ${themeText('eventLabel', 'event_badge')}</span>
       ${famBadge}
     </div>
     <div class="event-title">${esc(i18n.loc(event.title))}</div>

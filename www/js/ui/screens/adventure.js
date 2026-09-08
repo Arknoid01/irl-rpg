@@ -1,5 +1,6 @@
 import { companionLineForState } from '../../engine/companion.js';
 import { i18n } from '../../i18n/index.js';
+import { themeText } from '../themeText.js';
 import { esc, pctBar } from '../dom.js';
 import { heroCardHtml } from '../components/charBits.js';
 import { questCardHtml } from '../components/questCard.js';
@@ -8,6 +9,7 @@ import { elanDuJour } from '../../engine/progression.js';
 
 export function renderAdventure(state) {
   const line = companionLineForState(state, state.lang || i18n.lang);
+  const allDoneTitle = themeText('allDone', 'all_done_title');
 
   const active = state.quests.filter((q) => q.status === 'proposed' || q.status === 'accepted');
   const done = state.quests.filter((q) => q.status === 'done');
@@ -24,7 +26,7 @@ export function renderAdventure(state) {
     </div>`;
   } else if (active.length === 0 && done.length === 0) {
     questsBlock = `<div class="panel empty">
-      <p><b>${i18n.t('all_done_title')}</b></p>
+      <p><b>${allDoneTitle}</b></p>
       <p class="muted">${i18n.t('all_done_body')}</p>
     </div>`;
   } else {
@@ -32,7 +34,7 @@ export function renderAdventure(state) {
     questsBlock = listed.map((q) => questCardHtml(q, state.theme)).join('');
     if (active.length === 0 && done.length > 0) {
       questsBlock += `<div class="panel empty" style="margin-top:8px">
-        <p><b>${i18n.t('all_done_title')}</b></p>
+        <p><b>${allDoneTitle}</b></p>
         <p class="muted">${i18n.t('all_done_body')}</p>
       </div>`;
     }
@@ -55,7 +57,7 @@ export function renderAdventure(state) {
     <p class="companion-line">${esc(line)}</p>
     ${heroCardHtml(state)}
     <div class="section-label">
-      <span>${i18n.t('quests_today')}</span>
+      <span>${themeText('questsHeading', 'quests_today')}</span>
       <button class="refresh-btn" data-action="new-day" title="${i18n.t('new_day_hint')}">↻ ${i18n.t('new_day')}</button>
     </div>
     ${chest}

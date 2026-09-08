@@ -130,3 +130,44 @@ dc50f96 Cyberpunk : rattrape les filets/fonds encore codés pour un fond clair
 b229fa0 Achat in-app derrière une abstraction billing.js (D12)
 9c18177 Pipeline banque de quêtes : rapport santé + couverture (npm run quests)
 ```
+
+## 7. Réconciliation avec la session parallèle (fin de session)
+
+Au moment de pousser, `origin/main` avait divergé : une autre session Claude
+(`session_0173Fo…`, 2026-09-06) avait poussé 4 commits sur les mêmes sujets
+(4 thèmes payants de plus, voix de compagnon par thème avec une autre archi,
+vocabulaire d'UI par thème, effets ambiants). Tranché par Yannick : on garde
+l'archi de **cette** session (plus avancée), on récupère les 4 thèmes.
+
+- Force-push de cette branche sur `main`. Les 4 commits de la session
+  parallèle sont conservés sous le tag `parallel-session-20260906` (rien de
+  perdu).
+- Le pas `npm run quests` a dû être retiré de `.github/workflows/ci.yml` au
+  push (le token GitHub n'a pas le scope `workflow`) — **à remettre** :
+  ajouter `- run: npm run quests` après `- run: npm run sim`.
+- Repris et adapté au contrat `voice` : 4 thèmes `enquete` / `mystique` /
+  `postapo` / `cockpit` (JS réécrits avec `voice` complète + `ui` ;
+  CSS + polices verbatim), `ui/themeText.js` + `ui` ajouté aussi à sombre /
+  cyberpunk, `billing.js` étendu à 6 produits, `demo.html` débloque les 7.
+- **Catalogue final : 1 gratuit + 6 payants.** 46/46 tests, `npm run quests`
+  vert, sim 45 j inchangée, CSS validé.
+
+### Reste ouvert (mis à jour)
+
+- Remettre `npm run quests` dans la CI (scope `workflow` sur le token, ou via
+  l'UI GitHub).
+- **QA visuelle appareil** : 6 thèmes payants maintenant, aucun vérifié.
+- Vidéos d'aperçu boutique : les 6 payants ont `previewVideo: null`.
+- Carte du Monde : palette parchemin clair non reprise pour les thèmes sombres
+  (cyberpunk, cockpit).
+- IAP réel (plugin + config stores) quand accès Play Console.
+- Trous banque de quêtes : social/chaos `consequent`, audace 4–5.
+- Play Store (privacy.html hébergé, versionCode/Name).
+
+### Commits de la réconciliation
+
+```
+592a98b  (force-push de la branche de cette session sur main)
+<hash>   CI : retire l'ajout npm run quests (scope workflow manquant)
+<hash>   Récupère les 4 thèmes payants de la session parallèle, adaptés au contrat voice
+```

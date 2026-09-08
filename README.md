@@ -28,7 +28,8 @@ Empaquetage Android/iOS : `npm install && npx cap add android && npx cap sync`.
 |---|---|
 | Plateforme : HTML/CSS/JS + Capacitor (D1) | ✅ |
 | Onboarding (écran d'ouverture, langue, thème, prénom, confort, familles, rappel, **ack 16+**) | ✅ |
-| 4 onglets (Aventure / Monde / Journal / Personnage) + réglages, 3 thèmes | ✅ |
+| 4 onglets (Aventure / Monde / Journal / Personnage) + réglages | ✅ |
+| Thèmes : 1 gratuit (nordique) + 6 payants (sombre, cyberpunk, enquête, mystique, post-apo, cockpit) — police, palette, texture, cadres, effet et voix du compagnon par thème | ✅ |
 | 98 quêtes bilingues curées + 42 templates génératifs (slots), tirage quotidien budgété | ✅ |
 | XP / niveau / 6 compétences / 12 titres / style / série sans coût | ✅ |
 | Journal (fragments + moments mémorables), 34 événements | ✅ |

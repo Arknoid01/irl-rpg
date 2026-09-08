@@ -8,6 +8,12 @@
 // store.js, ui/theme.js importent tous depuis ce fichier, pas depuis ./themes/
 // directement).
 //
+// Champs optionnels d'un thème :
+//   previewVideo : chemin d'une vidéo d'aperçu boutique (sinon aperçu live CSS).
+//   ui : mots de saveur { questsHeading, eventLabel, allDone } en { fr, en },
+//        résolus par ui/themeText.js. Habillage uniquement — jamais un texte
+//        de sécurité / d'optionnalité (spec §22).
+//
 // `voice` (répliques du compagnon, cérémonie, entrées et chapitres de journal)
 // : nordique.js porte la version complète de référence ; les autres thèmes
 // fournissent leur variante et retombent sur nordique pour ce qu'ils omettent
@@ -21,10 +27,16 @@
 import nordique from './themes/nordique.js';
 import sombre from './themes/sombre.js';
 import cyberpunk from './themes/cyberpunk.js';
+import enquete from './themes/enquete.js';
+import mystique from './themes/mystique.js';
+import postapo from './themes/postapo.js';
+import cockpit from './themes/cockpit.js';
 
 export const DEFAULT_THEME = 'nordique';
 
-export const THEMES = { nordique, sombre, cyberpunk };
+export const THEMES = {
+  nordique, sombre, cyberpunk, enquete, mystique, postapo, cockpit,
+};
 
 export const THEME_KEYS = Object.keys(THEMES);
 

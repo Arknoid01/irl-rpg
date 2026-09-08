@@ -21,6 +21,15 @@ export default {
   },
   xpSuffix: { fr: '— le contrat est rempli', en: '— the contract is fulfilled' },
 
+  ui: {
+    questsHeading: { fr: 'Contrats du jour', en: 'Today’s contracts' },
+    eventLabel: { fr: 'Affaire', en: 'Matter' },
+    allDone: {
+      fr: 'Tous les contrats du jour sont honorés 🏆',
+      en: 'Every contract today is settled 🏆',
+    },
+  },
+
   voice: {
     ctx: {
       allDone: {

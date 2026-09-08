@@ -8,8 +8,9 @@
 // Plugin cible : @capacitor-community/in-app-purchases. À installer quand un
 // accès Play Console / App Store Connect permettra de tester un vrai achat :
 //   npm i @capacitor-community/in-app-purchases && npx cap sync
-// puis déclarer deux produits NON consommables (achat unique, cf. D12) :
-//   theme_sombre · theme_cyberpunk
+// puis déclarer un produit NON consommable par thème payant (achat unique,
+// cf. D12) : theme_sombre · theme_cyberpunk · theme_enquete · theme_mystique
+// · theme_postapo · theme_cockpit
 //
 // ⚠️ Les noms de méthodes (getProducts / purchaseProduct / restorePurchases)
 // et la forme des réponses ci-dessous sont à revérifier contre la version
@@ -19,6 +20,10 @@
 export const THEME_PRODUCTS = {
   sombre: 'theme_sombre',
   cyberpunk: 'theme_cyberpunk',
+  enquete: 'theme_enquete',
+  mystique: 'theme_mystique',
+  postapo: 'theme_postapo',
+  cockpit: 'theme_cockpit',
 };
 
 const PRODUCT_THEME = Object.fromEntries(
@@ -26,8 +31,9 @@ const PRODUCT_THEME = Object.fromEntries(
 );
 
 // Prix affichés tant que le store ne renvoie pas les vrais (web, hors ligne,
-// plugin absent). Le store fait toujours foi quand il répond.
-const PLACEHOLDER_PRICE = { sombre: null, cyberpunk: null };
+// plugin absent). Vide pour l'instant — le store fait foi quand il répond ;
+// un thème sans entrée s'affiche sans prix.
+const PLACEHOLDER_PRICE = {};
 
 function nativePlugin() {
   const cap = typeof window !== 'undefined' ? window.Capacitor : undefined;
