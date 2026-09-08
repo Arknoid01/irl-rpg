@@ -1,136 +1,226 @@
 # IRL RPG — feuille de route
 
-> Réconcilie l'analyse produit `IRL_RPG_Analyse_Modele_Economique_et_Roadmap.md`
-> (Yannick, 2026-09) avec l'état réel du code. `DECISIONS.md` reste l'autorité
-> sur ce qui est tranché ; ce doc-ci trie ce qui est **fait**, ce qui **reste**,
-> et l'ordre pour la suite.
+> Fusionne les deux analyses de Yannick (2026-09) avec l'état réel du code :
+> - `IRL_RPG_Analyse_Modele_Economique_et_Roadmap.md` — positionnement, éco, rétention
+> - `IRL_RPG_Analyse_Interface_UX.md` — interface, hiérarchie, présentation
 >
-> Thèse de l'analyse, retenue : **le risque n°1 est la rétention, pas la
-> concurrence.** Objectif unique : qu'un joueur ait envie d'ouvrir l'app demain
-> matin pour voir ce que son compagnon lui réserve. Tant que cette boucle ne
-> tient pas, ajouter des thèmes ou des badges ne réglera rien (§25 de l'analyse).
+> `DECISIONS.md` reste l'autorité sur ce qui est **tranché**. Ce doc trie ce qui
+> est **fait**, ce qui **reste**, et donne un ordre suivable. Cocher les cases
+> au fur et à mesure.
 
 ---
 
-## 1. État réel vs analyse
+## 0. Principe directeur (les deux analyses convergent)
 
-L'analyse décrit plusieurs briques comme « à faire » alors qu'elles sont
-livrées. Récapitulatif pour ne pas reconstruire :
+> **Faire → Découvrir → Se souvenir → Devenir.**
+> (⚔️ Aventure · 🗺 Monde · 📖 Journal · ⚜️ Personnage)
 
-| Sujet (§ analyse) | État | Où |
+- **Le risque n°1 est la rétention**, pas la concurrence. Objectif unique :
+  qu'un joueur ouvre l'app demain matin pour voir ce que son compagnon lui
+  réserve. Tant que cette boucle ne tient pas, ajouter thèmes/badges ne règle
+  rien (Éco §25).
+- **Ne pas refaire le design.** Faire évoluer *« joli grimoire plein de
+  systèmes »* → *« grimoire vivant qui raconte mon aventure »* (UX §1, §26).
+- **Ne pas transformer l'interface en tableau de bord.** Moins de jauges, de
+  stats, de cadres visibles en même temps ; la profondeur se découvre
+  progressivement (UX §23).
+- Tout reste **on-device** (D11) et **sans pression** (D3,
+  `PHILOSOPHY_CHECKLIST.md`).
+
+Note UX de départ (UX §24) : direction artistique 9/10, identité 9,5/10,
+**lisibilité 7,5/10, hiérarchie 7/10** — c'est là qu'est le travail.
+
+---
+
+## 1. État réel vs analyses
+
+Beaucoup de briques décrites comme « à faire » sont livrées. À ne pas
+reconstruire :
+
+| Sujet | État | Où / reste à faire |
 |---|---|---|
-| Push, pas pull (§3.1) | ✅ verrouillé | D11, écran d'ouverture, `draw.js` |
-| Pas de culpabilisation (§3.2) | ✅ testé en dur | D3, `philosophy.js`, `tests/` |
-| Zéro cloud (§3.3) | ✅ testé en CI | D11, `tests/no-network.test.mjs` |
-| Séparation données/moteur/UI (§3.4) | ✅ | arborescence `www/js/` |
-| Souvenir dans la boucle (§5) | ✅ en grande partie | musée (`inventory.js`), fragments + moments de journal, régions/découvertes (`worldView.js`) |
-| Mémoire légère du compagnon (§6) | ⚠️ partiel | `state.history` (familleCompleted, recentFamilles, regionsUnlocked, completedQuestIds, totalCompleted, daysPlayed, bestStreak) + `computeStyle`. Le compagnon **cite déjà** un fragment de journal passé (`companion.js` branche `callback`), réagit à la série, au style, à la carte. **Manque** : un tableau `milestones` (premières fois) et des réactions calées sur des jalons de volume (« après 20 quêtes ») |
-| Journal → Chronique (§7) | ⚠️ partiel | `chapterForLevel` : 6 chapitres (prologue→ch5), **par thème** (`voice.chapters`). Seuils actuels = **niveau** (3/5/8/12/15) ; l'analyse propose **nb de quêtes** (10/25/50/100) |
-| Catégories = axes narratifs (§8) | ✅ | 6 familles, jamais présentées comme des stats à optimiser |
-| Styles d'aventurier (§9) | ✅ | `computeStyle`, `STYLE_DEFAULT`, affiché sur l'écran Personnage |
-| Compagnon = fil rouge (§10) | ⚠️ partiel | `companionLineForState` a déjà 7 branches contextuelles. **Manque** : narration par jalon de progression |
-| Événements rares (§11) | ✅ | `engine/events.js`, ~30 %/jour, tirage adaptatif, ~34 événements |
-| Quêtes secrètes (§12) | ⚠️ mono-étape | 9 quêtes/templates `hidden` (texte révélé à l'acceptation). **Manque** : mini-arcs 3–5 étapes avec indices |
-| Collections de souvenirs (§13) | ⚠️ partiel | musée (souvenirs + jalons de niveau + loot d'événement). **Manque** : checklist visible de « premières fois » |
-| Page « Mon aventure » (§14) | ⚠️ proche | écran Personnage : niveau, style, compétences, titres, musée, `statsHtml` (3 chiffres). **Manque** : la vue-résumé « maison du joueur » du mockup (traits en barres, chronique, mot du compagnon au même endroit) |
-| Retour après absence (§15) | ⚠️ partiel | toast de réassurance `streak_break_ok` (D11). **Manque** : tirage adapté (`lastActive > 3j` → plus accessible + contenu neuf + éventuel event de retour) |
-| Gratuit à vie sur le gameplay (§16) | ✅ | = D12 |
-| Skins payants (§17) | ✅ (форme actuelle) | 1 gratuit + 6 payants, reskins complets (police, palette, texture, cadres, **voix du compagnon**, cérémonie, effet ambiant). Déblocage local, `platform/billing.js` prêt pour l'IAP |
-| Pas d'abonnement / pas de pub (§19–20) | ✅ | = D12 |
-| Restriction 16+ (§21.4) | ✅ tranché | D6 (l'analyse ne fait que noter le coût marché) |
+| Push, pas pull · pas de punition · zéro cloud · archi séparée | ✅ | D3, D11, tests |
+| Souvenir dans la boucle | ✅ en grande partie | musée, fragments+moments de journal, régions |
+| Mémoire légère du compagnon (Éco §6) | ⚠️ partiel | `state.history` + `computeStyle` ; le compagnon **cite déjà** un fragment de journal passé. **Manque** : `state.milestones` (premières fois) + réactions par jalon de volume |
+| Journal → Chronique (Éco §7, UX §13-14) | ⚠️ partiel | `chapterForLevel` : 6 chapitres **par thème**. **Manque** : seuils en nb de quêtes, entrée de journal « du jour » qui résume ce qui a été vécu |
+| Styles d'aventurier (Éco §9) | ✅ | `computeStyle`, affiché sur Personnage |
+| Compagnon = fil rouge (Éco §10, UX §22-P2) | ⚠️ partiel | 7 branches contextuelles dans `companionLineForState`. **Manque** : narration par jalon |
+| Événements rares (Éco §11) | ✅ | `engine/events.js`, ~30 %/jour, ~34 événements |
+| Quêtes secrètes (Éco §12) | ⚠️ mono-étape | 9 quêtes/templates `hidden`. **Manque** : mini-arcs 3–5 étapes avec indices |
+| Collections de souvenirs (Éco §13, UX §12) | ⚠️ partiel | musée + jalons + loot d'événement. **Manque** : checklist « Moments » (premières fois) + « Découvertes » (nuit/pluie/nature…) + vitrines `???` |
+| Page « Mon aventure » (Éco §14, UX §10-11) | ⚠️ proche | écran Personnage complet mais orienté « stats à optimiser ». **Manque** : recadrage « qui je deviens », traits narratifs, résumé rétention |
+| Retour après absence (Éco §15) | ⚠️ partiel | toast `streak_break_ok`. **Manque** : tirage adapté quand `lastActive > 3j` |
+| Gratuit à vie · pas d'abo · pas de pub | ✅ | = D12 |
+| Thèmes payants (Éco §17) | ✅ (forme actuelle) | 1 gratuit + 6 payants (police, palette, texture, cadres, **voix**, cérémonie, effet). `billing.js` prêt |
+| Carte du Monde à révélation progressive (UX §15-16) | ✅ mécanique | `X/10 révélés`, brume, régions liées aux familles. **Manque** : polish présentation (voir Phase 2) |
+| Hiérarchie de l'accueil (UX §3-4, §20) | ❌ | l'accueil montre hero card (nom/niveau/XP/élan/série/titres) **avant** les quêtes → Phase 0 |
+| « Élan du jour » en % (UX §5) | ❌ | affiché `elan%` → à passer en `0/3 aventures` + phrase |
+| Hauteur des cartes de quête (UX §7) | ❌ | à compacter légèrement pour comparer les 3 sans scroller |
+| Couleur = langage (UX §19) | ⚠️ partiel | familles ont déjà une couleur (`--fam-color`) ; à formaliser (violet=action, or=XP, bleu=monde) |
+| Excès de cadres (UX §18) | ⚠️ | titres de section / intros / chapitres devraient être **sans cadre** |
 
-**Conclusion** : le socle « boucle de jeu » de l'analyse est déjà là. Ce qui
-manque est presque entièrement du côté **rétention long terme** (§4, §12, §15)
-et **présentation du récit** (§7, §10, §14).
+**Conclusion** : le socle « boucle de jeu » est là. Le travail restant =
+**rétention long terme** (mini-arcs, retour-après-absence, mémoire) +
+**hiérarchie/présentation UX** (accueil, cartes, journal-récit, Personnage).
 
 ---
 
-## 2. Décisions produit à trancher (Yannick)
+## 2. Décisions produit à trancher (Yannick) — avant Phase 3-4
 
-Avant de coder les phases 3–4 :
-
-1. **Pricing (§17).** `billing.js` a aujourd'hui **un produit non-consommable
-   par thème** (`theme_sombre`, `theme_cyberpunk`, …). L'analyse propose **un
-   seul achat « Collection des Mondes » à 6,99 €** pour les 6.
-   - Bundle unique : plus simple à vendre, meilleur message (« 6 façons de
-     vivre le même RPG »), 1 seule fiche produit.
-     Perte : plus d'entrée à petit prix (un thème seul).
-   - Compromis possible : bundle **+** thèmes à l'unité (plus de SKU à gérer).
-   - **À décider avant de déclarer les produits en Play Console** — le reste
-     de l'archi (`unlockTheme`, `setTheme`, `billing.purchase`) supporte les
-     deux sans changement.
-2. **Seuils de chapitre (§7).** Passer de « niveau » à « nb de quêtes »
-   (10/25/50/100) ? Plus lié à l'activité réelle qu'au niveau. Toucherait
-   `chapterForLevel` (→ `chapterFor(state)`) et son test — petit changement,
-   pas de régression d'équilibrage (les chapitres sont cosmétiques).
-3. **Tagline store (§21.1).** Retenir
-   « Chaque jour, ton compagnon te propose 3 petites aventures à vivre dans le
-   monde réel. » et la porter dans `STORE.md` + la fiche store.
-4. **Extensions de contenu payantes (§18)** (packs Nuits / Exploration /
-   Chaos / Social à 1,99–2,99 €) : explicitement **après** validation de la
-   rétention. Ne rien préparer maintenant.
+1. **Pricing (Éco §17).** `billing.js` a **un produit non-consommable par
+   thème** aujourd'hui. L'analyse propose **un bundle « Collection des Mondes »
+   à 6,99 €** pour les 6.
+   - Bundle : plus simple, meilleur message, 1 fiche produit ; perd l'entrée
+     à petit prix.
+   - Compromis : bundle + thèmes à l'unité (plus de SKU).
+   - `unlockTheme`/`setTheme`/`billing.purchase` supportent les deux sans
+     changement — à décider avant de déclarer les produits en Play Console.
+2. **Seuils de chapitre (Éco §7).** Niveau (actuel : 3/5/8/12/15) → nb de
+   quêtes (10/25/50/100) ? Plus lié à l'activité. Petit changement
+   (`chapterForLevel` → `chapterFor(state)`), cosmétique, pas de régression.
+3. **Tagline store (Éco §21.1).** « Chaque jour, ton compagnon te propose 3
+   petites aventures à vivre dans le monde réel. » → dans `STORE.md`.
+4. **Compétences : garder les chiffres ou pas (UX §11).** Option A : traits
+   qualitatifs (« dominante / émergente / discrète »). Option B : garder la
+   valeur + une phrase narrative (« Curiosité 18 — *tu sembles toujours
+   vouloir comprendre* »). B est moins risqué et reste informatif.
+5. **Extensions de contenu payantes (Éco §18)** (packs Nuits / Exploration /
+   Chaos / Social, 1,99–2,99 €) : **après** validation de la rétention. Ne
+   rien préparer maintenant.
 
 ---
 
 ## 3. KPI de rétention — local uniquement
 
-L'analyse recommande un KPI central : **D30 Adventure Return Rate**
-(part des joueurs qui reviennent vivre une aventure au jour 30).
+KPI central (Éco §4) : **D30 Adventure Return Rate**. Contrainte D11 : rien
+n'est envoyé. Ces chiffres restent on-device et servent à alimenter la page
+« Mon aventure » (Phase 2) :
 
-Contrainte D11 : **rien n'est envoyé.** Ces chiffres restent on-device et
-peuvent être montrés au joueur dans « Mon aventure » (§14) :
+- jours joués, jours depuis l'install, plus longue série, retours après absence
+- aventures/semaine, quêtes/session, événements découverts, chapitres atteints
 
-- jours joués, jours depuis l'install, plus longue série, retour après absence ;
-- aventures/semaine, quêtes/session, événements découverts, chapitres atteints.
-
-Piège à éviter (l'analyse le dit) : ne pas transformer ces chiffres en pression
-(pas de « tu as raté X jours », pas de rouge, pas de compteur qui culpabilise).
-Cadre : `PHILOSOPHY_CHECKLIST.md`.
+Piège (les deux analyses le disent) : **ne jamais transformer ces chiffres en
+pression** — pas de « tu as raté X jours », pas de rouge, pas de compteur
+culpabilisant.
 
 ---
 
-## 4. Roadmap (nettoyée de ce qui est fait)
+## 4. Roadmap
+
+### Phase 0 — Hiérarchie UX (quick wins, aucun changement moteur)
+
+Faible risque, fort impact lisibilité. Purement `ui/` + CSS + i18n.
+
+- [ ] **0.1 Accueil : quêtes au centre** (UX §3-4, §20). Nouvel ordre :
+  topbar → `JOUR N` + « Les signes du jour / Trois chemins se présentent à
+  toi » → **les 3 quêtes** → résumé léger de progression en bas. Sortir la
+  hero card volumineuse du haut ; garder niveau/XP/série accessibles mais
+  discrets (ligne compacte ou repliés). `ui/screens/adventure.js`,
+  `ui/components/charBits.js` (`heroCardHtml`), `styles/`.
+- [ ] **0.2 « Élan du jour » : fraction + phrase** (UX §5). Remplacer
+  `elan %` par `🌱 0 / 3 aventures` + une ligne narrative selon l'avancement
+  (« Le monde attend encore ton premier choix. » → « ✨ Ton aventure du jour
+  est complète. »). `elanDuJour` peut rester pour la barre ; c'est
+  l'affichage qui change. `heroCardHtml`/`adventure.js`, i18n.
+- [ ] **0.3 Compacter les cartes de quête** (UX §7). Réduire marges internes,
+  interlignes des métadonnées, espaces entre cartes — **sans** toucher à la
+  taille du texte de quête. But : voir les 3 propositions avec très peu de
+  scroll. `styles/components.css` (`.quest-card`, `.quest-meta`, `.quest-top`).
+- [ ] **0.4 Hiérarchie des boutons** (UX §8). « Accepter » nettement
+  dominant, « Ignorer » plus discret (déjà `ghost` vs `primary` — vérifier le
+  contraste réel sur appareil, ajuster si besoin).
+- [ ] **0.5 « envoyer à un ami » → `↗ Partager`** (UX §9). Simplifier le
+  libellé (i18n `q_send_friend`) ou passer à une icône ; la quête reste « ton
+  aventure » avant d'être une fonction sociale.
+- [ ] **0.6 Moins de cadres** (UX §18). Titres de section, intros, chapitres,
+  transitions narratives → **sans panneau**. Garder les cadres pour cartes de
+  quête, objets, récompenses, infos importantes. `styles/`.
+- [ ] **0.7 Couleur = langage** (UX §19). Formaliser dans `base-tokens.css` /
+  doc : violet = navigation/action, or = XP/progression/rareté, bleu =
+  monde/découverte, couleur de famille = catégorie. Vérifier que chaque thème
+  respecte ces rôles.
 
 ### Phase 1 — Rétention (priorité absolue)
 
-| # | Chantier | Détail | Touche |
-|---|---|---|---|
-| 1.1 | **`state.milestones`** | tableau des « premières fois » (`first_quest`, `first_night_quest`, `first_hidden_quest`, `first_outdoor`, `first_rain`, …), rempli par les reducers de `game.js` à la complétion | `state/defaults.js`, `engine/game.js`, migration `store.js` |
-| 1.2 | **Compagnon par jalon** | réactions calées sur `totalCompleted` (10/20/50…) et sur une famille dominante marquée (`« tu passes ton temps à regarder derrière les coins »`). Nouvelle branche dans `companionLineForState`, texte **par thème** (`voice.milestones`) | `engine/companion.js`, `data/themes/*.js` |
-| 1.3 | **Retour après absence** | si `daysSinceActive >= 3` : tirage `draw.js` biaisé vers `effort` léger + quêtes/templates jamais faits + 1 event de retour possible ; ligne compagnon dédiée (`voice`) ; jamais de reproche | `engine/draw.js`, `engine/companion.js`, i18n |
-| 1.4 | **Événement d'ouverture occasionnel** | après N quêtes sans event, forcer une carte « aujourd'hui, quelque chose est différent » pour créer la question à l'ouverture (§11). Réglage léger du tirage d'événement existant | `engine/events.js` |
+- [ ] **1.1 `state.milestones`** (Éco §6, §13). Tableau des premières fois
+  (`first_quest`, `first_night_quest`, `first_hidden_quest`, `first_outdoor`,
+  `first_rain`, `first_stranger`, …), rempli par les reducers à la
+  complétion. `state/defaults.js`, `engine/game.js`, migration `state/store.js`.
+- [ ] **1.2 Compagnon par jalon** (Éco §10, UX §22-P2). Branche dans
+  `companionLineForState` calée sur `totalCompleted` (10/20/50…) et sur une
+  famille nettement dominante. Texte **par thème** (`voice.milestones` dans
+  `data/themes/*.js`, fallback nordique via `voiceFor`).
+- [ ] **1.3 Retour après absence** (Éco §15). Si `daysSinceActive >= 3` :
+  `draw.js` biaisé vers `effort` léger + quêtes/templates jamais faits + 1
+  event de retour possible ; ligne compagnon dédiée (`voice`) ; jamais de
+  reproche. `engine/draw.js`, `engine/companion.js`, i18n.
+- [ ] **1.4 Événement d'ouverture occasionnel** (Éco §11). Après N quêtes
+  sans event, forcer une carte « aujourd'hui, quelque chose est différent »
+  pour créer la question à l'ouverture. Réglage du tirage existant
+  (`engine/events.js`).
 
-### Phase 2 — Vie du personnage
+### Phase 2 — Vie du personnage & présentation
 
-| # | Chantier | Détail |
-|---|---|---|
-| 2.1 | **Page « Mon aventure »** | vue-résumé (§14 mockup) : niveau + style en titre, traits en barres, chiffres de rétention (§3), chronique en cours, mot du compagnon. Réagencement de l'écran Personnage existant, pas un nouvel onglet |
-| 2.2 | **Collection « Moments »** | checklist visible des `milestones` (1.1), cochés au fil du jeu, sans dire au joueur quand ça se déclenche |
-| 2.3 | **Collection « Découvertes »** | 🌙 nuit / 🌧 pluie / 🌲 nature / 🏙 ville / 👥 rencontre / 🎨 création — dérivées des `contexte` de quêtes accomplies |
+- [ ] **2.1 Page « Mon aventure »** (Éco §14, UX §10). Recadrer l'écran
+  Personnage autour de « qui je deviens » : niveau + style en titre, traits
+  en barres, chiffres de rétention (§3), chronique en cours, mot du compagnon
+  au même endroit. Réagencement, pas un nouvel onglet. `ui/screens/character.js`,
+  `ui/components/charBits.js`.
+- [ ] **2.2 Compétences → traits narratifs** (UX §11). Selon décision §2.4 :
+  ajouter une phrase par compétence et/ou un qualificatif (dominante /
+  émergente / discrète). Titre de section « Traits de l'aventurier ».
+- [ ] **2.3 Collection « Moments »** (Éco §13, UX §12). Checklist visible des
+  `milestones` (1.1), cochés au fil du jeu, sans dire quand ça se déclenche.
+- [ ] **2.4 Collection « Découvertes »** (Éco §13). 🌙 nuit / 🌧 pluie / 🌲
+  nature / 🏙 ville / 👥 rencontre / 🎨 création — dérivées des `contexte` des
+  quêtes accomplies.
+- [ ] **2.5 Musée : vitrines `???`** (UX §12). Emplacements vides mystérieux
+  (« Cette vitrine n'a pas encore d'histoire. ») → curiosité sans pression.
+  `ui/components/charBits.js` (`inventoryHtml`), `engine/inventory.js`.
+- [ ] **2.6 Carte du Monde : polish révélation** (UX §15-16). Rendre chaque
+  découverte plus « on a révélé une partie du monde » (transition, phrase
+  « certaines régions ne sont pas encore prêtes »). `ui/screens/world.js`,
+  `styles/`.
 
 ### Phase 3 — Récit
 
-| # | Chantier | Détail |
-|---|---|---|
-| 3.1 | **Chronique** | seuils en nb de quêtes (cf. décision §2.2) ; blurbs de chapitre qui varient légèrement selon la famille dominante ; déjà **par thème** via `voice.chapters` |
-| 3.2 | **Mini-arcs secrets** | chaînes de 3–5 étapes : `??? → indice → ??? → indice → révélation`. Nouveau type de contenu (`data/arcs.js` ?) + suivi d'avancement dans `state`. **Le plus gros levier rétention de tout le doc.** |
-| 3.3 | **Événements spéciaux** | jalons, événements temporels, événement de retour (recoupe 1.3) |
+- [ ] **3.1 Chronique** (Éco §7, UX §13-14). Seuils en nb de quêtes (décision
+  §2.2) ; blurbs de chapitre qui varient légèrement selon la famille
+  dominante ; déjà **par thème** via `voice.chapters`.
+- [ ] **3.2 Entrée de journal « du jour »** (UX §14). En fin de journée (ou à
+  l'ouverture du lendemain), une entrée qui résume ce qui a été vécu (« Jour
+  17 — Les détours : tu as quitté ton chemin habituel. 🌿 Observation · 🤝
+  Rencontre. Souvenir conservé. »). `engine/journal.js`, `engine/game.js`.
+- [ ] **3.3 Mini-arcs secrets 3–5 étapes** (Éco §12). Chaînes
+  `??? → indice → ??? → indice → révélation`. Nouveau contenu (`data/arcs.js`)
+  + suivi d'avancement dans `state`. **Plus gros levier rétention des deux
+  docs.**
+- [ ] **3.4 Événements spéciaux** (Éco §12/§22-P3). Jalons, événements
+  temporels, événement de retour (recoupe 1.3).
 
 ### Phase 4 — Monétisation
 
-| # | Chantier | Détail |
-|---|---|---|
-| 4.1 | **Système de thèmes** | ✅ fait (6 payants, archi `voice` + `ui` + CSS) |
-| 4.2 | **Achat réel** | `npm i @capacitor-community/in-app-purchases`, `npx cap sync`, déclarer le(s) produit(s) selon la décision §2.1, permission `BILLING`, vérifier l'API réelle du plugin. L'abstraction `platform/billing.js` est prête |
-| 4.3 | **Extensions de contenu** | packs thématiques — **seulement après** que le D30 Return Rate soit correct |
+- [x] **4.1 Système de thèmes** — fait (6 payants, archi `voice` + `ui` + CSS).
+- [ ] **4.2 Achat réel** (Éco §17). `npm i @capacitor-community/in-app-purchases`,
+  `npx cap sync`, déclarer le(s) produit(s) selon décision §2.1, permission
+  `com.android.vending.BILLING`, vérifier l'API réelle du plugin.
+  `platform/billing.js` est prêt.
+- [ ] **4.3 Extensions de contenu** (Éco §18). Packs thématiques —
+  **seulement après** un D30 Return Rate correct.
 
 ---
 
-## 5. Ce qu'il ne faut pas faire (rappel de l'analyse §23)
+## 5. Ce qu'il ne faut pas faire (les deux analyses, §23)
 
-Ne pas empiler Habitica + Finch + LifeUp + IA + réseau social + guildes +
-classement + 40 statistiques. La simplicité est une force. Le produit reste
-centré sur :
+- Ne pas refaire l'interface. Ne pas empiler jauges / stats / badges /
+  panneaux / menus visibles en même temps.
+- Ne pas transformer l'accueil en dashboard.
+- Ne pas afficher toute la profondeur du jeu immédiatement.
+- Ne pas empiler Habitica + Finch + LifeUp + IA + réseau social + guildes +
+  classement.
+- Jamais de puissance payante, jamais de pub, jamais d'abonnement (D12).
+
+Le produit reste centré sur :
 
 > ouvrir → choisir une aventure → vivre quelque chose → garder une trace →
 > découvrir ce que le compagnon propose ensuite.
