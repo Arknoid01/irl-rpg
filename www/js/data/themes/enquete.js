@@ -27,6 +27,10 @@ export default {
       fr: 'Toutes les pistes du jour sont suivies 🏆',
       en: 'Every lead today has been followed 🏆',
     },
+    levelUpLine: {
+      fr: 'Tu montes en grade. Le badge pèse un peu plus lourd.',
+      en: 'You make rank. The badge sits a little heavier.',
+    },
   },
 
   voice: {

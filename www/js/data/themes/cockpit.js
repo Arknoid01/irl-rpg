@@ -27,6 +27,10 @@ export default {
       fr: 'Tous les objectifs du jour sont atteints 🏆',
       en: 'All of today’s objectives met 🏆',
     },
+    levelUpLine: {
+      fr: 'Palier franchi. Ton IA de bord recalibre les instruments.',
+      en: 'Threshold cleared. Your onboard AI recalibrates the instruments.',
+    },
   },
 
   voice: {

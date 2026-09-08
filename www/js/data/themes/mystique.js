@@ -18,14 +18,18 @@ export default {
       'The night is clear. Here is what the signs suggest by tomorrow.',
     ],
   },
-  xpSuffix: { fr: '— le signe est lu', en: '— the sign is read' },
+  xpSuffix: { fr: '— le présage s’accomplit', en: '— the omen is fulfilled' },
 
   ui: {
     questsHeading: { fr: 'Présages du jour', en: 'Today’s omens' },
     eventLabel: { fr: 'Signe', en: 'Sign' },
     allDone: {
-      fr: 'Tous les présages du jour sont lus 🏆',
-      en: 'Every omen today has been read 🏆',
+      fr: 'Tous les présages du jour sont accomplis 🏆',
+      en: 'Every omen today has been fulfilled 🏆',
+    },
+    levelUpLine: {
+      fr: 'Un astre de plus s’aligne sur ta carte du ciel.',
+      en: 'One more star aligns on your sky chart.',
     },
   },
 
@@ -43,11 +47,11 @@ export default {
       },
       allDone: {
         fr: [
-          'Tous les présages du jour sont lus. Le ciel peut tourner en paix.',
+          'Tous les présages du jour sont accomplis. Le ciel peut tourner en paix.',
           'Plus rien à déchiffrer ce soir. La voix des astres se tait, sereine.',
         ],
         en: [
-          'Every omen today has been read. The sky can turn in peace.',
+          'Every omen today is fulfilled. The sky can turn in peace.',
           'Nothing left to read tonight. The voice of the stars falls quiet, calm.',
         ],
       },
@@ -104,8 +108,8 @@ export default {
     },
 
     afterQuest: {
-      fr: ['Le signe est lu.', 'Voilà qui est accompli.', 'Le ciel a bougé, un peu.', 'La voix des astres approuve, discrètement.', 'Une ligne de plus dans le ciel.'],
-      en: ['The sign is read.', 'That is fulfilled.', 'The sky shifted, a little.', 'The voice of the stars quietly approves.', 'One more line drawn in the sky.'],
+      fr: ['Le présage s’accomplit.', 'Voilà qui est accompli.', 'Le ciel a bougé, un peu.', 'La voix des astres approuve, discrètement.', 'Une ligne de plus dans le ciel.'],
+      en: ['The omen is fulfilled.', 'That is fulfilled.', 'The sky shifted, a little.', 'The voice of the stars quietly approves.', 'One more line drawn in the sky.'],
     },
     afterQuestFirst: {
       fr: 'Une voix venue des astres : « Un signe se prépare pour toi. Reviens demain. »',

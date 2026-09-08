@@ -2,6 +2,7 @@ import { i18n } from '../i18n/index.js';
 import { $, esc, hideOverlay } from './dom.js';
 import { companionLineAfterQuest } from '../engine/companion.js';
 import { THEMES } from '../data/themes.js';
+import { themeText } from './themeText.js';
 
 let toastTimer;
 export function showToast(msg) {
@@ -43,7 +44,7 @@ export function levelUpOverlay(level, opts = {}) {
       <div class="levelup-seal" aria-hidden="true">✦</div>
       <div class="levelup-kicker">${i18n.t('levelup_title')}</div>
       <div class="levelup-number">${level}</div>
-      <div class="levelup-sub">${i18n.t('levelup_sub')}</div>
+      <div class="levelup-sub">${themeText('levelUpLine', 'levelup_sub')}</div>
       ${lootLine}
       <button class="btn primary" data-action="close-overlay">${i18n.t('levelup_close')}</button>
     </div>`;

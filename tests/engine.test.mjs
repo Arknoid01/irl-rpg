@@ -824,7 +824,9 @@ test('game : unlockCollection débloque les 6 thèmes payants d’un coup (D17)'
 });
 
 test('thèmes : chaque fichier respecte le contrat (7 thèmes)', async () => {
-  const { THEMES, THEME_KEYS, companionLineFor } = await import('../www/js/data/themes.js');
+  const {
+    THEMES, THEME_KEYS, DEFAULT_THEME, companionLineFor,
+  } = await import('../www/js/data/themes.js');
   assert.ok(THEME_KEYS.length >= 7, 'catalogue complet');
   for (const key of THEME_KEYS) {
     const t = THEMES[key];
@@ -841,6 +843,11 @@ test('thèmes : chaque fichier respecte le contrat (7 thèmes)', async () => {
       for (const slot of Object.keys(t.ui)) {
         assert.ok(bilingual(t.ui[slot]), `${key}.ui.${slot} bilingue`);
       }
+    }
+    // Les thèmes payants habillent la réplique de montée de niveau (sinon on
+    // retombe sur « grimoire », hors-sujet pour cockpit / cyberpunk / etc.).
+    if (key !== DEFAULT_THEME) {
+      assert.ok(t.ui && bilingual(t.ui.levelUpLine), `${key}.ui.levelUpLine bilingue`);
     }
   }
 });
