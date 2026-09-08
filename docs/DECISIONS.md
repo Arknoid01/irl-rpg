@@ -382,3 +382,30 @@ haut) est fait, direction « Grimoire / pierre gravée » (choix produit) :
 Toujours **pas de QA visuelle possible ici** (pas de navigateur) : CSS validé
 au parseur (`css-tree`), 42/42 tests, simulation 45 j inchangée — mais le
 rendu réel des deux thèmes payants est à revoir sur appareil avant de vendre.
+
+### Addendum 2026-09-08 (suite) — voix du compagnon thématisée
+
+Le texte de saveur (répliques contextuelles, réaction après quête, moments
+mémorables, entrées et 6 chapitres de journal) est maintenant **une voix par
+thème**, sous la clé `voice` de `data/themes/<thème>.js` :
+
+- `nordique.js` porte la version complète de référence (texte inchangé).
+- `sombre.js` (veille / contrat / cendre / registre / la cité endormie) et
+  `cyberpunk.js` (signal / secteur / log / la Grille / la ville qui ne dort
+  pas) fournissent leur variante complète — **même structure, mêmes
+  intentions** (jamais de pression, toujours « avec toi », D4) ; seul le
+  vocabulaire change. `voiceFor(themeKey)` (themes.js) complète toute clé
+  absente par celle de nordique, donc un futur thème peut n'adapter qu'une
+  partie.
+- `engine/companion.js` et `engine/journal.js` ne contiennent plus aucun
+  texte en dur ; les reducers de `engine/game.js` passent `s.theme` aux
+  générateurs d'entrées de journal, `buildJournalTimeline` passe
+  `state.theme` à `chapterForLevel`. Les identifiants et seuils de chapitre
+  (`prologue`, `ch1`…`ch5`) restent stables — seuls `label`/`blurb` sont
+  thématisés.
+- Nouveau test `voix par thème (D12)` : vérifie que chaque thème payant a une
+  réaction après quête distincte de nordique, que l'anti-pression est
+  préservée sur la réplique de série chaude, que les chapitres gardent
+  id/seuils stables, et qu'un thème inconnu retombe proprement sur nordique.
+
+43/43 tests, simulation 45 j inchangée.

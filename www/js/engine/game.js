@@ -44,7 +44,7 @@ function applyLevelLoot(s, effects, today) {
     if (loot && addLoot(s, { ...loot, date: today })) {
       effects.push({ type: 'loot', item: loot.item, kind: loot.kind });
     }
-    addEntry(s, { date: today, text: levelChapterEntry(fx.level), kind: 'chapitre' });
+    addEntry(s, { date: today, text: levelChapterEntry(fx.level, s.theme), kind: 'chapitre' });
     effects.push({ type: 'chapter', level: fx.level });
   }
 }
@@ -53,7 +53,7 @@ function applyRegionReveals(s, effects, today) {
   const newly = syncRegionUnlocks(s);
   for (const r of newly) {
     if (r.id === 'foyer') continue;
-    addEntry(s, { date: today, text: regionRevealEntry(r.label), kind: 'decouverte' });
+    addEntry(s, { date: today, text: regionRevealEntry(r.label, s.theme), kind: 'decouverte' });
     effects.push({ type: 'region', id: r.id, label: r.label });
   }
 }
@@ -169,7 +169,7 @@ export function completeQuest(state, { id }, ctx) {
     addEntry(s, { date: today, text: q.fragment, kind: 'fragment' });
     effects.push({ type: 'fragment', text: q.fragment });
   }
-  const memo = maybeMemorable(q, rng);
+  const memo = maybeMemorable(q, rng, s.theme);
   if (memo) {
     addEntry(s, { date: today, text: memo, kind: 'moment' });
     effects.push({ type: 'moment', text: memo });
@@ -208,7 +208,7 @@ export function completeEvent(state, _args, ctx) {
 
   const loot = lootFromEvent(ev, today);
   addLoot(s, loot);
-  addEntry(s, { date: today, text: eventEntry(ev), kind: 'evenement' });
+  addEntry(s, { date: today, text: eventEntry(ev, s.theme), kind: 'evenement' });
   applyRegionReveals(s, effects, today);
 
   effects.push({ type: 'event-done', xp: ev.xp, item: ev.item });

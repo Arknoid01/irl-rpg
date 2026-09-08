@@ -23,7 +23,9 @@ import {
   inferKind, normalizeLootEntry, buildMuseumView, lootFromEvent, milestoneLootForLevel, addLoot,
 } from '../www/js/engine/inventory.js';
 import { LOOT_KINDS, EVENT_LOOT_META } from '../www/js/data/loot.js';
-import { buildJournalTimeline, chapterForLevel } from '../www/js/engine/journal.js';
+import {
+  buildJournalTimeline, chapterForLevel, levelChapterEntry, eventEntry, regionRevealEntry,
+} from '../www/js/engine/journal.js';
 import { companionLineForState, companionLineAfterQuest } from '../www/js/engine/companion.js';
 import { mulberry32 } from '../www/js/engine/rng.js';
 import {
@@ -347,6 +349,51 @@ test('compagnon : réaction après quête (cérémonie de validation)', () => {
 
   const enLine = companionLineAfterQuest(s, 'en');
   assert.ok(typeof enLine === 'string' && enLine.length > 5);
+});
+
+test('voix par thème (D12) : chaque thème payant a sa propre voix, complète', () => {
+  const paid = THEME_KEYS.filter((k) => k !== 'nordique');
+  assert.ok(paid.includes('sombre') && paid.includes('cyberpunk'));
+
+  for (const theme of paid) {
+    // Réaction après quête : texte différent de nordique, même longueur de set.
+    for (let seed = 0; seed < 5; seed++) {
+      const base = companionLineAfterQuest({ theme: 'nordique', seeds: { companion: seed } }, 'fr');
+      const skin = companionLineAfterQuest({ theme, seeds: { companion: seed } }, 'fr');
+      assert.notEqual(skin, base, `${theme} #${seed} : réaction propre au thème`);
+      assert.ok(skin.length > 3);
+      assert.ok(companionLineAfterQuest({ theme, seeds: { companion: seed } }, 'en').length > 3);
+    }
+    const firstFr = companionLineAfterQuest({ theme, seeds: { companion: 0 } }, 'fr', { first: true });
+    assert.doesNotMatch(firstFr, /grimoire/i, `${theme} : première réplique réécrite`);
+
+    // Répliques contextuelles : streak chaud, un thème dit l'anti-pression.
+    const streak = companionLineForState(
+      { theme, streak: 6, seeds: { companion: 0 }, quests: [{ id: 'a', status: 'proposed' }] },
+      'fr',
+    );
+    assert.match(streak, /sans pression|no pressure|ton rythme|your pace/i);
+
+    // Chapitres : id + seuils stables, label/blurb bilingues et thématisés.
+    const prologue = chapterForLevel(1, theme);
+    assert.equal(prologue.id, 'prologue');
+    assert.ok(bilingual(prologue.label) && bilingual(prologue.blurb));
+    assert.equal(chapterForLevel(8, theme).id, 'ch3');
+    assert.equal(chapterForLevel(20, theme).id, 'ch5');
+
+    // Entrées de journal générées : bilingues, non vides.
+    const lvl = levelChapterEntry(7, theme);
+    assert.ok(bilingual(lvl) && lvl.fr.includes('7'));
+    const evt = eventEntry({ title: { fr: 'X', en: 'X' }, item: { fr: 'Y', en: 'Y' } }, theme);
+    assert.ok(bilingual(evt) && evt.fr.includes('X') && evt.fr.includes('Y'));
+    const reg = regionRevealEntry({ fr: 'Les Docks', en: 'The Docks' }, theme);
+    assert.ok(bilingual(reg) && reg.fr.includes('Les Docks'));
+  }
+
+  // Thème inconnu -> retombe sur la voix de nordique sans planter.
+  const fallback = chapterForLevel(1, 'inconnu');
+  assert.equal(fallback.id, 'prologue');
+  assert.ok(bilingual(fallback.label));
 });
 
 test('titres : compétences valides, bilingues', () => {
