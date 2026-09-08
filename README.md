@@ -51,6 +51,8 @@ Empaquetage Android/iOS : `npm install && npx cap add android && npx cap sync`.
 | `docs/PRIVACY.md` · `www/privacy.html` | Confidentialité (on-device, 16+) |
 | `docs/STORE.md` | Checklist publication Play / App Store |
 | `docs/REVUE_CRITIQUE.md` | Revue critique des specs + périmètre MVP |
+| `docs/ROADMAP.md` | Feuille de route (analyse produit réconciliée avec l'état du code) |
+| `docs/IRL_RPG_Analyse_Modele_Economique_et_Roadmap.md` | Analyse produit / éco / rétention (source de la roadmap) |
 | `docs/SESSION_*.md` | Récaps de sessions de travail (fil, pas autorité) |
 | `docs/IRL_RPG_concept.md` · `_interactions_defis.md` · `_ui_ux_spec.md` | Specs d'origine |
 | `prototype/irl-rpg-prototype.html` | Prototype initial (conservé pour référence) |
