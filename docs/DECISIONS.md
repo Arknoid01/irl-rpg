@@ -584,3 +584,57 @@ Migration additive (`discoveries: {}`, `history.comebacks`), pas de bump
 `SAVE_VERSION`. Ancien `skillsGridHtml` / `styleHtml` retirés de l'écran ;
 CSS `.hero-*` / `.skill-*` / `.style-*` devient orphelin (nettoyage à faire
 avec la QA appareil). 58/58 tests, sim OK, CSS `css-tree` OK.
+
+## D15 — Chronique : chapitres en nombre de quêtes + nuance de famille (2026-09-08)
+
+`ROADMAP.md` Phase 3.1, décision §2.2 **tranchée : nombre de quêtes**, pas le
+niveau (« plus lié à l'activité » ; le niveau monte aussi avec les événements).
+
+- `engine/journal.js` : `chapterForLevel(level)` → **`chapterFor(state)`**.
+  Seuils sur `history.totalCompleted` : `[0, 10, 25, 50, 100, 200]` →
+  prologue / ch1…ch5. Identifiants (`prologue`, `ch1`…) et textes par thème
+  (`voice.chapters`) **inchangés** — seuls les seuils bougent.
+- Entrée de journal « nouveau chapitre » émise dans `completeQuest` au passage
+  d'un seuil (effet `chapter-open`). Texte = `— <label> —\n<blurb>` (déjà
+  thématisés, pas de wrapper par thème à écrire).
+- **Nuance de famille** : `voice.chapterLean` (6 familles) — une phrase sous le
+  blurb quand une famille domine nettement (≥ 5 quêtes ET ≥ 1.4× la 2ᵉ).
+  Écrite pour les 7 thèmes. Jamais un jugement, une couleur.
+
+Migration : additive (rien de nouveau dans l'état — la chronique se dérive de
+`totalCompleted` qui existait déjà). Pas de bump `SAVE_VERSION`.
+
+## D16 — Récit : entrée « du jour », mini-arcs secrets, événements spéciaux (2026-09-08)
+
+`ROADMAP.md` Phase 3.2–3.4. Voix par thème : **les 7 thèmes** (cohérent
+D12).
+
+**Entrée de journal « du jour » (3.2).** Au **rollover naturel** (pas au
+re-tirage manuel), une entrée résume la veille : `voice.dayEntry(dayNo, titre,
+tags)` + `voice.dayTitles`. Une seule par date, **jamais pour une journée
+vide** (aucune pression). `simulate.mjs` et les tests d'intégration passent en
+rollover naturel (la date avance, plus de `drawDate = null` forcé).
+
+**Mini-arcs secrets (3.3)** — « le plus gros levier rétention ».
+- `state.arcs = { active, step, completed }`. **Un arc à la fois.**
+- `data/arcs.js` : **4 arcs** figés (`passage`, `visage`, `objet`, `heure`),
+  3–4 étapes. Contenu (action, indice, révélation) **neutre bilingue** comme
+  la banque de quêtes ; `voice.arc` (clue / reveal / inProgress) l'habille.
+- Étape courante = quête cachée **toujours légère, audace 2, jamais chaos** →
+  occupe le créneau « mystère » au tirage (`ARC_STEP_CHANCE = 0.28`, avant la
+  quête cachée aléatoire). Les invariants du tirage tiennent (l'effort ne fait
+  que baisser). Au **retour après absence** : plus de swap mystère aléatoire,
+  et `canAdd` refuse tout effort conséquent.
+- `completeQuest` : `advanceArc` fait progresser ; indice → journal
+  (`kind: 'indice'`), révélation → journal (`kind: 'revelation'`) + **pièce de
+  musée dédiée** (`id: arc_<arcId>`). Les étapes d'arc ne donnent plus le
+  souvenir générique « Chapitre glané ».
+
+**Événements spéciaux (3.4).** `eventEligible` gagne `minDaysPlayed`
+(temporel) et `requireMilestone` (écho d'un jalon). 4 événements
+(`ev_une_semaine` 7 j, `ev_un_mois` 30 j, `ev_echo_inconnu`, `ev_echo_mystere`).
+L'événement de retour reste D13/1.3.
+
+Migration : additive (`arcs: {active:null,step:0,completed:[]}` + `normalize`),
+pas de bump `SAVE_VERSION`. 65/65 tests, sim 45 j (2 arcs terminés + 1 en
+cours) sans violation, CSS `css-tree` OK.

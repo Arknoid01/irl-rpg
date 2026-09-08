@@ -42,11 +42,11 @@ reconstruire :
 | Push, pas pull · pas de punition · zéro cloud · archi séparée | ✅ | D3, D11, tests |
 | Souvenir dans la boucle | ✅ en grande partie | musée, fragments+moments de journal, régions |
 | Mémoire légère du compagnon (Éco §6) | ✅ | `state.history` + `computeStyle` + `state.milestones` (Phase 1.1) ; le compagnon cite un fragment passé **et** réagit aux premières fois / paliers de volume (Phase 1.2) |
-| Journal → Chronique (Éco §7, UX §13-14) | ⚠️ partiel | `chapterForLevel` : 6 chapitres **par thème**. **Manque** : seuils en nb de quêtes, entrée de journal « du jour » qui résume ce qui a été vécu |
+| Journal → Chronique (Éco §7, UX §13-14) | ✅ | `chapterFor(state)` : 6 chapitres par thème, seuils en **nb de quêtes** + nuance de famille (Phase 3.1) ; entrée « du jour » au rollover (Phase 3.2) |
 | Styles d'aventurier (Éco §9) | ✅ | `computeStyle`, affiché sur Personnage |
 | Compagnon = fil rouge (Éco §10, UX §22-P2) | ✅ | branches contextuelles dans `companionLineForState` + narration par jalon (Phase 1.2) + accueil au retour (Phase 1.3) |
-| Événements rares (Éco §11) | ✅ | `engine/events.js`, ~30 %/jour, ~34 événements |
-| Quêtes secrètes (Éco §12) | ⚠️ mono-étape | 9 quêtes/templates `hidden`. **Manque** : mini-arcs 3–5 étapes avec indices |
+| Événements rares (Éco §11) | ✅ | `engine/events.js`, ~34 événements + anti-disette (1.4) + spéciaux temporels / échos de jalon (3.4) |
+| Quêtes secrètes (Éco §12) | ✅ | 9 quêtes/templates `hidden` + **mini-arcs 3–5 étapes** avec indices et révélation (`data/arcs.js`, Phase 3.3) |
 | Collections de souvenirs (Éco §13, UX §12) | ✅ | musée + collection « Moments » (Phase 2.3) + « Découvertes » (Phase 2.4) + vitrines `???` (Phase 2.5) |
 | Page « Mon aventure » (Éco §14, UX §10-11) | ✅ | écran Personnage recadré « qui je deviens » : identité + style en tête, traits qualitatifs, « Ton chemin », chronique, collections (Phase 2.1-2.2) |
 | Retour après absence (Éco §15) | ✅ | toast `streak_break_ok` + tirage allégé, quêtes neuves, événement d'accueil et ligne compagnon dédiée quand `daysAway >= 3` (Phase 1.3) |
@@ -59,9 +59,11 @@ reconstruire :
 | Couleur = langage (UX §19) | ⚠️ partiel | familles ont déjà une couleur (`--fam-color`) ; à formaliser (violet=action, or=XP, bleu=monde) |
 | Excès de cadres (UX §18) | ⚠️ | titres de section / intros / chapitres devraient être **sans cadre** |
 
-**Conclusion** : le socle « boucle de jeu » est là. Le travail restant =
-**rétention long terme** (mini-arcs, retour-après-absence, mémoire) +
-**hiérarchie/présentation UX** (accueil, cartes, journal-récit, Personnage).
+**Conclusion** : le socle « boucle de jeu » est là. Phases 0-3 livrées
+(hiérarchie UX, rétention, vie du personnage, récit). **Reste** : Phase 4
+(monétisation réelle, besoin Play Console), la QA visuelle appareil de tout
+ce qui précède, et l'enrichissement de contenu (banque de quêtes, arcs,
+thèmes) au fil des retours.
 
 ---
 
@@ -75,9 +77,8 @@ reconstruire :
    - Compromis : bundle + thèmes à l'unité (plus de SKU).
    - `unlockTheme`/`setTheme`/`billing.purchase` supportent les deux sans
      changement — à décider avant de déclarer les produits en Play Console.
-2. **Seuils de chapitre (Éco §7).** Niveau (actuel : 3/5/8/12/15) → nb de
-   quêtes (10/25/50/100) ? Plus lié à l'activité. Petit changement
-   (`chapterForLevel` → `chapterFor(state)`), cosmétique, pas de régression.
+2. ~~**Seuils de chapitre (Éco §7).**~~ **Tranché (2026-09-08) : nb de quêtes**
+   (0/10/25/50/100/200). Livré en Phase 3.1 (`chapterFor(state)`).
 3. **Tagline store (Éco §21.1).** « Chaque jour, ton compagnon te propose 3
    petites aventures à vivre dans le monde réel. » → dans `STORE.md`.
 4. ~~**Compétences : garder les chiffres ou pas (UX §11).**~~ **Tranché
@@ -199,21 +200,29 @@ Faible risque, fort impact lisibilité. Purement `ui/` + CSS + i18n.
   brouillard / verrouillé ; encart « Tu viens de révéler cette partie du
   monde. » + liseré or sur une région `justRevealed` dans le détail.
 
-### Phase 3 — Récit
+### Phase 3 — Récit — ✅ fait (QA visuelle appareil à faire)
 
-- [ ] **3.1 Chronique** (Éco §7, UX §13-14). Seuils en nb de quêtes (décision
-  §2.2) ; blurbs de chapitre qui varient légèrement selon la famille
-  dominante ; déjà **par thème** via `voice.chapters`.
-- [ ] **3.2 Entrée de journal « du jour »** (UX §14). En fin de journée (ou à
-  l'ouverture du lendemain), une entrée qui résume ce qui a été vécu (« Jour
-  17 — Les détours : tu as quitté ton chemin habituel. 🌿 Observation · 🤝
-  Rencontre. Souvenir conservé. »). `engine/journal.js`, `engine/game.js`.
-- [ ] **3.3 Mini-arcs secrets 3–5 étapes** (Éco §12). Chaînes
-  `??? → indice → ??? → indice → révélation`. Nouveau contenu (`data/arcs.js`)
-  + suivi d'avancement dans `state`. **Plus gros levier rétention des deux
-  docs.**
-- [ ] **3.4 Événements spéciaux** (Éco §12/§22-P3). Jalons, événements
-  temporels, événement de retour (recoupe 1.3).
+- [x] **3.1 Chronique** (Éco §7, UX §13-14). Décision §2.2 : **seuils en nb de
+  quêtes** (0/10/25/50/100/200). `chapterForLevel(level)` → `chapterFor(state)`
+  (`engine/journal.js`). Entrée de journal « nouveau chapitre » au passage de
+  seuil (`completeQuest`, effet `chapter-open`, texte = label+blurb déjà
+  thématisés). Nuance selon la famille dominante : `voice.chapterLean`
+  (6 familles × 7 thèmes), sous le blurb dans le journal + « Ta chronique ».
+- [x] **3.2 Entrée de journal « du jour »** (UX §14). `engine/journal.js`
+  `dailyRecapEntry` : au **rollover naturel**, un résumé de la veille
+  (« Jour N — <titre>. Tu as vécu : 🧭 Exploration · 🤝 Social. »), une seule
+  par date, jamais pour une journée vide. `voice.dayEntry` + `voice.dayTitles`
+  (7 thèmes). `simulate.mjs` passé en rollover naturel pour l'exercer.
+- [x] **3.3 Mini-arcs secrets 3–5 étapes** (Éco §12). `data/arcs.js` (4 arcs :
+  passage, visage, objet, heure — contenu neutre) + `engine/arcs.js`
+  (`state.arcs = {active, step, completed}`, un arc à la fois) +
+  `voice.arc` (indice / révélation / mention en cours, 7 thèmes). L'étape
+  courante occupe le créneau « mystère » au tirage (~28 %/jour). Révélation →
+  pièce de musée dédiée. `??? → indice → ??? → révélation`.
+- [x] **3.4 Événements spéciaux** (Éco §12/§22-P3). `eventEligible` :
+  `minDaysPlayed` (temporel) + `requireMilestone` (écho de jalon). 4 événements
+  (`ev_une_semaine`, `ev_un_mois`, `ev_echo_inconnu`, `ev_echo_mystere`).
+  L'événement de retour reste la Phase 1.3.
 
 ### Phase 4 — Monétisation
 

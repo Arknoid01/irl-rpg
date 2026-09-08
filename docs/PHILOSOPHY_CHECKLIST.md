@@ -40,5 +40,11 @@
 - « Ton chemin » (`charBits.pathStatsHtml`) — n'affiche jamais de jours
   manqués ; `comebacks` (reprises) n'apparaît que s'il est > 0, formulé
   positivement (point 3, point 5).
+- `engine/journal.js: dailyRecapEntry` — l'entrée « du jour » n'est écrite que
+  si quelque chose a été vécu ; **jamais d'entrée pour une journée vide**, donc
+  jamais de « tu n'as rien fait hier » (points 2, 5).
+- `data/arcs.js` — les étapes de mini-arc sont toujours à effort léger,
+  audace 2, avec un `safe_fallback` ; un arc jamais commencé ou abandonné ne
+  coûte rien et ne s'affiche pas comme un manque (points 1, 5).
 - `DECISIONS.md` D3 — aucun classement, aucune comparaison de niveau.
 - `DECISIONS.md` D11 — aucune quête créée par le joueur (push, pas pull).
