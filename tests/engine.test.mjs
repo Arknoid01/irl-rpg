@@ -1359,3 +1359,14 @@ test('msUntilNextMidnight : délai jusqu’au prochain minuit local + marge', ()
   const oneSecBefore = new Date(2026, 5, 1, 23, 59, 59, 500);
   assert.ok(msUntilNextMidnight(oneSecBefore, 0) > 0);
 });
+
+test('dates : la frontière du jour est locale (pas UTC)', async () => {
+  const { todayStr, daysBetween, yesterdayStr } = await import('../www/js/engine/dates.js');
+  // 23:30 heure locale un 15 : on est encore le 15, quelle que soit la
+  // timezone (avec UTC on aurait pu basculer au 16 ou rester au 14).
+  assert.equal(todayStr(new Date(2026, 4, 15, 23, 30, 0)), '2026-05-15');
+  assert.equal(todayStr(new Date(2026, 4, 15, 0, 15, 0)), '2026-05-15');
+  assert.equal(yesterdayStr(new Date(2026, 4, 15, 0, 15, 0)), '2026-05-14');
+  assert.equal(daysBetween('2026-05-10', '2026-05-15'), 5);
+  assert.equal(daysBetween('2026-02-27', '2026-03-02'), 3); // 2026 pas bissextile
+});
