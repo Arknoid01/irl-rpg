@@ -63,7 +63,15 @@ test('parcours complet dans le DOM', async () => {
   await click('[data-ob="finish"]');
   await tick();
 
-  // 2. App montée
+  // 2. App montée — bulle d'aide unique « change de thème » au premier lancement
+  assert.ok($('[data-tip="shop"]'), 'astuce thème au premier lancement');
+  await click('[data-tip="later"]');
+  await tick();
+  assert.equal(
+    JSON.parse(window.localStorage.getItem('irlrpg_save_v2')).hints.themeTip,
+    true,
+    'astuce marquée comme vue',
+  );
   assert.equal($('#overlay').classList.contains('show'), false, 'overlay fermé');
   assert.ok($('.topbar'), 'topbar');
   assert.ok($('.tabs'), 'nav');

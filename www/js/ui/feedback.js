@@ -2,6 +2,7 @@ import { i18n } from '../i18n/index.js';
 import { $, esc, hideOverlay } from './dom.js';
 import { companionLineAfterQuest } from '../engine/companion.js';
 import { THEMES } from '../data/themes.js';
+import { themeText } from './themeText.js';
 
 let toastTimer;
 export function showToast(msg) {
@@ -43,11 +44,38 @@ export function levelUpOverlay(level, opts = {}) {
       <div class="levelup-seal" aria-hidden="true">✦</div>
       <div class="levelup-kicker">${i18n.t('levelup_title')}</div>
       <div class="levelup-number">${level}</div>
-      <div class="levelup-sub">${i18n.t('levelup_sub')}</div>
+      <div class="levelup-sub">${themeText('levelUpLine', 'levelup_sub')}</div>
       ${lootLine}
       <button class="btn primary" data-action="close-overlay">${i18n.t('levelup_close')}</button>
     </div>`;
   ov.classList.add('show');
+}
+
+/**
+ * Bulle d'aide unique, montrée une fois après l'onboarding : rappelle que le
+ * thème est libre. `onChoice('shop' | 'later')` referme et laisse l'appelant
+ * marquer l'astuce comme vue + ouvrir la boutique si besoin.
+ */
+export function themeTipOverlay(onChoice) {
+  const ov = $('#overlay');
+  if (!ov) return;
+  ov.innerHTML = `
+    <div class="levelup coach-tip" role="dialog" aria-live="polite">
+      <div class="levelup-seal" aria-hidden="true">✦</div>
+      <div class="levelup-kicker">${i18n.t('tip_theme_title')}</div>
+      <p class="coach-tip-body">${i18n.t('tip_theme_body')}</p>
+      <button class="btn primary full" data-tip="shop">${i18n.t('tip_theme_cta')}</button>
+      <button class="btn ghost full" data-tip="later">${i18n.t('tip_theme_later')}</button>
+    </div>`;
+  ov.classList.add('show');
+  const handler = (e) => {
+    const b = e.target.closest('[data-tip]');
+    if (!b) return;
+    ov.removeEventListener('click', handler);
+    hideOverlay(ov);
+    onChoice(b.dataset.tip);
+  };
+  ov.addEventListener('click', handler);
 }
 
 let pendingAfterClose = [];

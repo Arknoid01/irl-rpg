@@ -28,6 +28,10 @@ export default {
       fr: 'Tous les contrats du jour sont honorés 🏆',
       en: 'Every contract today is settled 🏆',
     },
+    levelUpLine: {
+      fr: 'Ta parole vaut un cran de plus, désormais.',
+      en: 'Your word is worth a notch more now.',
+    },
   },
 
   voice: {

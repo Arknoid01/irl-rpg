@@ -27,6 +27,10 @@ export default {
       fr: 'Toutes les missions du jour sont faites 🏆',
       en: 'All of today’s runs are done 🏆',
     },
+    levelUpLine: {
+      fr: 'Ta réputation grésille un peu plus fort sur les ondes.',
+      en: 'Your reputation crackles a little louder on the airwaves.',
+    },
   },
 
   voice: {

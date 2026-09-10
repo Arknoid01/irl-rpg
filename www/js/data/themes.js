@@ -9,9 +9,10 @@
 // directement).
 //
 // Champs optionnels d'un thème :
-//   ui : mots de saveur { questsHeading, eventLabel, allDone } en { fr, en },
-//        résolus par ui/themeText.js. Habillage uniquement — jamais un texte
-//        de sécurité / d'optionnalité (spec §22).
+//   ui : mots de saveur { questsHeading, eventLabel, allDone, levelUpLine } en
+//        { fr, en }, résolus par ui/themeText.js. Chaque slot est optionnel et
+//        retombe sur sa clé i18n générique. Habillage uniquement — jamais un
+//        texte de sécurité / d'optionnalité (spec §22).
 //
 // `voice` (répliques du compagnon, cérémonie, entrées et chapitres de journal)
 // : nordique.js porte la version complète de référence ; les autres thèmes

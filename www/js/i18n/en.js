@@ -216,6 +216,12 @@ export default {
   toast_theme_unlocked: 'Theme unlocked: {label}',
   toast_collection_unlocked: '🌍 Collection of Worlds unlocked — all 6 themes are yours.',
 
+  // One-time coach mark — theme shop discovery
+  tip_theme_title: 'Switch the mood anytime',
+  tip_theme_body: 'Font, colours, frames, your companion’s voice: seven worlds to try. It never changes your quests or your XP.',
+  tip_theme_cta: 'See the themes',
+  tip_theme_later: 'Later',
+
   notif_body: 'Your companion has enough to fill the day. Nothing required.',
   share_text: 'Cairn challenge for you: {quest}',
   share_title: 'A challenge for you',

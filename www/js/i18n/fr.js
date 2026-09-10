@@ -218,6 +218,12 @@ export default {
   toast_theme_unlocked: 'Thème débloqué : {label}',
   toast_collection_unlocked: '🌍 Collection des Mondes débloquée — les 6 thèmes sont à toi.',
 
+  // Bulle d'aide unique — découverte de la boutique de thèmes
+  tip_theme_title: 'Change d’ambiance quand tu veux',
+  tip_theme_body: 'Police, couleurs, cadres, voix de ton compagnon : sept univers à essayer. Ça ne change jamais tes quêtes ni ton XP.',
+  tip_theme_cta: 'Voir les thèmes',
+  tip_theme_later: 'Plus tard',
+
   notif_body: 'Ton compagnon a de quoi remplir la journée. Rien d’obligatoire.',
   share_text: 'Défi Cairn pour toi : {quest}',
   share_title: 'Un défi pour toi',

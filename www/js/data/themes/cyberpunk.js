@@ -28,6 +28,10 @@ export default {
       fr: 'Toutes les missions du jour sont bouclées 🏆',
       en: 'Every mission today is closed 🏆',
     },
+    levelUpLine: {
+      fr: 'Palier franchi. Le réseau réindexe ton profil.',
+      en: 'Threshold cleared. The network reindexes your profile.',
+    },
   },
 
   voice: {
