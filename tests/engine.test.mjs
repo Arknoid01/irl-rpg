@@ -380,6 +380,9 @@ test('game : chapitre-ouvert + entrée du jour au fil de la partie (Phase 3.1-3.
   }
   assert.ok(sawChapter, 'effet chapter-open émis au passage de seuil');
   assert.ok(s.journal.some((e) => e.kind === 'chapitre'), 'entrée chapitre au journal');
+  // une révélation de région porte le nom du lieu en titre (entrée à part entière)
+  const reveal = s.journal.find((e) => e.kind === 'decouverte');
+  assert.ok(reveal && bilingual(reveal.title), 'révélation de région : titre = nom du lieu');
   assert.ok(s.journal.some((e) => e.kind === 'jour'), 'entrée « du jour » au journal');
   // une seule entrée « jour » par date
   const jourDates = s.journal.filter((e) => e.kind === 'jour').map((e) => e.date);
@@ -745,8 +748,11 @@ test('voix par thème (D12) : chaque thème payant a sa propre voix, complète',
     assert.ok(bilingual(lvl) && lvl.fr.includes('7'));
     const evt = eventEntry({ title: { fr: 'X', en: 'X' }, item: { fr: 'Y', en: 'Y' } }, theme);
     assert.ok(bilingual(evt) && evt.fr.includes('X') && evt.fr.includes('Y'));
+    // Le nom du lieu est porté par le titre de l'entrée (game.js) — la ligne
+    // de révélation elle-même est libre, sur la sensation de la carte qui grandit.
     const reg = regionRevealEntry({ fr: 'Les Docks', en: 'The Docks' }, theme);
-    assert.ok(bilingual(reg) && reg.fr.includes('Les Docks'));
+    assert.ok(bilingual(reg) && reg.fr.length > 20 && reg.en.length > 20);
+    assert.notEqual(reg.fr, voiceFor('nordique').regionReveal.fr(), `${theme} : révélation propre au thème`);
 
     // Coda de souvenir d'événement (journal) : pool propre au thème, bilingue.
     const codas = voiceFor(theme).eventCoda;

@@ -201,8 +201,8 @@ export default {
       en: (level) => `One notch further. Level ${level}. The sector asks nothing more.`,
     },
     regionReveal: {
-      fr: (label) => `Sur la carte, un secteur s’ouvre : « ${label} » n’est plus une zone morte.`,
-      en: (label) => `On the map, a sector opens: “${label}” is no longer a dead zone.`,
+      fr: () => `Un secteur muet vient de repasser sur les ondes. Tu n'y es pas allé — mais il est de nouveau sur la carte.`,
+      en: () => `A silent sector just came back on the air. You haven't been — but it's on the map again.`,
     },
 
     chapters: [

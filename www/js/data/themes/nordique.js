@@ -220,8 +220,8 @@ export default {
       en: (level) => `A page turns. Level ${level}. The grimoire thickens — asking nothing more.`,
     },
     regionReveal: {
-      fr: (label) => `Tu ne l’as pas cherché, mais quelque chose s’est ouvert du côté de « ${label} ». Tu iras, un jour.`,
-      en: (label) => `You weren’t looking for it, but something opened up over by “${label}”. You’ll go there, one day.`,
+      fr: () => `Un coin de la carte s'est éclairci pendant que tu avançais. Tu n'y es pas encore allé — mais tu sais qu'il t'attend.`,
+      en: () => `A corner of the map cleared while you walked. You haven't been there yet — but you know it's waiting for you.`,
     },
 
     // Chapitres narratifs, dans l'ordre des paliers (prologue → ch5).

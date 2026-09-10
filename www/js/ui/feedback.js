@@ -1,5 +1,5 @@
 import { i18n } from '../i18n/index.js';
-import { $, esc, hideOverlay } from './dom.js';
+import { $, esc, hideOverlay, showOverlay } from './dom.js';
 import { companionLineAfterQuest } from '../engine/companion.js';
 import { THEMES } from '../data/themes.js';
 import { themeText } from './themeText.js';
@@ -49,7 +49,7 @@ export function levelUpOverlay(level, opts = {}) {
       ${lootLine}
       <button class="btn primary" data-action="close-overlay">${i18n.t('levelup_close')}</button>
     </div>`;
-  ov.classList.add('show');
+  showOverlay(ov);
   celebrate();
 }
 
@@ -69,7 +69,7 @@ export function themeTipOverlay(onChoice) {
       <button class="btn primary full" data-tip="shop">${i18n.t('tip_theme_cta')}</button>
       <button class="btn ghost full" data-tip="later">${i18n.t('tip_theme_later')}</button>
     </div>`;
-  ov.classList.add('show');
+  showOverlay(ov);
   const handler = (e) => {
     const b = e.target.closest('[data-tip]');
     if (!b) return;
@@ -109,7 +109,7 @@ function questCeremonyOverlay(state, { xp, first }, onClose) {
       <p class="ceremony-line">${esc(reaction)}</p>
       <button class="btn primary" data-action="close-overlay">${i18n.t('quest_ceremony_close')}</button>
     </div>`;
-  ov.classList.add('show');
+  showOverlay(ov);
   tapMedium();
   pendingAfterClose.push(onClose);
 }

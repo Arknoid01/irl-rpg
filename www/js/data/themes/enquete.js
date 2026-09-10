@@ -201,8 +201,8 @@ export default {
       en: (level) => `The file grows thicker. Level ${level}. Nothing more is required.`,
     },
     regionReveal: {
-      fr: (label) => `Sur le plan, une épingle de plus : « ${label} » n’est plus une case vide.`,
-      en: (label) => `On the map, one more pin: “${label}” is no longer a blank square.`,
+      fr: () => `Une case blanche du plan porte maintenant une épingle. Tu iras y jeter un œil, un de ces soirs.`,
+      en: () => `A blank square on the map now carries a pin. You'll go take a look one of these nights.`,
     },
 
     chapters: [

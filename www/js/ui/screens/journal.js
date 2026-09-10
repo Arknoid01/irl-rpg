@@ -74,7 +74,22 @@ function memoryEntryHtml(e, today) {
     </article>`;
 }
 
+// Jalon narratif (chapitre de la chronique, montée de niveau, révélation d'arc)
+// — une entrée à part entière : sceau, texte centré en police d'affichage.
+const MILESTONE_KINDS = new Set(['chapitre', 'revelation']);
+function milestoneEntryHtml(e, today) {
+  const seal = e.kind === 'revelation' ? '🗝' : '⚜';
+  return `
+    <article class="journal-entry journal-milestone kind-${e.kind}${e.pinned ? ' pinned' : ''}">
+      ${pinBtnHtml(e)}
+      <div class="journal-milestone-seal" aria-hidden="true">${seal}</div>
+      ${metaHtml(e, today)}
+      <p class="journal-milestone-text">${esc(i18n.loc(e.text)).replace(/\n/g, '<br>')}</p>
+    </article>`;
+}
+
 function entryHtml(e, today) {
+  if (MILESTONE_KINDS.has(e.kind)) return milestoneEntryHtml(e, today);
   if (e.title) return memoryEntryHtml(e, today);
   return `
     <article class="journal-entry kind-${e.kind || 'note'}${e.pinned ? ' pinned' : ''}">

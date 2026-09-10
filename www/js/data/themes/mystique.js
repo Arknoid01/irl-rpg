@@ -201,8 +201,8 @@ export default {
       en: (level) => `One more house rises. Level ${level}. The sky asks nothing more.`,
     },
     regionReveal: {
-      fr: (label) => `Sur la carte céleste, une étoile s’allume : « ${label} » n’est plus un vide.`,
-      en: (label) => `On the star chart, a star lights: “${label}” is no longer a void.`,
+      fr: () => `Une région du ciel qui restait obscure s'est mise à briller. Le chemin pour t'y rendre viendra en son temps.`,
+      en: () => `A region of the sky that stayed dark has begun to shine. The way there will come in its time.`,
     },
 
     chapters: [

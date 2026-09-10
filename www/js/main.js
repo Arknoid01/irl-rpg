@@ -4,7 +4,7 @@ import { needsNewDay } from './engine/game.js';
 import { msUntilNextMidnight } from './engine/dates.js';
 import { i18n, detectLang } from './i18n/index.js';
 import { applyTheme } from './ui/theme.js';
-import { $ } from './ui/dom.js';
+import { $, focusables } from './ui/dom.js';
 import { renderAdventure } from './ui/screens/adventure.js';
 import { renderWorld, selectWorldRegion } from './ui/screens/world.js';
 import { renderJournal, setJournalFilter } from './ui/screens/journal.js';
@@ -358,6 +358,42 @@ document.addEventListener('click', (e) => {
   const action = el.dataset.action;
   const args = { id: el.dataset.id, lang: el.dataset.lang, tab: el.dataset.tab };
   dispatch(action, args);
+});
+
+const NATIVE_ACTIVATION = new Set(['BUTTON', 'A', 'INPUT', 'TEXTAREA', 'SELECT']);
+
+document.addEventListener('keydown', (e) => {
+  // Échap ferme un overlay refermable (pas l'onboarding, qui est un passage obligé).
+  if (e.key === 'Escape') {
+    const ov = $('#overlay');
+    if (ov && ov.classList.contains('show') && !ov.querySelector('.onboarding, .cover-screen')) {
+      const closer = ov.querySelector('[data-action="close-overlay"], [data-set="close"], [data-tip="later"]');
+      if (closer) { e.preventDefault(); closer.dispatchEvent(new MouseEvent('click', { bubbles: true })); }
+    }
+    return;
+  }
+
+  // Piège de tabulation : le focus reste dans l'overlay ouvert.
+  if (e.key === 'Tab') {
+    const ov = $('#overlay');
+    if (!ov || !ov.classList.contains('show')) return;
+    const items = focusables(ov);
+    if (!items.length) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    return;
+  }
+
+  // Entrée / Espace active un élément focalisable non natif (nœuds SVG de la
+  // carte : role="button" tabindex="0"). Les boutons/liens le font déjà.
+  if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+    const el = e.target.closest('[data-action]');
+    if (!el || NATIVE_ACTIVATION.has(el.tagName)) return;
+    e.preventDefault();
+    dispatch(el.dataset.action, { id: el.dataset.id, lang: el.dataset.lang, tab: el.dataset.tab });
+  }
 });
 
 initRipples();

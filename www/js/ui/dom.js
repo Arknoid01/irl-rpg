@@ -21,6 +21,34 @@ export function mount(container, html) {
   container.innerHTML = html;
 }
 
+const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+let overlayReturnFocus = null;
+
+/** Éléments focalisables et actifs à l'intérieur d'un conteneur. */
+export function focusables(root) {
+  return $$(FOCUSABLE, root).filter((el) => !el.disabled && !el.hidden);
+}
+
+/**
+ * Ouvre #overlay : mémorise le focus courant, ajoute `.show`, puis déplace le
+ * focus dans le dialogue (premier élément utile, sinon le conteneur). Le focus
+ * est rendu par hideOverlay.
+ */
+export function showOverlay(ov, extraClasses = []) {
+  if (!ov) return;
+  try {
+    const a = document.activeElement;
+    if (a && a !== document.body && !ov.contains(a)) overlayReturnFocus = a;
+  } catch { /* pas de DOM complet */ }
+  ov.classList.add('show', ...extraClasses);
+  const dlg = ov.querySelector('[role="dialog"]') || ov.firstElementChild;
+  const target = focusables(ov)[0] || dlg;
+  if (target) {
+    if (target === dlg && !dlg.hasAttribute('tabindex')) dlg.setAttribute('tabindex', '-1');
+    try { target.focus({ preventScroll: true }); } catch { /* jsdom */ }
+  }
+}
+
 /**
  * Referme #overlay avec le fondu défini dans components.css : on retire la
  * classe qui pilote l'opacité, et on ne vide le HTML qu'une fois le fondu
@@ -29,6 +57,12 @@ export function mount(container, html) {
 export function hideOverlay(ov, extraClasses = []) {
   if (!ov) return;
   ov.classList.remove('show', ...extraClasses);
+  // Rend le focus à l'élément qui a ouvert l'overlay (accessibilité clavier).
+  if (overlayReturnFocus && typeof overlayReturnFocus.focus === 'function'
+    && overlayReturnFocus.isConnected !== false) {
+    try { overlayReturnFocus.focus({ preventScroll: true }); } catch { /* */ }
+  }
+  overlayReturnFocus = null;
   let done = false;
   // Si l'overlay a été rouvert entre-temps (double-tap, cérémonie enchaînée),
   // on ne vide surtout pas le contenu qui vient d'être affiché.

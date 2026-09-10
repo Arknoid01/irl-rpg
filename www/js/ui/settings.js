@@ -10,7 +10,7 @@ import { FAMILIES } from '../data/taxonomy.js';
 import { PREFERABLE_FAMILIES } from '../data/quests.js';
 import { THEMES, THEME_KEYS, companionLineFor } from '../data/themes.js';
 import { getBilling, COLLECTION_PRODUCT } from '../platform/billing.js';
-import { $, esc, hideOverlay } from './dom.js';
+import { $, esc, hideOverlay, showOverlay } from './dom.js';
 
 const PREVIEW_XP = 120;
 const TABS = ['adventure', 'themes', 'general'];
@@ -185,7 +185,7 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
         <div class="set-panel">${panel}</div>
         <button class="btn primary full" data-set="close">${i18n.t('set_close')}</button>
       </div>`;
-    ov.classList.add('show', 'sheet-mode');
+    showOverlay(ov, ['sheet-mode']);
   }
 
   /* ─────────────── événements ─────────────── */

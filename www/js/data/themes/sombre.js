@@ -214,8 +214,8 @@ export default {
       en: (level) => `One notch further. Level ${level}. The ledger grows heavier — claiming nothing more.`,
     },
     regionReveal: {
-      fr: (label) => `Sur le plan, une lanterne s’allume : « ${label} » n’est plus une zone morte.`,
-      en: (label) => `On the plan, a lantern lights: “${label}” is no longer a dead zone.`,
+      fr: () => `Une zone morte du plan a repris de la couleur. Tu n'y as pas mis les pieds — pas encore.`,
+      en: () => `A dead patch of the plan took on colour again. You haven't set foot there — not yet.`,
     },
 
     chapters: [

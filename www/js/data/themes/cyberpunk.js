@@ -214,8 +214,8 @@ export default {
       en: (level) => `Threshold cleared. Level ${level}. The log fills out — asking nothing more.`,
     },
     regionReveal: {
-      fr: (label) => `Sur le plan, un secteur s’éclaire : « ${label} » n’est plus une zone blanche.`,
-      en: (label) => `On the grid, a sector lights up: “${label}” is no longer a blank zone.`,
+      fr: () => `Un secteur vient de sortir du noir sur ta carte. Coordonnées enregistrées ; le reste, ce sera pour une prochaine run.`,
+      en: () => `A sector just came out of the dark on your map. Coordinates logged; the rest is for another run.`,
     },
 
     chapters: [

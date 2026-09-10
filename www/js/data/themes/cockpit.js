@@ -201,8 +201,8 @@ export default {
       en: (level) => `Flight threshold cleared. Level ${level}. The flight record asks nothing more.`,
     },
     regionReveal: {
-      fr: (label) => `Sur la carte de nav, un point s’éclaire : « ${label} » n’est plus une zone blanche.`,
-      en: (label) => `On the nav chart, a point lights: “${label}” is no longer a blank zone.`,
+      fr: () => `Un point est sorti du brouillard sur la carte de nav. Cap noté ; l'exploration attendra le prochain vol.`,
+      en: () => `A point emerged from the fog on the nav chart. Heading noted; the exploration waits for the next flight.`,
     },
 
     chapters: [

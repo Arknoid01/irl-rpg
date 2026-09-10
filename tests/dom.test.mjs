@@ -114,6 +114,13 @@ test('parcours complet dans le DOM', async () => {
   await click('[data-action="goto"][data-id="world"]');
   assert.ok($('.world-map'), 'carte SVG');
   assert.ok($$('.map-node').length >= 6, 'régions sur la carte');
+  // Activation clavier d'un nœud de carte (a11y : role=button + tabindex, mais
+  // c'est un <g> SVG — pas d'activation native).
+  const node = $('.map-node[data-id="social"]');
+  assert.equal(node.getAttribute('role'), 'button');
+  node.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+  await tick();
+  assert.equal($('.map-node.selected')?.dataset.id, 'social', 'nœud sélectionné au clavier');
   await click('.map-node[data-id="foyer"]');
   assert.ok($('.map-detail'), 'panneau détail région');
 
@@ -125,11 +132,13 @@ test('parcours complet dans le DOM', async () => {
   assert.match($('#root').textContent, /Testeur/);
   assert.ok($('.museum-empty, .museum-grid'), 'section musée');
 
-  // 7. Réglages
+  // 7. Réglages — Échap referme (a11y clavier)
   await click('[data-action="open-settings"]');
   assert.ok($('.sheet'), 'feuille de réglages');
-  await click('[data-set="close"]');
-  assert.equal($('#overlay').classList.contains('show'), false, 'réglages fermés');
+  assert.ok($('#overlay').contains(window.document.activeElement), 'focus déplacé dans la feuille');
+  window.document.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+  await tick();
+  assert.equal($('#overlay').classList.contains('show'), false, 'Échap referme les réglages');
 
   // 8. Le passage de jour est automatique (minuit / retour au premier plan) —
   // plus de bouton « ↻ Nouvelle journée » sur l'écran Aventure.

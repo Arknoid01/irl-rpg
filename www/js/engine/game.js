@@ -70,7 +70,12 @@ function applyRegionReveals(s, effects, today) {
   const newly = syncRegionUnlocks(s);
   for (const r of newly) {
     if (r.id === 'foyer') continue;
-    addEntry(s, { date: today, text: regionRevealEntry(r.label, s.theme), kind: 'decouverte' });
+    addEntry(s, {
+      date: today,
+      kind: 'decouverte',
+      title: r.label,
+      text: regionRevealEntry(r.label, s.theme),
+    });
     effects.push({ type: 'region', id: r.id, label: r.label });
   }
 }

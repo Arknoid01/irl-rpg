@@ -1,7 +1,7 @@
 import { i18n } from '../i18n/index.js';
 import { FAMILIES } from '../data/taxonomy.js';
 import { PREFERABLE_FAMILIES } from '../data/quests.js';
-import { $, esc, hideOverlay } from './dom.js';
+import { $, esc, hideOverlay, showOverlay } from './dom.js';
 
 // 'lang' : tout premier écran, avant même le grimoire fermé — choix explicite
 // de langue plutôt qu'une détection silencieuse (axe différenciation D11).
@@ -132,7 +132,7 @@ export function startOnboarding(initial, onComplete) {
         chapters.map((_, i) => `<i class="${i <= step - 2 ? 'on' : ''}"></i>`).join('')
       }</div>${stepHtml()}</div>`;
     }
-    ov.classList.add('show');
+    showOverlay(ov);
     const nameInput = $('#ob-name');
     if (nameInput) setTimeout(() => nameInput.focus(), 50);
   }

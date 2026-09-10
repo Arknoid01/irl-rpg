@@ -475,10 +475,32 @@
 .journal-entry p { margin: 0; font-size: .95rem; color: var(--text); }
 
 /* Entrée « souvenir » (événement) — un keepsake, pas une ligne de log. */
-.journal-entry.journal-memory {
-  border-left-color: var(--gold);
-  padding-bottom: 14px;
+.journal-entry.journal-memory { padding-bottom: 14px; }
+.journal-entry.journal-memory.kind-evenement { border-left-color: var(--gold); }
+.journal-entry.journal-memory.kind-decouverte { border-left-color: #4a7a9a; }
+
+/* Jalon narratif : chapitre de la chronique, palier, révélation d'arc. */
+.journal-entry.journal-milestone {
+  text-align: center;
+  padding: 16px 16px 15px;
+  border-left-width: 3px;
 }
+.journal-milestone-seal {
+  font-size: 1.15rem;
+  line-height: 1;
+  margin-bottom: 6px;
+  opacity: .85;
+}
+.journal-milestone .journal-date { text-align: center; }
+.journal-milestone-text {
+  margin: 6px 0 0;
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  line-height: 1.4;
+  color: var(--ink);
+}
+.journal-entry.journal-milestone.kind-revelation .journal-milestone-text { font-style: italic; }
+
 .journal-entry-title {
   font-family: var(--font-display);
   font-size: 1.18rem;
@@ -556,7 +578,7 @@
 }
 
 /* Bouton « garder » — discret en haut à droite de l'entrée */
-.journal-entry { padding-right: 34px; }
+.journal-entry:not(.journal-milestone) { padding-right: 34px; }
 .journal-pin {
   position: absolute;
   top: 8px; right: 8px;
