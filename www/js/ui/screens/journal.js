@@ -30,6 +30,45 @@ const SECTION_KEYS = {
   older: 'journal_older',
 };
 
+// Ligne de contexte d'une entrée : « JOUR 5 · il y a 3 jours ».
+function metaHtml(e, today) {
+  const icon = KIND_ICON[e.kind] || '•';
+  // Les entrées « du jour » portent déjà « Jour N » dans leur texte.
+  const day = (e.day && e.kind !== 'jour')
+    ? `<span class="journal-day">${esc(i18n.t('day_kicker', { n: e.day }))}</span> · `
+    : '';
+  return `<span class="journal-date"><span aria-hidden="true">${icon}</span> ${day}${relDate(e.date, today)}</span>`;
+}
+
+// Entrée « souvenir » (événement) : titre + récit + objet gagné + parfois un
+// mot du compagnon. Bascule sur le rendu simple si l'entrée n'a pas de titre.
+function memoryEntryHtml(e, today) {
+  const body = esc(i18n.loc(e.text)).replace(/\n/g, '<br>');
+  const souvenir = e.souvenir ? `
+    <div class="journal-souvenir">
+      <span class="journal-souvenir-label">${i18n.t('journal_souvenir_added')}</span>
+      <span class="journal-souvenir-item">${esc(i18n.loc(e.souvenir))}</span>
+    </div>` : '';
+  const coda = e.coda ? `<p class="journal-coda">${esc(i18n.loc(e.coda))}</p>` : '';
+  return `
+    <article class="journal-entry journal-memory kind-${e.kind || 'note'}">
+      ${metaHtml(e, today)}
+      <h4 class="journal-entry-title">${esc(i18n.loc(e.title))}</h4>
+      <p class="journal-entry-body">${body}</p>
+      ${souvenir}
+      ${coda}
+    </article>`;
+}
+
+function entryHtml(e, today) {
+  if (e.title) return memoryEntryHtml(e, today);
+  return `
+    <article class="journal-entry kind-${e.kind || 'note'}">
+      ${metaHtml(e, today)}
+      <p>${esc(i18n.loc(e.text)).replace(/\n/g, '<br>')}</p>
+    </article>`;
+}
+
 export function renderJournal(state) {
   const today = todayStr();
   const timeline = buildJournalTimeline(state);
@@ -50,11 +89,7 @@ export function renderJournal(state) {
 
   const body = timeline.sections.map((sec) => {
     const title = i18n.t(SECTION_KEYS[sec.id] || 'journal_older');
-    const entries = sec.entries.map((e) => `
-      <article class="journal-entry kind-${e.kind || 'note'}">
-        <span class="journal-date"><span aria-hidden="true">${KIND_ICON[e.kind] || '•'}</span> ${relDate(e.date, today)}</span>
-        <p>${esc(i18n.loc(e.text)).replace(/\n/g, '<br>')}</p>
-      </article>`).join('');
+    const entries = sec.entries.map((e) => entryHtml(e, today)).join('');
     return `
       <div class="journal-section">
         <h3 class="journal-section-title">${esc(title)}</h3>

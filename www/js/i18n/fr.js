@@ -114,6 +114,7 @@ export default {
   journal_this_week: 'Cette semaine',
   journal_older: 'Plus tôt',
   journal_days_ago: 'Il y a {n} jours',
+  journal_souvenir_added: 'Souvenir ajouté',
 
   toast_xp: '+{n} XP',
   toast_level: 'Niveau {n} atteint !',

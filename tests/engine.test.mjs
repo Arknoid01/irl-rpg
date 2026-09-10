@@ -25,7 +25,7 @@ import {
 import { LOOT_KINDS, EVENT_LOOT_META } from '../www/js/data/loot.js';
 import {
   buildJournalTimeline, chapterFor, chapterOpenEntry, dailyRecapEntry,
-  levelChapterEntry, eventEntry, regionRevealEntry, CHAPTER_QUEST_THRESHOLDS,
+  levelChapterEntry, eventEntry, eventCoda, regionRevealEntry, CHAPTER_QUEST_THRESHOLDS,
 } from '../www/js/engine/journal.js';
 
 /** Petit helper : un état avec N quêtes accomplies. */
@@ -242,6 +242,7 @@ test('carte : pins reflètent quêtes / événement / souvenirs', () => {
 test('événements : modèle bilingue', () => {
   for (const e of EVENTS) {
     assert.ok(bilingual(e.title) && bilingual(e.text) && bilingual(e.item), e.id);
+    assert.ok(bilingual(e.memory), `${e.id} : memory bilingue`);
     assert.ok(e.xp > 0);
     if (e.famille) assert.ok(FAMILY_KEYS.includes(e.famille), e.id);
     if (e.moment) assert.ok(['matin', 'midi', 'soir'].includes(e.moment), e.id);
@@ -1189,6 +1190,32 @@ test('événement : compléter donne XP/loot sans pénalité, ignorer ne coûte 
 
   const again = game.completeEvent(r.state, {}, ctx);
   assert.equal(again.effects.length, 0, 'un événement déjà fait ne redonne rien');
+});
+
+test('journal : une entrée d\'événement est un souvenir (titre + récit + objet)', () => {
+  const ctx = { now: new Date('2026-09-04T10:00:00'), rng: mulberry32(3) };
+  let s = defaultState();
+  s.level = 10; s.ageAck = true; s.history.daysPlayed = 5;
+  s.event = { ...EVENTS.find((e) => e.id === 'ev_lumiere'), status: 'active' };
+  s = game.completeEvent(s, {}, ctx).state;
+
+  const entry = s.journal.find((e) => e.kind === 'evenement');
+  assert.ok(entry, 'entrée de journal créée');
+  assert.ok(bilingual(entry.title), 'titre bilingue');
+  assert.ok(bilingual(entry.text) && !/Butin|Loot/.test(entry.text.fr), 'récit, pas une ligne de log');
+  assert.ok(bilingual(entry.souvenir) && /Éclat/.test(entry.souvenir.fr), 'objet-souvenir');
+  assert.equal(entry.day, 5, 'numéro de jour stampé');
+  // coda : soit absente, soit une ligne bilingue du compagnon
+  if (entry.coda) assert.ok(bilingual(entry.coda));
+});
+
+test('journal : eventCoda tombe ~1 fois sur 3, toujours bilingue', () => {
+  let hits = 0;
+  for (let i = 0; i < 300; i++) {
+    const c = eventCoda('nordique', mulberry32(i));
+    if (c) { hits += 1; assert.ok(bilingual(c)); }
+  }
+  assert.ok(hits > 40 && hits < 160, `fréquence coda plausible : ${hits}/300`);
 });
 
 test('finishOnboarding : produit une journée jouable', () => {

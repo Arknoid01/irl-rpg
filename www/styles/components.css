@@ -466,7 +466,66 @@
 .journal-entry.kind-revelation { border-left-color: var(--gold); }
 .journal-entry.kind-revelation p { font-style: italic; }
 .journal-date { font-size: .72rem; color: var(--text-dim); display: block; margin-bottom: 4px; }
+.journal-day {
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
 .journal-entry p { margin: 0; font-size: .95rem; color: var(--text); }
+
+/* Entrée « souvenir » (événement) — un keepsake, pas une ligne de log. */
+.journal-entry.journal-memory {
+  border-left-color: var(--gold);
+  padding-bottom: 14px;
+}
+.journal-entry-title {
+  font-family: var(--font-display);
+  font-size: 1.18rem;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.2;
+  margin: 5px 0 7px;
+}
+.journal-entry-body {
+  margin: 0;
+  font-size: .98rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+.journal-souvenir {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin: 12px 0 0;
+  padding: 8px 11px;
+  border-radius: 3px 9px 3px 9px / 9px 3px 9px 3px;
+  background: color-mix(in srgb, var(--gold) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--gold) 34%, transparent);
+}
+.journal-souvenir-label {
+  font-size: .66rem;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: color-mix(in srgb, var(--gold) 55%, var(--ink));
+  flex-shrink: 0;
+}
+.journal-souvenir-item {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--ink);
+}
+.journal-coda {
+  margin: 11px 0 0;
+  padding-left: 11px;
+  border-left: 2px solid color-mix(in srgb, var(--seal) 42%, transparent);
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--ink-dim);
+  font-size: .92rem;
+  line-height: 1.45;
+}
 
 .journal-chapter {
   margin-bottom: 14px;

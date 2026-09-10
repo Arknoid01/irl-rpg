@@ -10,11 +10,33 @@ import { voiceFor } from '../data/themes.js';
 import { FAMILIES } from '../data/taxonomy.js';
 import { daysBetween, todayStr } from './dates.js';
 
-export function addEntry(s, { date, text, kind = 'note' }) {
-  s.journal.push({ date, text, kind });
+export function addEntry(s, {
+  date, text, kind = 'note', title, souvenir, coda,
+}) {
+  const entry = {
+    date, text, kind,
+    day: Math.max(1, (s.history && s.history.daysPlayed) || 1),
+  };
+  // Champs optionnels : une entrée « souvenir » (événement) porte un titre,
+  // l'objet gagné, et parfois une ligne de clôture du compagnon.
+  if (title) entry.title = title;
+  if (souvenir) entry.souvenir = souvenir;
+  if (coda) entry.coda = coda;
+  s.journal.push(entry);
 }
 
 const MEMORABLE_CHANCE = 0.38;
+const EVENT_CODA_CHANCE = 0.34;
+
+/**
+ * Ligne de clôture occasionnelle sous un souvenir d'événement (~1 sur 3).
+ * @returns {{fr:string,en:string}|null}
+ */
+export function eventCoda(themeKey, rng = defaultRng) {
+  const pool = voiceFor(themeKey).eventCoda || [];
+  if (!pool.length || rng() > EVENT_CODA_CHANCE) return null;
+  return pick(pool, rng);
+}
 
 /**
  * Renvoie un objet { fr, en } de « moment mémorable » ou null.

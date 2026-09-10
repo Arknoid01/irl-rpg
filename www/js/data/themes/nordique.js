@@ -185,17 +185,43 @@ export default {
     ],
 
     // Entrées de journal générées par le moteur.
+    // eventEntry : repli plat si un événement n'a pas encore son `memory`
+    // (data/events.js) — sinon c'est le récit de l'événement qui est écrit.
     eventEntry: {
       fr: (title, item) => `Événement relevé — ${title}. Butin : ${item}.`,
       en: (title, item) => `Event taken on — ${title}. Loot: ${item}.`,
     },
+    // Ligne de clôture occasionnelle sous un souvenir d'événement (journal) —
+    // le compagnon glisse un mot, jamais un jugement. ~1 fois sur 3.
+    eventCoda: [
+      {
+        fr: 'C’est sans doute ce genre de détour qui donnera sa forme à ton aventure.',
+        en: 'It’s probably this kind of detour that will give your adventure its shape.',
+      },
+      {
+        fr: 'Rien ne t’y obligeait. C’est peut-être pour ça que ça reste.',
+        en: 'Nothing made you do it. Maybe that’s why it stays.',
+      },
+      {
+        fr: 'Ton compagnon n’a rien dit. Il l’a seulement noté, en marge.',
+        en: 'Your companion said nothing. It just noted it, in the margin.',
+      },
+      {
+        fr: 'Une aventure, c’est souvent ça : des petits riens qu’on choisit de garder.',
+        en: 'An adventure is often just this: small nothings you choose to keep.',
+      },
+      {
+        fr: 'Tu ne t’en souviendras peut-être pas. Le grimoire, lui, s’en souviendra.',
+        en: 'You might not remember it. The grimoire will.',
+      },
+    ],
     levelChapter: {
       fr: (level) => `Une page se tourne. Niveau ${level}. Le grimoire s’épaissit — sans rien exiger de plus.`,
       en: (level) => `A page turns. Level ${level}. The grimoire thickens — asking nothing more.`,
     },
     regionReveal: {
-      fr: (label) => `Sur la carte, la brume se lève : « ${label} » n’est plus un blanc.`,
-      en: (label) => `On the map, the fog lifts: “${label}” is no longer a blank.`,
+      fr: (label) => `Tu ne l’as pas cherché, mais quelque chose s’est ouvert du côté de « ${label} ». Tu iras, un jour.`,
+      en: (label) => `You weren’t looking for it, but something opened up over by “${label}”. You’ll go there, one day.`,
     },
 
     // Chapitres narratifs, dans l'ordre des paliers (prologue → ch5).

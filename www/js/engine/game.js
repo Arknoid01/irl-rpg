@@ -9,7 +9,7 @@ import {
 import { skillDeltasFor } from '../data/taxonomy.js';
 import { todayStr } from './dates.js';
 import {
-  addEntry, maybeMemorable, eventEntry, levelChapterEntry, regionRevealEntry,
+  addEntry, maybeMemorable, eventEntry, eventCoda, levelChapterEntry, regionRevealEntry,
   chapterFor, chapterOpenEntry, CHAPTER_QUEST_THRESHOLDS, dailyRecapEntry,
   arcClueEntry, arcRevealEntry,
 } from './journal.js';
@@ -259,7 +259,7 @@ export function completeQuest(state, { id }, ctx) {
 /* ─────────────── Événement ─────────────── */
 
 export function completeEvent(state, _args, ctx) {
-  const { now } = ctxDefaults(ctx);
+  const { now, rng } = ctxDefaults(ctx);
   const s = clone(state);
   if (!s.event || s.event.status === 'done') return { state: s, effects: [] };
   const ev = s.event;
@@ -279,7 +279,17 @@ export function completeEvent(state, _args, ctx) {
 
   const loot = lootFromEvent(ev, today);
   addLoot(s, loot);
-  addEntry(s, { date: today, text: eventEntry(ev, s.theme), kind: 'evenement' });
+  // Entrée de journal = un souvenir, pas une ligne de log : titre de
+  // l'événement, récit à la 2e personne (ev.memory), l'objet gagné, et
+  // parfois un mot du compagnon. Repli sur eventEntry() si `memory` manque.
+  addEntry(s, {
+    date: today,
+    kind: 'evenement',
+    title: ev.title,
+    text: ev.memory || eventEntry(ev, s.theme),
+    souvenir: ev.item,
+    coda: eventCoda(s.theme, rng),
+  });
   applyRegionReveals(s, effects, today);
 
   applyMilestones(s, effects, recordEventMilestones(s, ev, now), now);
