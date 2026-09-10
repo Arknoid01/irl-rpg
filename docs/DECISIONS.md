@@ -621,7 +621,8 @@ rollover naturel (la date avance, plus de `drawDate = null` forcé).
 
 **Mini-arcs secrets (3.3)** — « le plus gros levier rétention ».
 - `state.arcs = { active, step, completed }`. **Un arc à la fois.**
-- `data/arcs.js` : **4 arcs** figés (`passage`, `visage`, `objet`, `heure`),
+- `data/arcs.js` : **7 arcs** figés (`passage`, `visage`, `objet`, `heure`,
+  + `son`, `graine`, `nom` ajoutés le 2026-09-10 ≈ 5-6 mois de jeu),
   3–4 étapes. Contenu (action, indice, révélation) **neutre bilingue** comme
   la banque de quêtes ; `voice.arc` (clue / reveal / inProgress) l'habille.
 - Étape courante = quête cachée **toujours légère, audace 2, jamais chaos** →

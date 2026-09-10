@@ -21,7 +21,7 @@ const MIN_QUESTS = 3;
 const MAX_QUESTS = 3;
 const HIDDEN_SWAP_CHANCE = 0.25;
 // Étape de mini-arc : ~1 fois tous les 3-4 jours quand un arc est disponible
-// (4 arcs de 3-4 étapes ≈ 2-3 mois de jeu).
+// (7 arcs de 3-4 étapes ≈ 5-6 mois de jeu).
 const ARC_STEP_CHANCE = 0.28;
 const EVENT_CHANCE = 0.32;
 const COMEBACK_EVENT_CHANCE = 0.8;

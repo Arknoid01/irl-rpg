@@ -242,4 +242,158 @@ export const ARCS = [
       },
     },
   },
+  {
+    id: 'son',
+    famille: 'curiosite',
+    steps: [
+      {
+        famille: 'curiosite', xp: 100, contexte: [], safe_fallback: FB,
+        text: {
+          fr: "Rep\u00e8re un son que tu entends si souvent que tu ne l'\u00e9coutes plus (une horloge, la rue, un frigo).",
+          en: "Notice a sound you hear so often you've stopped listening to it (a clock, the street, a fridge).",
+        },
+        indice: {
+          fr: "Il y a un son qui t'accompagne tout le temps. Tu avais cess\u00e9 de l'entendre.",
+          en: "There's a sound with you all the time. You'd stopped hearing it.",
+        },
+      },
+      {
+        famille: 'curiosite', xp: 110, contexte: [], safe_fallback: FB,
+        text: {
+          fr: "Passe une minute \u00e0 n'\u00e9couter que lui, comme s'il \u00e9tait nouveau.",
+          en: "Spend a minute listening to nothing but it, as if it were new.",
+        },
+        indice: {
+          fr: "\u00c9cout\u00e9 expr\u00e8s, il n'est pas si anodin. Il a un rythme, presque une intention.",
+          en: "Listened to on purpose, it isn't so plain. It has a rhythm, almost an intent.",
+        },
+      },
+      {
+        famille: 'creation', xp: 120, contexte: [], safe_fallback: FB,
+        text: {
+          fr: "Trouve trois mots pour le d\u00e9crire \u00e0 quelqu'un qui ne l'a jamais entendu.",
+          en: "Find three words to describe it to someone who's never heard it.",
+        },
+        indice: {
+          fr: "Mis en mots, le son devient un objet. Tu peux le donner, maintenant.",
+          en: "Put into words, the sound becomes an object. You can hand it over now.",
+        },
+      },
+      {
+        famille: 'curiosite', xp: 130, contexte: [], safe_fallback: FB,
+        text: {
+          fr: "Un jour o\u00f9 il s'arr\u00eate ou change, remarque-le \u2014 et ce que \u00e7a te fait.",
+          en: "On a day it stops or shifts, notice it — and what that does to you.",
+        },
+        revelation: {
+          fr: "Tu entends de nouveau ce qui \u00e9tait devenu invisible. Ton quotidien a regagn\u00e9 une voix \u2014 celle qu'il avait toujours eue.",
+          en: "You hear again what had gone invisible. Your everyday got a voice back — the one it always had.",
+        },
+      },
+    ],
+    loot: {
+      item: { fr: '\ud83c\udfa7 Le son retrouv\u00e9', en: '\ud83c\udfa7 The sound found again' },
+      kind: 'fragment',
+      lore: {
+        fr: "La trace d'un bruit que tout le monde ignore et que toi, un jour, tu as vraiment \u00e9cout\u00e9.",
+        en: "The trace of a noise everyone ignores and that you, one day, actually listened to.",
+      },
+    },
+  },
+
+  {
+    id: 'graine',
+    famille: 'creation',
+    steps: [
+      {
+        famille: 'creation', xp: 100, contexte: [], safe_fallback: FB,
+        text: {
+          fr: "Fabrique ou choisis une petite chose sans valeur mais soign\u00e9e : un dessin, un galet, un mot pli\u00e9.",
+          en: "Make or pick a small worthless but carefully-made thing: a drawing, a pebble, a folded note.",
+        },
+        indice: {
+          fr: "Tu as fait quelque chose qui ne te servira pas. C'est fait expr\u00e8s.",
+          en: "You made something that won't serve you. That's on purpose.",
+        },
+      },
+      {
+        famille: 'exploration', xp: 110, contexte: ['exterieur'], safe_fallback: FB,
+        text: {
+          fr: "Rep\u00e8re un endroit public o\u00f9 quelqu'un tombera dessus par hasard, sans g\u00eaner personne.",
+          en: "Find a public spot where someone will come across it by chance, bothering no one.",
+        },
+        indice: {
+          fr: "Il y a un endroit qui attend ta petite chose. Un rebord, une branche, un interstice.",
+          en: "There's a spot waiting for your small thing. A ledge, a branch, a gap.",
+        },
+      },
+      {
+        famille: 'social', xp: 130, contexte: ['exterieur'], safe_fallback: FB,
+        text: {
+          fr: "Laisse-la l\u00e0 et repars sans regarder qui la prend.",
+          en: "Leave it there and walk off without watching who takes it.",
+        },
+        revelation: {
+          fr: "Ta petite chose vit sa vie maintenant, sans toi. Quelqu'un l'a peut-\u00eatre d\u00e9j\u00e0, et se demande d'o\u00f9 elle vient.",
+          en: "Your small thing lives its own life now, without you. Someone may already have it, wondering where it came from.",
+        },
+      },
+    ],
+    loot: {
+      item: { fr: '\ud83c\udf31 Ce que tu as sem\u00e9', en: '\ud83c\udf31 What you sowed' },
+      kind: 'souvenir',
+      lore: {
+        fr: "Aucune preuve que \u00e7a a march\u00e9. C'est \u00e0 peu pr\u00e8s la d\u00e9finition d'un cadeau.",
+        en: "No proof it worked. That's more or less the definition of a gift.",
+      },
+    },
+  },
+
+  {
+    id: 'nom',
+    famille: 'curiosite',
+    steps: [
+      {
+        famille: 'curiosite', xp: 100, contexte: ['exterieur'], safe_fallback: FB,
+        text: {
+          fr: "Choisis un arbre, une plante ou un oiseau que tu croises tous les jours sans conna\u00eetre son nom.",
+          en: "Pick a tree, a plant or a bird you pass every day without knowing its name.",
+        },
+        indice: {
+          fr: "Il y a un \u00eatre vivant sur ta route dont tu ignores le nom. Il te voit passer depuis longtemps.",
+          en: "There's a living thing on your way whose name you don't know. It's watched you pass for a while.",
+        },
+      },
+      {
+        famille: 'curiosite', xp: 110, contexte: [], safe_fallback: FB,
+        text: {
+          fr: "Trouve son nom \u2014 une appli, un livre, quelqu'un qui sait.",
+          en: "Find its name — an app, a book, someone who knows.",
+        },
+        indice: {
+          fr: "Il a un nom. \u00c7a change \u00e0 peine les choses, et pourtant.",
+          en: "It has a name. It barely changes anything, and yet.",
+        },
+      },
+      {
+        famille: 'exploration', xp: 120, contexte: ['exterieur'], safe_fallback: FB,
+        text: {
+          fr: "Repasse devant, et cette fois salue-le par son nom \u2014 dans ta t\u00eate, \u00e7a compte.",
+          en: "Walk past again, and this time greet it by name — in your head counts.",
+        },
+        revelation: {
+          fr: "Nommer, c'est d\u00e9j\u00e0 conna\u00eetre un peu. Il y a une chose de plus sur ta route qui n'est plus \u00ab un truc \u00bb mais quelqu'un.",
+          en: "To name is already to know a little. There's one more thing on your way that's no longer \u201ca thing\u201d but someone.",
+        },
+      },
+    ],
+    loot: {
+      item: { fr: '\ud83c\udf43 Un nom sur ta route', en: '\ud83c\udf43 A name on your way' },
+      kind: 'fragment',
+      lore: {
+        fr: "Un mot que tu ne connaissais pas la semaine derni\u00e8re, et qui d\u00e9signe maintenant un vieux voisin.",
+        en: "A word you didn't know last week, now naming an old neighbour.",
+      },
+    },
+  },
 ];

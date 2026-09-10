@@ -208,7 +208,7 @@ Faible risque, fort impact lisibilité. Purement `ui/` + CSS + i18n.
   (« Jour N — <titre>. Tu as vécu : 🧭 Exploration · 🤝 Social. »), une seule
   par date, jamais pour une journée vide. `voice.dayEntry` + `voice.dayTitles`
   (7 thèmes). `simulate.mjs` passé en rollover naturel pour l'exercer.
-- [x] **3.3 Mini-arcs secrets 3–5 étapes** (Éco §12). `data/arcs.js` (4 arcs :
+- [x] **3.3 Mini-arcs secrets 3–5 étapes** (Éco §12). `data/arcs.js` (7 arcs :
   passage, visage, objet, heure — contenu neutre) + `engine/arcs.js`
   (`state.arcs = {active, step, completed}`, un arc à la fois) +
   `voice.arc` (indice / révélation / mention en cours, 7 thèmes). L'étape

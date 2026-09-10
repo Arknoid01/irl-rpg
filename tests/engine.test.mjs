@@ -591,7 +591,7 @@ test('mini-arcs : contenu bien formé (Phase 3.3)', () => {
       assert.ok(bilingual(last ? s.revelation : s.indice), `${arc.id}#${i} ${last ? 'revelation' : 'indice'}`);
     });
   }
-  assert.equal(ARCS.length, 4);
+  assert.equal(ARCS.length, 7);
 });
 
 test('mini-arcs : moteur — proposition, avancement, révélation', () => {
