@@ -98,7 +98,7 @@ phone. No rankings, no account, no ads. Ages 16+.
 
 - [ ] Héberger `privacy.html` et coller l’URL
 - [ ] Captures d’écran (utiliser `www/demo.html` si besoin)
-- [ ] Icône / feature graphic
+- [x] Icône (logo « cairn + étoile », `resources/icon.png` 1024, mipmaps Android générés 2026-09-10) · [ ] feature graphic 1024×500
 - [ ] Questionnaire âge + data safety alignés sur ce doc (achats in-app = oui)
 - [ ] Déclarer le produit `collection_des_mondes` (voir section « Achat in-app »)
 - [ ] `npx cap sync` + AAB signé (keystore hors git)
