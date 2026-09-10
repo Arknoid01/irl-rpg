@@ -46,6 +46,7 @@ import {
 } from '../www/js/engine/progression.js';
 import { checkNoPenalty } from '../www/js/engine/philosophy.js';
 import * as game from '../www/js/engine/game.js';
+import { msUntilNextMidnight } from '../www/js/engine/dates.js';
 import { getBilling, billingIsReal, COLLECTION_PRODUCT, COLLECTION_THEMES } from '../www/js/platform/billing.js';
 import fr from '../www/js/i18n/fr.js';
 import en from '../www/js/i18n/en.js';
@@ -1244,4 +1245,18 @@ test('boutique de thèmes (D12) : déblocage local + activation verrouillée', (
   // clé de thème invalide : ignorée proprement.
   r = game.unlockTheme(s, { theme: 'imaginaire' });
   assert.equal(r.effects.length, 0);
+});
+
+test('msUntilNextMidnight : délai jusqu’au prochain minuit local + marge', () => {
+  // Midi pile : 12 h restantes, + 5 s de marge.
+  const noon = new Date(2026, 0, 15, 12, 0, 0, 0);
+  assert.equal(msUntilNextMidnight(noon, 5), 12 * 3600_000 + 5000);
+
+  // 30 s avant minuit : 30 s + 5 s de marge.
+  const late = new Date(2026, 0, 15, 23, 59, 30, 0);
+  assert.equal(msUntilNextMidnight(late, 5), 35_000);
+
+  // Toujours strictement positif (jamais un setTimeout négatif).
+  const oneSecBefore = new Date(2026, 5, 1, 23, 59, 59, 500);
+  assert.ok(msUntilNextMidnight(oneSecBefore, 0) > 0);
 });

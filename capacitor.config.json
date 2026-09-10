@@ -1,6 +1,6 @@
 {
   "appId": "com.pegasuscorp.irlrpg",
-  "appName": "IRL RPG",
+  "appName": "Cairn",
   "webDir": "www",
   "plugins": {
     "LocalNotifications": {

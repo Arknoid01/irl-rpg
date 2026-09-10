@@ -14,13 +14,24 @@ function statusLabel(status) {
   return i18n.t('map_status_' + status) || status;
 }
 
-function pinGlyph(pin) {
-  if (pin.kind === 'event') return '✦';
-  if (pin.kind === 'souvenir') return '·';
-  if (pin.hidden && pin.status === 'proposed') return '?';
-  if (pin.status === 'done') return '✓';
-  if (pin.status === 'accepted') return '◎';
-  return '○';
+// Un lieu verrouillé (palier de niveau / quête cachée) ne dit rien de lui-même
+// sur le plateau : « ??? » et un point d'interrogation, pour donner envie.
+// Un lieu sous la brume (famille bientôt débloquée) garde son nom, juste voilé.
+function nodeIcon(r) {
+  return r.status === 'locked' ? '?' : r.icon;
+}
+
+function nodeLabel(r) {
+  return r.status === 'locked' ? '? ? ?' : i18n.loc(r.label);
+}
+
+/** Une seule pastille par lieu : événement > quête du jour > souvenir. */
+function pinBadge(pins) {
+  if (!pins.length) return null;
+  if (pins.some((p) => p.kind === 'event')) return 'event';
+  if (pins.some((p) => p.kind === 'quest'
+    && (p.status === 'proposed' || p.status === 'accepted' || p.status === 'done'))) return 'quest';
+  return 'souvenir';
 }
 
 function pathD(a, b) {
@@ -35,94 +46,98 @@ function mapSvg(view) {
     const ra = byId[a];
     const rb = byId[b];
     if (!ra || !rb) return '';
-    const lit = (ra.status !== 'locked' && rb.status !== 'locked');
-    return `<path class="map-path${lit ? ' lit' : ''}" d="${pathD(ra, rb)}" />`;
+    const lit = ra.status !== 'locked' && rb.status !== 'locked';
+    const toMystery = ra.status === 'locked' || rb.status === 'locked';
+    return `<path class="map-path${lit ? ' lit' : ''}${toMystery ? ' to-mystery' : ''}" d="${pathD(ra, rb)}" />`;
   }).join('');
 
   const nodes = view.regions.map((r) => {
     const isSel = selectedId === r.id;
     const isHero = view.heroRegionId === r.id;
-    const glow = Math.round(40 + r.intensity * 55);
-    const fill = r.color || 'var(--ink)';
-    const pinDots = r.pins.slice(0, 5).map((p, i) => {
-      const ang = -70 + i * 36;
-      const rad = 9;
-      const px = r.x + Math.cos((ang * Math.PI) / 180) * rad;
-      const py = r.y + Math.sin((ang * Math.PI) / 180) * rad - 1;
-      return `<text class="map-pin map-pin-${p.kind} st-${p.status || 'idle'}" x="${px}" y="${py}" text-anchor="middle" dominant-baseline="central">${pinGlyph(p)}</text>`;
-    }).join('');
+    const fill = r.color || 'var(--ink-dim)';
+    const glow = `${Math.round(34 + (r.intensity || 0) * 48)}%`;
+    const badge = pinBadge(r.pins);
+    const cls = ['map-node', `status-${r.status}`,
+      isSel && 'selected', isHero && 'hero-here', r.justRevealed && 'just-revealed',
+    ].filter(Boolean).join(' ');
 
     return `
-      <g class="map-node status-${r.status}${isSel ? ' selected' : ''}${isHero ? ' hero-here' : ''}${r.justRevealed ? ' just-revealed' : ''}"
-         data-action="select-region" data-id="${r.id}" role="button" tabindex="0">
-        <circle class="map-halo" cx="${r.x}" cy="${r.y}" r="11" style="--node-glow:${glow}%; --node-color:${fill}" />
-        <circle class="map-disc" cx="${r.x}" cy="${r.y}" r="7.2" style="--node-color:${fill}" />
-        <text class="map-icon" x="${r.x}" y="${r.y}" text-anchor="middle" dominant-baseline="central">${r.icon}</text>
-        ${isHero ? `<circle class="map-hero" cx="${r.x}" cy="${r.y + 11}" r="1.6" />` : ''}
-        ${pinDots}
-        <text class="map-label" x="${r.x}" y="${r.y + 14.5}" text-anchor="middle">${esc(i18n.loc(r.label))}</text>
+      <g class="${cls}" data-action="select-region" data-id="${r.id}" role="button" tabindex="0"
+         aria-label="${esc(nodeLabel(r))}">
+        <circle class="map-halo" cx="${r.x}" cy="${r.y}" r="13"
+                style="--node-color:${fill}; --node-glow:${glow}" />
+        ${isHero ? `<circle class="map-hero-ring" cx="${r.x}" cy="${r.y}" r="10.5" />` : ''}
+        <circle class="map-disc" cx="${r.x}" cy="${r.y}" r="8" style="--node-color:${fill}" />
+        <text class="map-icon" x="${r.x}" y="${r.y}" text-anchor="middle" dominant-baseline="central">${nodeIcon(r)}</text>
+        ${badge ? `<circle class="map-badge map-badge-${badge}" cx="${r.x + 6.3}" cy="${r.y - 6.3}" r="2.7" />` : ''}
+        <text class="map-label" x="${r.x}" y="${r.y + 15}" text-anchor="middle">${esc(nodeLabel(r))}</text>
       </g>`;
   }).join('');
 
   return `
-    <svg class="world-map" viewBox="0 0 100 100" role="img" aria-label="${esc(i18n.t('map_title'))}">
-      <defs>
-        <radialGradient id="mapFog" cx="50%" cy="45%" r="65%">
-          <stop offset="0%" stop-color="rgba(232,217,184,.15)" />
-          <stop offset="100%" stop-color="rgba(60,40,20,.12)" />
-        </radialGradient>
-      </defs>
-      <rect class="map-paper" x="0" y="0" width="100" height="100" rx="2" />
-      <ellipse cx="50" cy="48" rx="42" ry="38" fill="url(#mapFog)" opacity=".55" />
+    <svg class="world-map" viewBox="-6 -6 112 112" role="img" aria-label="${esc(i18n.t('map_title'))}">
+      <rect class="map-paper" x="-6" y="-6" width="112" height="112" />
       <g class="map-paths">${paths}</g>
       <g class="map-nodes">${nodes}</g>
     </svg>`;
 }
 
+function pinsListHtml(r) {
+  return `<ul class="map-pin-list">${r.pins.map((p) => {
+    const title = p.kind === 'souvenir'
+      ? i18n.loc(p.label)
+      : (p.hidden && p.status === 'proposed' ? i18n.t('q_mystery') : i18n.loc(p.label));
+    const meta = p.kind === 'quest'
+      ? `${statusLabel(p.status === 'proposed' ? 'active' : p.status)} · +${p.xp} XP`
+      : p.kind === 'event'
+        ? `${themeText('eventLabel', 'event_badge')} · +${p.xp} XP`
+        : i18n.t('map_souvenir');
+    const ic = p.kind === 'event' ? '✦' : p.kind === 'souvenir' ? '·' : '◈';
+    return `<li><span class="map-pin-ic">${ic}</span><div><b>${esc(title)}</b><span class="tiny muted">${esc(meta)}</span></div></li>`;
+  }).join('')}</ul>`;
+}
+
 function detailHtml(view) {
-  const r = view.regions.find((x) => x.id === selectedId) || view.regions.find((x) => x.id === view.heroRegionId);
+  const r = view.regions.find((x) => x.id === selectedId)
+    || view.regions.find((x) => x.id === view.heroRegionId);
   if (!r) return '';
 
-  let pinsBlock = '';
-  if (r.pins.length) {
-    pinsBlock = `<ul class="map-pin-list">${r.pins.map((p) => {
-      const title = p.kind === 'souvenir'
-        ? i18n.loc(p.label)
-        : (p.hidden && p.status === 'proposed' ? i18n.t('q_mystery') : i18n.loc(p.label));
-      const meta = p.kind === 'quest'
-        ? `${statusLabel(p.status === 'proposed' ? 'active' : p.status)} · +${p.xp} XP`
-        : p.kind === 'event'
-          ? `${themeText('eventLabel', 'event_badge')} · +${p.xp} XP`
-          : i18n.t('map_souvenir');
-      return `<li><span class="map-pin-ic">${pinGlyph(p)}</span><div><b>${esc(title)}</b><span class="tiny muted">${esc(meta)}</span></div></li>`;
-    }).join('')}</ul>`;
-  } else if (r.status === 'locked' || r.status === 'fog') {
-    pinsBlock = `<p class="muted tiny">${esc(r.unlockHint ? i18n.loc(r.unlockHint) : i18n.t('map_empty'))}</p>`;
+  const locked = r.status === 'locked';
+  const fog = r.status === 'fog';
+  const title = locked ? '? ? ?' : i18n.loc(r.label);
+  const icon = locked ? '?' : r.icon;
+
+  let body;
+  if (locked) {
+    body = `<p class="map-blurb map-tease">${esc(i18n.t('map_locked_tease'))}</p>
+      ${r.unlockHint ? `<p class="map-unlock-hint tiny">${esc(i18n.loc(r.unlockHint))}</p>` : ''}`;
+  } else if (fog) {
+    body = `<p class="map-blurb map-tease">${esc(i18n.t('map_fog_tease'))}</p>
+      ${r.unlockHint ? `<p class="map-unlock-hint tiny">${esc(i18n.loc(r.unlockHint))}</p>` : ''}`;
   } else {
-    pinsBlock = `<p class="muted tiny">${esc(i18n.t('map_empty'))}</p>`;
+    const pins = r.pins.length ? pinsListHtml(r) : `<p class="muted tiny">${esc(i18n.t('map_empty'))}</p>`;
+    body = `<p class="map-blurb">${esc(i18n.loc(r.blurb))}</p>${pins}`;
   }
 
-  const count = r.completions != null
+  const count = (!locked && !fog && r.completions != null)
     ? `<span class="tiny muted">${i18n.t('map_completions').replace('{n}', String(r.completions))}</span>`
     : '';
-
   const revealed = r.justRevealed
     ? `<p class="map-revealed-note tiny">${esc(i18n.t('map_just_revealed'))}</p>`
     : '';
 
   return `
-    <div class="map-detail panel${r.justRevealed ? ' just-revealed' : ''}">
+    <div class="map-detail panel detail-${r.status}${r.justRevealed ? ' just-revealed' : ''}">
       <div class="map-detail-head">
-        <span class="map-detail-icon">${r.icon}</span>
+        <span class="map-detail-icon">${icon}</span>
         <div>
-          <h3 style="margin:0">${esc(i18n.loc(r.label))}</h3>
+          <h3 style="margin:0">${esc(title)}</h3>
           <span class="map-status-chip st-${r.status}">${esc(statusLabel(r.status))}</span>
           ${count}
         </div>
       </div>
       ${revealed}
-      <p class="map-blurb">${esc(i18n.loc(r.blurb))}</p>
-      ${pinsBlock}
+      ${body}
     </div>`;
 }
 

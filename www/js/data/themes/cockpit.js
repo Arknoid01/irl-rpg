@@ -255,7 +255,4 @@ export default {
       },
     },
   },
-
-  // Aperçu boutique : place réservée, vidéo à enregistrer plus tard (Yannick).
-  previewVideo: null,
 };

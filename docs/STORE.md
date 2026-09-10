@@ -1,6 +1,6 @@
 # Fiche store — checklist (Android / iOS)
 
-Référence produit : `com.pegasuscorp.irlrpg` · Capacitor · V1 on-device.
+Référence produit : `com.pegasuscorp.irlrpg` (nom public : **Cairn**) · Capacitor · V1 on-device.
 
 ## Classement d’âge
 
@@ -82,14 +82,14 @@ signé, piste de test fermée, avec un compte de testeur de licence :
 
 ## Textes listing (brouillon)
 
-**Titre :** IRL RPG  
+**Titre :** Cairn  
 **Court FR :** Ta vie quotidienne en quêtes RPG — sans culpabiliser.  
 **Court EN :** Everyday life as RPG quests — guilt-free.  
-**Long FR :** IRL RPG est ton compagnon d’aventure. Chaque jour, de petites quêtes
+**Long FR :** Cairn est ton compagnon d’aventure. Chaque jour, de petites quêtes
 dans le monde réel (social, exploration, curiosité, création…). Tu acceptes,
 ignores ou valides en confiance. XP, compétences, titres, journal — tout reste
 sur ton téléphone. Pas de classement, pas de compte, pas de pub. 16+.  
-**Long EN :** IRL RPG is your adventure companion. Each day, small real-world
+**Long EN :** Cairn is your adventure companion. Each day, small real-world
 quests (social, exploration, curiosity, creation…). Accept, skip, or complete
 on the honor system. XP, skills, titles, journal — everything stays on your
 phone. No rankings, no account, no ads. Ages 16+.

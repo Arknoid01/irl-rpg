@@ -1,4 +1,4 @@
-# IRL RPG — application (www/)
+# Cairn — application (www/)
 
 App web (HTML/CSS/JS, ES modules natifs, aucun bundler) empaquetée avec Capacitor.
 Bilingue FR/EN. 100 % on-device : aucune donnée ne quitte l'appareil.

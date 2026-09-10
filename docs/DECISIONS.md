@@ -678,3 +678,24 @@ incertaine est isolée dans `nativeBilling` et commentée.
 Return Rate correct (roadmap §18 / Phase 4).
 
 66/66 tests, sim OK, `css-tree` OK, zéro appel réseau dans `billing.js`.
+
+## D18 — Nom public de l'app : « Cairn » (2026-09-10)
+
+`IRL RPG` n'était qu'un placeholder de travail. Nom retenu : **Cairn** — le
+tas de pierres qui balise un sentier de montagne. Raisons : court, identique
+en FR et en EN, neutre vis-à-vis des thèmes (ne présume pas « fantasy »),
+et il dit la promesse du produit — de petits gestes qu'on empile, un repère
+sur le chemin, jamais une injonction.
+
+**Portée du changement.** `i18n.app_name` (fr/en), `ob_welcome_body`,
+`ob_age`, `share_text`, `<title>` de `index.html` / `demo.html`,
+`manifest.webmanifest` (`name` + `short_name`), `capacitor.config.json`
+(`appName`), `notifications.js` (titre de la notif via `i18n.t('app_name')`),
+`package.json`, `www/README.md`, `www/privacy.html`, `docs/STORE.md`
+(fiche listing).
+
+**Ce qui NE change pas** : `appId` `com.pegasuscorp.irlrpg` (l'identité Play
+Store / StoreKit se fige au premier upload — la renommer casserait la
+continuité) et la clé de sauvegarde `irlrpg_save_v2` dans `state/store.js`
+(la changer effacerait les parties en cours). Les docs d'analyse historiques
+gardent « IRL RPG » — non réécrites, ce sont des archives datées.

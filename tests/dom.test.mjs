@@ -123,12 +123,12 @@ test('parcours complet dans le DOM', async () => {
   await click('[data-set="close"]');
   assert.equal($('#overlay').classList.contains('show'), false, 'réglages fermés');
 
-  // 8. Nouveau jour (re-tirage)
+  // 8. Le passage de jour est automatique (minuit / retour au premier plan) —
+  // plus de bouton « ↻ Nouvelle journée » sur l'écran Aventure.
   await click('[data-action="goto"][data-id="adventure"]');
-  await click('[data-action="new-day"]');
-  await tick();
+  assert.equal($('[data-action="new-day"]'), null, 'pas de bouton de re-tirage manuel');
   const freshCount = $$('.quest-card').length;
-  assert.ok(freshCount >= 1, 'nouvelles quêtes après « nouvelle journée »');
+  assert.ok(freshCount >= 1, 'des quêtes sont affichées');
 
   // 9. Ignorer une quête : gratuit, elle disparaît simplement de la liste
   const toIgnore = $('[data-action="ignore-quest"]');
@@ -141,17 +141,18 @@ test('parcours complet dans le DOM', async () => {
   assert.equal(ignoredQuest.status, 'ignored');
 });
 
-test('boutique : Collection des Mondes — un achat débloque les 6 thèmes (D17)', async () => {
+test('réglages : onglet Thèmes — un achat débloque les 6 thèmes (D17)', async () => {
   await click('[data-action="open-settings"]');
-  await click('[data-set="shop"]');
-  assert.ok($('.shop-sheet'), 'feuille boutique affichée');
+  await click('[data-set="tab"][data-v="themes"]');
+  assert.ok($('.settings-sheet'), 'feuille de réglages affichée');
+  assert.ok($('.set-tab.active') && /Thèmes/.test($('.set-tab.active').textContent), 'onglet Thèmes actif');
   assert.equal($$('.shop-card').length, 7, 'les 7 thèmes sont listés');
   assert.ok($('.shop-status.active'), 'un thème actif est marqué');
   assert.ok($('.shop-collection'), 'bannière Collection affichée tant que tout n’est pas débloqué');
   assert.ok($('[data-shop="unlock"][data-v="cyberpunk"]'), 'carte cyberpunk verrouillée');
-  const preview = $('.shop-preview-video video');
-  assert.ok(preview, 'cyberpunk a une vraie vidéo d’aperçu (pas le repli CSS)');
-  assert.match(preview.getAttribute('src'), /cyberpunk-preview\.mp4$/);
+  // Plus de vidéo : chaque carte a un aperçu live (mini-page thémée).
+  assert.equal($('video'), null, 'aucun aperçu vidéo');
+  assert.equal($$('.shop-preview .page').length, 7, 'chaque thème a un aperçu live rendu');
 
   // Cliquer une carte verrouillée : achète la Collection (les 6) + active ce thème.
   await click('[data-shop="unlock"][data-v="cyberpunk"]');
@@ -170,7 +171,7 @@ test('boutique : Collection des Mondes — un achat débloque les 6 thèmes (D17
   assert.ok($('[data-shop="restore"]'), 'bouton restaurer présent');
   await click('[data-shop="restore"]');
   await tick();
-  assert.ok($('.shop-sheet'), 'la boutique tient après une restauration');
+  assert.ok($('.settings-sheet'), 'l’onglet Thèmes tient après une restauration');
   assert.ok(
     $('.tiny.muted') && [...$$('.tiny.muted')].some((n) => /démo locale|local demo/i.test(n.textContent)),
     'note « démo locale » affichée tant que l’achat réel n’est pas branché',
@@ -180,7 +181,7 @@ test('boutique : Collection des Mondes — un achat débloque les 6 thèmes (D17
   await click('[data-shop="activate"][data-v="nordique"]');
   assert.equal(window.document.documentElement.dataset.theme, 'nordique');
   assert.match($('.section-label span').textContent, /Quêtes du jour/, 'vocab par défaut restauré');
-  await click('[data-shop="close"]');
+  await click('[data-set="close"]');
 });
 
 test('ripple au clic : sous les thèmes payants, jamais sous nordique', async () => {

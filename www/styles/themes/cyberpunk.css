@@ -277,15 +277,6 @@
   border-left-color: rgba(0, 229, 255, .18);
 }
 
-/* Bouton « autre proposition » : contour pointillé brun -> cyan */
-[data-theme="cyberpunk"] .refresh-btn {
-  border-color: rgba(0, 229, 255, .32);
-  color: var(--text-dim);
-}
-[data-theme="cyberpunk"] .refresh-btn:active {
-  background: rgba(0, 229, 255, .08);
-}
-
 /* Réplique du compagnon : liseré gauche rouge sourd -> néon rose */
 [data-theme="cyberpunk"] .companion-line {
   border-left-color: rgba(255, 46, 154, .55);

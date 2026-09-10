@@ -129,7 +129,7 @@ try {
 const unlockedTitles = TITLES.filter((t) => state.titles.includes(t.id)).map((t) => loc(t.label, 'fr'));
 
 console.log('─'.repeat(56));
-console.log(`  Simulation IRL RPG — ${DAYS} jours, seed ${SEED}`);
+console.log(`  Simulation Cairn — ${DAYS} jours, seed ${SEED}`);
 console.log('─'.repeat(56));
 console.log(`  Niveau final ............ ${state.level}  (${state.xp} XP en cours)`);
 console.log(`  Compétences ............. ${Object.entries(state.skills).map(([k, v]) => `${k} ${v}`).join(', ')}`);

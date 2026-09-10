@@ -9,7 +9,6 @@
 // directement).
 //
 // Champs optionnels d'un thème :
-//   previewVideo : chemin d'une vidéo d'aperçu boutique (sinon aperçu live CSS).
 //   ui : mots de saveur { questsHeading, eventLabel, allDone } en { fr, en },
 //        résolus par ui/themeText.js. Habillage uniquement — jamais un texte
 //        de sécurité / d'optionnalité (spec §22).

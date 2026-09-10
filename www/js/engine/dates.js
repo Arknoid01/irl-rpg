@@ -32,3 +32,15 @@ export function dayPart(now = new Date()) {
   if (h < 18) return 'midi';
   return 'soir';
 }
+
+/**
+ * Millisecondes jusqu'au prochain minuit local, plus une marge de sécurité
+ * (en secondes) pour être sûr d'avoir franchi la date. Sert à programmer la
+ * réinitialisation des quêtes du jour quand l'app reste ouverte (main.js).
+ */
+export function msUntilNextMidnight(now = new Date(), marginSec = 5) {
+  const next = new Date(
+    now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, marginSec, 0,
+  );
+  return next.getTime() - now.getTime();
+}

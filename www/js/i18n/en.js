@@ -1,5 +1,5 @@
 export default {
-  app_name: 'IRL RPG',
+  app_name: 'Cairn',
 
   nav_adventure: 'Adventure',
   nav_world: 'World',
@@ -22,6 +22,8 @@ export default {
   map_status_proposed: 'Offered',
   map_not_ready: 'Some regions aren’t ready to be discovered yet.',
   map_just_revealed: 'You’ve just revealed this part of the world.',
+  map_fog_tease: 'The mist hasn’t lifted over this place yet.',
+  map_locked_tease: 'Something seems to be waiting beyond…',
 
   companion_label: 'Your companion',
   day_kicker: 'Day {n}',
@@ -30,7 +32,6 @@ export default {
   q_role_principale: 'Main pick',
   q_role_tranquille: 'Calm pick',
   q_role_audacieuse: 'Bold pick',
-  new_day: 'New day',
   new_day_hint: 'Nothing’s required here — take what appeals to you.',
   all_done_title: 'Every quest done for today 🏆',
   all_done_body: 'Come back tomorrow for more. Or don’t — it’s up to you.',
@@ -139,13 +140,13 @@ export default {
   cover_cta: 'Start my adventure',
 
   ob_welcome_title: 'Open the grimoire',
-  ob_welcome_body: 'IRL RPG turns your everyday life into a small adventure. Your companion offers quests; you take what appeals to you and ignore the rest, guilt-free. It is not a to-do list.',
+  ob_welcome_body: 'Cairn turns your everyday life into a small adventure. Your companion offers quests; you take what appeals to you and ignore the rest, guilt-free. It is not a to-do list.',
   ob_chapter_welcome: 'Your companion turns the first page with you.',
   ob_chapter_name: 'Every hero needs a name — even for a quiet adventure.',
   ob_chapter_comfort: 'We set the book’s boldness. Nothing is locked in.',
   ob_chapter_families: 'Which adventure families should colour your days most often?',
   ob_chapter_notif: 'A soft reminder, like a bookmark — never a guilt alarm.',
-  ob_age: 'IRL RPG is rated 16+: some quests ask for real-world autonomy and judgment (social contact, exploration).',
+  ob_age: 'Cairn is rated 16+: some quests ask for real-world autonomy and judgment (social contact, exploration).',
   ob_age_ack: 'I am 16 or older.',
   ob_next: 'Turn the page',
   ob_back: 'Back',
@@ -164,6 +165,9 @@ export default {
   ob_start: 'Start the adventure',
 
   set_title: 'Settings',
+  set_tab_adventure: 'Adventure',
+  set_tab_themes: 'Themes',
+  set_tab_general: 'General',
   set_appearance: 'Appearance',
   set_language: 'Language',
   set_open_shop: 'View themes',
@@ -212,7 +216,7 @@ export default {
   toast_collection_unlocked: '🌍 Collection of Worlds unlocked — all 6 themes are yours.',
 
   notif_body: 'Your companion has enough to fill the day. Nothing required.',
-  share_text: 'IRL RPG challenge for you: {quest}',
+  share_text: 'Cairn challenge for you: {quest}',
   share_title: 'A challenge for you',
   lang_fr: 'Français',
   lang_en: 'English',

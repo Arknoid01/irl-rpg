@@ -1,7 +1,7 @@
 {
-  "name": "irl-rpg",
+  "name": "cairn",
   "version": "1.0.0",
-  "description": "IRL RPG — ta vie quotidienne en RPG (HTML + Capacitor)",
+  "description": "Cairn — ta vie quotidienne en RPG (HTML + Capacitor)",
   "type": "module",
   "private": true,
   "scripts": {

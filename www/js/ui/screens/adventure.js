@@ -61,7 +61,6 @@ export function renderAdventure(state) {
     <p class="companion-line">${esc(line)}</p>
     <div class="section-label">
       <span>${themeText('questsHeading', 'quests_today')}</span>
-      <button class="refresh-btn" data-action="new-day" title="${i18n.t('new_day_hint')}">↻ ${i18n.t('new_day')}</button>
     </div>
     ${elanLine}
     ${questsBlock}

@@ -136,10 +136,6 @@
   border-color: rgba(44,159,216,.3);
   color: var(--text);
 }
-[data-theme="cockpit"] .refresh-btn {
-  color: var(--text-dim);
-  border-color: rgba(44,159,216,.3);
-}
 [data-theme="cockpit"] .onboarding input[type="text"],
 [data-theme="cockpit"] .onboarding input[type="number"],
 [data-theme="cockpit"] .sheet input[type="number"],

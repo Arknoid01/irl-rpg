@@ -1,5 +1,5 @@
 export default {
-  app_name: 'IRL RPG',
+  app_name: 'Cairn',
 
   nav_adventure: 'Aventure',
   nav_world: 'Monde',
@@ -22,6 +22,8 @@ export default {
   map_status_proposed: 'Proposées',
   map_not_ready: 'Certaines régions ne sont pas encore prêtes à être découvertes.',
   map_just_revealed: 'Tu viens de révéler cette partie du monde.',
+  map_fog_tease: 'La brume ne s’est pas encore levée sur ce lieu.',
+  map_locked_tease: 'Quelque chose semble attendre au-delà…',
 
   companion_label: 'Ton compagnon',
   day_kicker: 'Jour {n}',
@@ -30,7 +32,6 @@ export default {
   q_role_principale: 'Principale',
   q_role_tranquille: 'Tranquille',
   q_role_audacieuse: 'Audacieuse',
-  new_day: 'Nouvelle journée',
   new_day_hint: 'Rien d’obligatoire ici — prends ce qui te tente.',
   all_done_title: 'Toutes les quêtes du jour sont faites 🏆',
   all_done_body: 'Reviens demain pour de nouvelles aventures. Ou pas — c’est toi qui vois.',
@@ -140,13 +141,13 @@ export default {
 
   // Onboarding
   ob_welcome_title: 'Ouvre le grimoire',
-  ob_welcome_body: 'IRL RPG transforme ta vie quotidienne en petite aventure. Ton compagnon te propose des quêtes ; tu prends ce qui te tente, tu ignores le reste, sans culpabiliser. Ce n’est pas une liste de tâches.',
+  ob_welcome_body: 'Cairn transforme ta vie quotidienne en petite aventure. Ton compagnon te propose des quêtes ; tu prends ce qui te tente, tu ignores le reste, sans culpabiliser. Ce n’est pas une liste de tâches.',
   ob_chapter_welcome: 'Ton compagnon feuillette la première page avec toi.',
   ob_chapter_name: 'Chaque héros a un nom — même pour une aventure tranquille.',
   ob_chapter_comfort: 'On règle l’audace du livre. Rien n’est figé.',
   ob_chapter_families: 'Quelles familles d’aventure coloreront le plus souvent tes jours ?',
   ob_chapter_notif: 'Un rappel doux, comme un signet — jamais une alarme de culpabilité.',
-  ob_age: 'IRL RPG est classé 16+ : certaines quêtes demandent autonomie et jugement dans le monde réel (interactions, exploration).',
+  ob_age: 'Cairn est classé 16+ : certaines quêtes demandent autonomie et jugement dans le monde réel (interactions, exploration).',
   ob_age_ack: 'J’ai 16 ans ou plus.',
   ob_next: 'Tourner la page',
   ob_back: 'Retour',
@@ -166,6 +167,9 @@ export default {
 
   // Settings
   set_title: 'Réglages',
+  set_tab_adventure: 'Aventure',
+  set_tab_themes: 'Thèmes',
+  set_tab_general: 'Général',
   set_appearance: 'Apparence',
   set_language: 'Langue',
   set_open_shop: 'Voir les thèmes',
@@ -214,7 +218,7 @@ export default {
   toast_collection_unlocked: '🌍 Collection des Mondes débloquée — les 6 thèmes sont à toi.',
 
   notif_body: 'Ton compagnon a de quoi remplir la journée. Rien d’obligatoire.',
-  share_text: 'Défi IRL RPG pour toi : {quest}',
+  share_text: 'Défi Cairn pour toi : {quest}',
   share_title: 'Un défi pour toi',
   lang_fr: 'Français',
   lang_en: 'English',

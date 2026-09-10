@@ -1,6 +1,6 @@
 {
-  "name": "IRL RPG",
-  "short_name": "IRL RPG",
+  "name": "Cairn",
+  "short_name": "Cairn",
   "description": "Ta vie quotidienne, en RPG. / Your everyday life, as an RPG.",
   "start_url": "./index.html",
   "display": "standalone",

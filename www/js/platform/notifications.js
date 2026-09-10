@@ -29,7 +29,7 @@ export async function syncDailyReminder(state) {
     await LN.schedule({
       notifications: [{
         id: DAILY_ID,
-        title: 'IRL RPG',
+        title: i18n.t('app_name'),
         body: i18n.t('notif_body'),
         schedule: {
           on: { hour: state.notifications.hour, minute: 0 },
