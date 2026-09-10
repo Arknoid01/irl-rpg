@@ -195,6 +195,20 @@ export default {
       fr: (title, item) => `Affaire réglée — ${title}. Butin : ${item}.`,
       en: (title, item) => `Matter dealt with — ${title}. Loot: ${item}.`,
     },
+    eventCoda: [
+      {
+        fr: "Rien ne t’y forçait. C’est ce qui rend la chose digne d’être gravée.",
+        en: "Nothing forced you. That’s what makes it worth engraving.",
+      },
+      {
+        fr: "Le registre ne juge pas. Il retient, c’est tout.",
+        en: "The ledger doesn’t judge. It keeps, that’s all.",
+      },
+      {
+        fr: "Tu l’oublieras peut-être. Le registre, lui, non.",
+        en: "You might forget it. The ledger won’t.",
+      },
+    ],
     levelChapter: {
       fr: (level) => `Un cran de plus. Niveau ${level}. Le registre s’alourdit — sans rien réclamer d’autre.`,
       en: (level) => `One notch further. Level ${level}. The ledger grows heavier — claiming nothing more.`,
@@ -272,8 +286,8 @@ export default {
       en: ['The day’s tally', 'The strays', 'One more night', 'Today’s line', 'What the night gave back'],
     },
     dayEntry: {
-      fr: (n, t, tags) => `Nuit ${n} — « ${t} ». Au registre : ${tags}. Souvenir conservé.`,
-      en: (n, t, tags) => `Night ${n} — “${t}”. In the ledger: ${tags}. Kept as a memory.`,
+      fr: (n, t, tags) => `Nuit ${n}. « ${t} ». Porté au registre : ${tags} — rien d’autre à consigner.`,
+      en: (n, t, tags) => `Night ${n}. “${t}”. Set down in the ledger: ${tags} — nothing else to record.`,
     },
     arc: {
       clue: {

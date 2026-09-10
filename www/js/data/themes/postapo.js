@@ -182,6 +182,20 @@ export default {
       fr: (title, item) => `Alerte gérée — ${title}. Butin : ${item}.`,
       en: (title, item) => `Alert handled — ${title}. Loot: ${item}.`,
     },
+    eventCoda: [
+      {
+        fr: "C’est ce genre de détour, hors mission, qui finit par forger une réputation.",
+        en: "It’s this kind of off-mission detour that ends up forging a reputation.",
+      },
+      {
+        fr: "Rien ne t’y obligeait. C’est peut-être pour ça que ça reste.",
+        en: "Nothing made you. Maybe that’s why it stays.",
+      },
+      {
+        fr: "Tu oublieras. Les ondes, elles, gardent l’écho.",
+        en: "You’ll forget. The airwaves keep the echo.",
+      },
+    ],
     levelChapter: {
       fr: (level) => `Un cran de plus. Niveau ${level}. Le secteur ne demande rien d’autre.`,
       en: (level) => `One notch further. Level ${level}. The sector asks nothing more.`,
@@ -235,8 +249,8 @@ export default {
       en: ['The day’s report', 'The strays', 'One more day', 'Today’s line', 'What the sector gave back'],
     },
     dayEntry: {
-      fr: (n, t, tags) => `Jour ${n} — « ${t} ». Sur les ondes : ${tags}. Gardé.`,
-      en: (n, t, tags) => `Day ${n} — “${t}”. Over the air: ${tags}. Kept.`,
+      fr: (n, t, tags) => `Jour ${n}. « ${t} ». Passé sur les ondes : ${tags} — le secteur a tenu sans toi.`,
+      en: (n, t, tags) => `Day ${n}. “${t}”. Went out over the air: ${tags} — the sector held without you.`,
     },
     arc: {
       clue: {

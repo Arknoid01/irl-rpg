@@ -195,6 +195,20 @@ export default {
       fr: (title, item) => `Incident traité — ${title}. Butin : ${item}.`,
       en: (title, item) => `Incident handled — ${title}. Loot: ${item}.`,
     },
+    eventCoda: [
+      {
+        fr: "Ce genre d’écart, hors protocole, c’est souvent là que le vrai profil se dessine.",
+        en: "That kind of off-protocol detour is often where the real profile takes shape.",
+      },
+      {
+        fr: "Personne ne t’a briefé. C’est peut-être pour ça que ça tient.",
+        en: "Nobody briefed you. Maybe that’s why it holds.",
+      },
+      {
+        fr: "Toi, tu oublieras. Le log, lui, garde tout.",
+        en: "You’ll forget. The log keeps everything.",
+      },
+    ],
     levelChapter: {
       fr: (level) => `Palier franchi. Niveau ${level}. Le log s’étoffe — sans rien exiger de plus.`,
       en: (level) => `Threshold cleared. Level ${level}. The log fills out — asking nothing more.`,
@@ -272,8 +286,8 @@ export default {
       en: ['The day’s log', 'Trajectory drift', 'One more cycle', 'Today’s entry', 'What the day returned'],
     },
     dayEntry: {
-      fr: (n, t, tags) => `Jour ${n} — « ${t} ». Au log : ${tags}. Sauvegardé.`,
-      en: (n, t, tags) => `Day ${n} — “${t}”. In the log: ${tags}. Saved.`,
+      fr: (n, t, tags) => `Jour ${n}. « ${t} ». Au log : ${tags} — le reste tourne en tâche de fond.`,
+      en: (n, t, tags) => `Day ${n}. “${t}”. In the log: ${tags} — the rest runs in the background.`,
     },
     arc: {
       clue: {

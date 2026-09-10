@@ -182,6 +182,20 @@ export default {
       fr: (title, item) => `Signe interprété — ${title}. Butin : ${item}.`,
       en: (title, item) => `Sign read — ${title}. Loot: ${item}.`,
     },
+    eventCoda: [
+      {
+        fr: "C’est sans doute ce genre de détour que les astres retiennent.",
+        en: "It’s probably this kind of detour the stars remember.",
+      },
+      {
+        fr: "Aucun signe ne te l’imposait. C’est peut-être pour ça qu’il compte.",
+        en: "No sign demanded it of you. Maybe that’s why it matters.",
+      },
+      {
+        fr: "Tu l’oublieras peut-être. Le ciel, lui, s’en souviendra.",
+        en: "You might forget it. The sky will remember.",
+      },
+    ],
     levelChapter: {
       fr: (level) => `Une maison de plus se lève. Niveau ${level}. Le ciel n’exige rien d’autre.`,
       en: (level) => `One more house rises. Level ${level}. The sky asks nothing more.`,
@@ -235,8 +249,8 @@ export default {
       en: ['The sky’s reading', 'The strays', 'One more night', 'Today’s line', 'What the sky gave back'],
     },
     dayEntry: {
-      fr: (n, t, tags) => `Nuit ${n} — « ${t} ». Inscrit au ciel : ${tags}. Souvenir conservé.`,
-      en: (n, t, tags) => `Night ${n} — “${t}”. Written in the sky: ${tags}. Kept as a memory.`,
+      fr: (n, t, tags) => `Nuit ${n}. « ${t} ». Inscrit au ciel : ${tags} — les autres signes attendront.`,
+      en: (n, t, tags) => `Night ${n}. “${t}”. Written in the sky: ${tags} — the other signs can wait.`,
     },
     arc: {
       clue: {

@@ -527,6 +527,61 @@
   line-height: 1.45;
 }
 
+/* Filtres du journal : Tout · Souvenirs · ★ Gardés */
+.journal-filters {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin: 0 2px 14px;
+}
+.journal-filter {
+  font-family: var(--font-display);
+  font-size: .78rem;
+  border: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
+  background: color-mix(in srgb, var(--ink) 4%, transparent);
+  color: var(--ink-dim);
+  border-radius: 999px;
+  padding: 4px 11px;
+  cursor: pointer;
+}
+.journal-filter.active {
+  border-color: var(--seal);
+  color: var(--ink);
+  background: color-mix(in srgb, var(--seal) 12%, transparent);
+  font-weight: 600;
+}
+.journal-filter:disabled { opacity: .4; cursor: default; }
+.journal-filter-n {
+  font-size: .68rem;
+  opacity: .7;
+  margin-left: 2px;
+}
+
+/* Bouton « garder » — discret en haut à droite de l'entrée */
+.journal-entry { padding-right: 34px; }
+.journal-pin {
+  position: absolute;
+  top: 8px; right: 8px;
+  width: 24px; height: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: color-mix(in srgb, var(--ink) 32%, transparent);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: color .15s ease, transform .12s ease;
+}
+.journal-pin:hover { color: color-mix(in srgb, var(--gold) 60%, var(--ink)); }
+.journal-pin.on {
+  color: var(--gold);
+  transform: scale(1.05);
+}
+.journal-entry.pinned {
+  border-left-color: var(--gold);
+  background: color-mix(in srgb, var(--gold) 6%, rgba(255, 250, 235, .5));
+}
+.journal-kept .journal-section-title { color: color-mix(in srgb, var(--gold) 55%, var(--ink)); }
+
 .journal-chapter {
   margin-bottom: 14px;
   text-align: center;

@@ -20,6 +20,8 @@ export function renderAdventure(state) {
 
   let questsBlock;
   if (state.quests.length === 0) {
+    // État normalement jamais atteint (le tirage est automatique au boot et à
+    // minuit) — filet de secours si une sauvegarde arrive sans quêtes.
     questsBlock = `<div class="panel empty">
       <p><b>${i18n.t('no_quests_title')}</b></p>
       <p class="muted">${i18n.t('no_quests_body')}</p>

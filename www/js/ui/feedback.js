@@ -3,6 +3,7 @@ import { $, esc, hideOverlay } from './dom.js';
 import { companionLineAfterQuest } from '../engine/companion.js';
 import { THEMES } from '../data/themes.js';
 import { themeText } from './themeText.js';
+import { tapLight, tapMedium, celebrate } from '../platform/haptics.js';
 
 let toastTimer;
 export function showToast(msg) {
@@ -49,6 +50,7 @@ export function levelUpOverlay(level, opts = {}) {
       <button class="btn primary" data-action="close-overlay">${i18n.t('levelup_close')}</button>
     </div>`;
   ov.classList.add('show');
+  celebrate();
 }
 
 /**
@@ -108,6 +110,7 @@ function questCeremonyOverlay(state, { xp, first }, onClose) {
       <button class="btn primary" data-action="close-overlay">${i18n.t('quest_ceremony_close')}</button>
     </div>`;
   ov.classList.add('show');
+  tapMedium();
   pendingAfterClose.push(onClose);
 }
 
@@ -118,17 +121,17 @@ function playRemaining(effects) {
     switch (fx.type) {
       case 'xp': enqueueToast(i18n.t('toast_xp', { n: fx.amount })); break;
       case 'levelup': lastLevel = fx.level; enqueueToast(i18n.t('toast_level', { n: fx.level })); break;
-      case 'title': enqueueToast(i18n.t('toast_title', { label: i18n.loc(fx.label) })); break;
+      case 'title': tapLight(); enqueueToast(i18n.t('toast_title', { label: i18n.loc(fx.label) })); break;
       case 'fragment': enqueueToast(i18n.t('toast_fragment')); break;
       case 'moment': enqueueToast(i18n.t('toast_moment')); break;
-      case 'event-done': enqueueToast(i18n.t('toast_item', { item: i18n.loc(fx.item) })); break;
+      case 'event-done': tapLight(); enqueueToast(i18n.t('toast_item', { item: i18n.loc(fx.item) })); break;
       case 'loot':
         enqueueToast(i18n.t('toast_loot', { item: i18n.loc(fx.item) }));
         if (lastLevel != null) lootAtLevel = i18n.loc(fx.item);
         break;
       case 'region': enqueueToast(i18n.t('toast_region')); break;
       case 'arc-clue': enqueueToast(i18n.t('toast_arc_clue')); break;
-      case 'arc-done': enqueueToast(i18n.t('toast_arc_done')); break;
+      case 'arc-done': celebrate(); enqueueToast(i18n.t('toast_arc_done')); break;
       case 'streak': if (fx.broke) enqueueToast(i18n.t('streak_break_ok')); break;
       case 'theme-unlocked':
         enqueueToast(i18n.t('toast_theme_unlocked', { label: i18n.loc(THEMES[fx.theme]?.label) }));

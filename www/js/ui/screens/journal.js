@@ -15,6 +15,12 @@ const KIND_ICON = {
   note: '•',
 };
 
+// Filtre local, non persisté (comme la sélection de région sur la carte).
+let filter = 'all';
+export function setJournalFilter(id) {
+  filter = ['pinned', 'felt'].includes(id) ? id : 'all';
+}
+
 function relDate(dateStr, today) {
   if (!dateStr) return '';
   const d = daysBetween(dateStr, today);
@@ -30,7 +36,6 @@ const SECTION_KEYS = {
   older: 'journal_older',
 };
 
-// Ligne de contexte d'une entrée : « JOUR 5 · il y a 3 jours ».
 function metaHtml(e, today) {
   const icon = KIND_ICON[e.kind] || '•';
   // Les entrées « du jour » portent déjà « Jour N » dans leur texte.
@@ -38,6 +43,14 @@ function metaHtml(e, today) {
     ? `<span class="journal-day">${esc(i18n.t('day_kicker', { n: e.day }))}</span> · `
     : '';
   return `<span class="journal-date"><span aria-hidden="true">${icon}</span> ${day}${relDate(e.date, today)}</span>`;
+}
+
+function pinBtnHtml(e) {
+  if (!e.id) return '';
+  const on = !!e.pinned;
+  return `<button class="journal-pin${on ? ' on' : ''}" data-action="pin-memory" data-id="${esc(e.id)}"
+    aria-pressed="${on}" aria-label="${i18n.t(on ? 'journal_unpin' : 'journal_pin')}"
+    title="${i18n.t(on ? 'journal_unpin' : 'journal_pin')}">${on ? '★' : '☆'}</button>`;
 }
 
 // Entrée « souvenir » (événement) : titre + récit + objet gagné + parfois un
@@ -51,7 +64,8 @@ function memoryEntryHtml(e, today) {
     </div>` : '';
   const coda = e.coda ? `<p class="journal-coda">${esc(i18n.loc(e.coda))}</p>` : '';
   return `
-    <article class="journal-entry journal-memory kind-${e.kind || 'note'}">
+    <article class="journal-entry journal-memory kind-${e.kind || 'note'}${e.pinned ? ' pinned' : ''}">
+      ${pinBtnHtml(e)}
       ${metaHtml(e, today)}
       <h4 class="journal-entry-title">${esc(i18n.loc(e.title))}</h4>
       <p class="journal-entry-body">${body}</p>
@@ -63,15 +77,32 @@ function memoryEntryHtml(e, today) {
 function entryHtml(e, today) {
   if (e.title) return memoryEntryHtml(e, today);
   return `
-    <article class="journal-entry kind-${e.kind || 'note'}">
+    <article class="journal-entry kind-${e.kind || 'note'}${e.pinned ? ' pinned' : ''}">
+      ${pinBtnHtml(e)}
       ${metaHtml(e, today)}
       <p>${esc(i18n.loc(e.text)).replace(/\n/g, '<br>')}</p>
     </article>`;
 }
 
+const FILTERS = [
+  { id: 'all', key: 'journal_filter_all' },
+  { id: 'felt', key: 'journal_filter_felt' },
+  { id: 'pinned', key: 'journal_filter_pinned' },
+];
+
+function filtersHtml(counts, active) {
+  return `<div class="journal-filters">${FILTERS.map((f) => {
+    const n = counts[f.id];
+    const disabled = f.id === 'pinned' && !n;
+    return `<button class="journal-filter${active === f.id ? ' active' : ''}"
+      data-action="journal-filter" data-id="${f.id}"${disabled ? ' disabled' : ''}>
+      ${i18n.t(f.key)}${n ? ` <span class="journal-filter-n">${n}</span>` : ''}</button>`;
+  }).join('')}</div>`;
+}
+
 export function renderJournal(state) {
   const today = todayStr();
-  const timeline = buildJournalTimeline(state);
+  const timeline = buildJournalTimeline(state, new Date(), { filter });
   const ch = timeline.chapter;
 
   const header = `
@@ -87,6 +118,19 @@ export function renderJournal(state) {
       <div class="panel empty"><p class="muted">${i18n.t('journal_empty')}</p></div>`;
   }
 
+  const filters = filtersHtml(timeline.counts, timeline.filter);
+
+  const pinnedSection = timeline.pinned.length ? `
+    <div class="journal-section journal-kept">
+      <h3 class="journal-section-title">★ ${i18n.t('journal_pinned_section')}</h3>
+      <div class="journal-timeline">${timeline.pinned.map((e) => entryHtml(e, today)).join('')}</div>
+    </div>` : '';
+
+  if (timeline.noMatch) {
+    return `${header}${filters}
+      <div class="panel empty"><p class="muted">${i18n.t('journal_no_match')}</p></div>`;
+  }
+
   const body = timeline.sections.map((sec) => {
     const title = i18n.t(SECTION_KEYS[sec.id] || 'journal_older');
     const entries = sec.entries.map((e) => entryHtml(e, today)).join('');
@@ -97,5 +141,5 @@ export function renderJournal(state) {
       </div>`;
   }).join('');
 
-  return `${header}${body}`;
+  return `${header}${filters}${pinnedSection}${body}`;
 }

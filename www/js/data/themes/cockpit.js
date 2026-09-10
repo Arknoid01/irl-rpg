@@ -182,6 +182,20 @@ export default {
       fr: (title, item) => `Incident consigné — ${title}. Butin : ${item}.`,
       en: (title, item) => `Incident logged — ${title}. Loot: ${item}.`,
     },
+    eventCoda: [
+      {
+        fr: "Ce genre d’écart de cap, c’est souvent là que la vraie trajectoire se dessine.",
+        en: "That kind of course deviation is often where the real trajectory takes shape.",
+      },
+      {
+        fr: "Aucune consigne ne le demandait. C’est peut-être pour ça que ça tient.",
+        en: "No procedure called for it. Maybe that’s why it holds.",
+      },
+      {
+        fr: "Toi, tu oublieras. Le journal de bord, non.",
+        en: "You’ll forget. The flight record won’t.",
+      },
+    ],
     levelChapter: {
       fr: (level) => `Palier de vol franchi. Niveau ${level}. Le journal de bord n’exige rien d’autre.`,
       en: (level) => `Flight threshold cleared. Level ${level}. The flight record asks nothing more.`,
@@ -235,8 +249,8 @@ export default {
       en: ['The day’s log', 'Heading drift', 'One more segment', 'Today’s entry', 'What the day returned'],
     },
     dayEntry: {
-      fr: (n, t, tags) => `Jour ${n} — « ${t} ». Au journal de bord : ${tags}. Consigné.`,
-      en: (n, t, tags) => `Day ${n} — “${t}”. In the flight record: ${tags}. Logged.`,
+      fr: (n, t, tags) => `Jour ${n}. « ${t} ». Au journal de bord : ${tags} — cap tenu, rien à signaler.`,
+      en: (n, t, tags) => `Day ${n}. “${t}”. In the flight record: ${tags} — course held, nothing to report.`,
     },
     arc: {
       clue: {

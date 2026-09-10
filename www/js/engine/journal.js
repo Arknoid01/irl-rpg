@@ -13,7 +13,11 @@ import { daysBetween, todayStr } from './dates.js';
 export function addEntry(s, {
   date, text, kind = 'note', title, souvenir, coda,
 }) {
+  if (!s.journal) s.journal = [];
   const entry = {
+    // id stable (les entrées ne sont qu'ajoutées, jamais retirées) — sert à
+    // épingler un souvenir depuis l'UI.
+    id: `${date || '?'}~${kind}~${s.journal.length}`,
     date, text, kind,
     day: Math.max(1, (s.history && s.history.daysPlayed) || 1),
   };
@@ -24,6 +28,10 @@ export function addEntry(s, {
   if (coda) entry.coda = coda;
   s.journal.push(entry);
 }
+
+// Types d'entrées « ressenties » (par opposition aux entrées de structure :
+// chapitre, jour, découverte, indice).
+export const FELT_KINDS = new Set(['evenement', 'moment', 'fragment', 'revelation']);
 
 const MEMORABLE_CHANCE = 0.38;
 const EVENT_CODA_CHANCE = 0.34;
@@ -182,10 +190,20 @@ function bucketFor(dateStr, today) {
 /**
  * Timeline groupée pour l’UI journal.
  */
-export function buildJournalTimeline(state, now = new Date()) {
+export function buildJournalTimeline(state, now = new Date(), opts = {}) {
   const today = todayStr(now);
   const chapter = chapterFor(state, state.theme);
-  const raw = (state.journal || []).slice().reverse();
+  const all = (state.journal || []).slice().reverse();
+  const pinned = all.filter((e) => e.pinned);
+  const felt = all.filter((e) => FELT_KINDS.has(e.kind));
+
+  const filter = ['pinned', 'felt'].includes(opts.filter) ? opts.filter : 'all';
+  let raw = all;
+  if (filter === 'pinned') raw = pinned;
+  else if (filter === 'felt') raw = felt;
+  // En vue « Tout », les entrées gardées vivent dans leur propre section en
+  // tête — on les sort de la frise chronologique pour ne pas les montrer deux fois.
+  else if (pinned.length) raw = all.filter((e) => !e.pinned);
 
   const buckets = {
     today: [],
@@ -205,7 +223,12 @@ export function buildJournalTimeline(state, now = new Date()) {
   return {
     chapter,
     sections,
+    // Section « Gardés » en tête, seulement en vue « Tout ».
+    pinned: filter === 'all' ? pinned : [],
+    filter,
+    counts: { all: all.length, pinned: pinned.length, felt: felt.length },
     total: raw.length,
-    empty: raw.length === 0,
+    empty: all.length === 0,
+    noMatch: all.length > 0 && raw.length === 0,
   };
 }

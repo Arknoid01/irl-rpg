@@ -182,6 +182,20 @@ export default {
       fr: (title, item) => `Développement traité — ${title}. Butin : ${item}.`,
       en: (title, item) => `Development handled — ${title}. Loot: ${item}.`,
     },
+    eventCoda: [
+      {
+        fr: "Ce genre de détour hors procédure, c’est souvent là que l’affaire prend forme.",
+        en: "That kind of off-the-record detour is often where the case takes shape.",
+      },
+      {
+        fr: "Personne ne t’a mis sur le coup. C’est peut-être pour ça que ça compte.",
+        en: "Nobody put you on it. Maybe that’s why it counts.",
+      },
+      {
+        fr: "Tu oublieras. Le dossier, lui, n’oublie rien.",
+        en: "You’ll forget. The file forgets nothing.",
+      },
+    ],
     levelChapter: {
       fr: (level) => `Le dossier s’épaissit. Niveau ${level}. Rien de plus n’est exigé.`,
       en: (level) => `The file grows thicker. Level ${level}. Nothing more is required.`,
@@ -235,8 +249,8 @@ export default {
       en: ['The day’s report', 'The detours', 'One more day on file', 'Today’s note', 'What the day turned up'],
     },
     dayEntry: {
-      fr: (n, t, tags) => `Jour ${n} — « ${t} ». Versé au dossier : ${tags}. Conservé.`,
-      en: (n, t, tags) => `Day ${n} — “${t}”. Filed to the case: ${tags}. Kept.`,
+      fr: (n, t, tags) => `Jour ${n}. « ${t} ». Versé au dossier : ${tags} — le reste, classé sans suite.`,
+      en: (n, t, tags) => `Day ${n}. “${t}”. Filed to the case: ${tags} — the rest, closed without action.`,
     },
     arc: {
       clue: {

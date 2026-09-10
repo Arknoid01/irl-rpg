@@ -298,8 +298,8 @@ export default {
       en: ['The day’s thread', 'The detours', 'One more day', 'Today’s page', 'What the day gave'],
     },
     dayEntry: {
-      fr: (n, title, tags) => `Jour ${n} — « ${title} ». Tu as vécu : ${tags}. Souvenir conservé.`,
-      en: (n, title, tags) => `Day ${n} — “${title}”. You lived: ${tags}. Kept as a memory.`,
+      fr: (n, title, tags) => `Jour ${n}. « ${title} ». Ce qui t’a occupé : ${tags} — le reste s’est laissé vivre.`,
+      en: (n, title, tags) => `Day ${n}. “${title}”. What kept you: ${tags} — the rest was left to happen.`,
     },
 
     // Cadre des mini-arcs secrets (Phase 3.3) — le contenu brut vient de

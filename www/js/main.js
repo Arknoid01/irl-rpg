@@ -7,7 +7,7 @@ import { applyTheme } from './ui/theme.js';
 import { $ } from './ui/dom.js';
 import { renderAdventure } from './ui/screens/adventure.js';
 import { renderWorld, selectWorldRegion } from './ui/screens/world.js';
-import { renderJournal } from './ui/screens/journal.js';
+import { renderJournal, setJournalFilter } from './ui/screens/journal.js';
 import { renderCharacter } from './ui/screens/character.js';
 import { playEffects, closeOverlay, showToast, themeTipOverlay } from './ui/feedback.js';
 import { startOnboarding } from './ui/onboarding.js';
@@ -161,6 +161,18 @@ async function dispatch(action, args = {}) {
     case 'select-region':
       selectWorldRegion(args.id);
       view = 'world';
+      render();
+      break;
+
+    case 'journal-filter':
+      setJournalFilter(args.id);
+      view = 'journal';
+      render();
+      break;
+
+    case 'pin-memory':
+      state = game.togglePinnedMemory(state, { id: args.id }).state;
+      persist();
       render();
       break;
 

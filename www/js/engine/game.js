@@ -375,5 +375,13 @@ export function renameHero(state, { name }) {
   return { state: s, effects: [] };
 }
 
+/** Épingle / désépingle une entrée de journal (garder un souvenir en évidence). */
+export function togglePinnedMemory(state, { id }) {
+  const s = clone(state);
+  const e = (s.journal || []).find((x) => x.id === id);
+  if (e) e.pinned = !e.pinned;
+  return { state: s, effects: [] };
+}
+
 // Ré-exports utiles
 export { checkTitles };

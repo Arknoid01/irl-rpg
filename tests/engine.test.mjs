@@ -24,7 +24,7 @@ import {
 } from '../www/js/engine/inventory.js';
 import { LOOT_KINDS, EVENT_LOOT_META } from '../www/js/data/loot.js';
 import {
-  buildJournalTimeline, chapterFor, chapterOpenEntry, dailyRecapEntry,
+  buildJournalTimeline, chapterFor, chapterOpenEntry, dailyRecapEntry, addEntry,
   levelChapterEntry, eventEntry, eventCoda, regionRevealEntry, CHAPTER_QUEST_THRESHOLDS,
 } from '../www/js/engine/journal.js';
 
@@ -748,6 +748,15 @@ test('voix par thème (D12) : chaque thème payant a sa propre voix, complète',
     const reg = regionRevealEntry({ fr: 'Les Docks', en: 'The Docks' }, theme);
     assert.ok(bilingual(reg) && reg.fr.includes('Les Docks'));
 
+    // Coda de souvenir d'événement (journal) : pool propre au thème, bilingue.
+    const codas = voiceFor(theme).eventCoda;
+    assert.ok(Array.isArray(codas) && codas.length >= 3, `${theme}.eventCoda`);
+    assert.ok(codas.every(bilingual), `${theme}.eventCoda bilingue`);
+    assert.notEqual(
+      codas[0].fr, voiceFor('nordique').eventCoda[0].fr,
+      `${theme} : coda propre au thème`,
+    );
+
     // Jalons (Phase 1.2) : voix propre et complète, bilingue.
     const M = voiceFor(theme).milestones;
     for (const key of FIRST_MILESTONES) {
@@ -1232,6 +1241,47 @@ test('journal : eventCoda tombe ~1 fois sur 3, toujours bilingue', () => {
     if (c) { hits += 1; assert.ok(bilingual(c)); }
   }
   assert.ok(hits > 40 && hits < 160, `fréquence coda plausible : ${hits}/300`);
+});
+
+test('journal : garder un souvenir (pin) + filtres', () => {
+  const now = new Date('2026-09-10T12:00:00');
+  let s = defaultState();
+  s.history.daysPlayed = 3;
+  addEntry(s, { date: '2026-09-10', kind: 'evenement', title: { fr: 'T', en: 'T' }, text: { fr: 'récit', en: 'story' } });
+  addEntry(s, { date: '2026-09-09', kind: 'fragment', text: { fr: 'un fragment', en: 'a fragment' } });
+  addEntry(s, { date: '2026-09-08', kind: 'chapitre', text: { fr: '— Ch I —', en: '— Ch I —' } });
+
+  const evId = s.journal[0].id;
+  assert.ok(evId && s.journal[0].day === 3, 'entrée avec id + n° de jour');
+
+  // vue « Tout » : 3 entrées, rien de gardé
+  let tl = buildJournalTimeline(s, now, { filter: 'all' });
+  assert.equal(tl.total, 3);
+  assert.equal(tl.pinned.length, 0);
+  assert.deepEqual(tl.counts, { all: 3, pinned: 0, felt: 2 });
+
+  // épingle le souvenir d'événement
+  s = game.togglePinnedMemory(s, { id: evId }).state;
+  assert.equal(s.journal[0].pinned, true);
+
+  tl = buildJournalTimeline(s, now, { filter: 'all' });
+  assert.equal(tl.pinned.length, 1, 'section « Gardés »');
+  const inBuckets = tl.sections.flatMap((x) => x.entries.map((e) => e.id));
+  assert.ok(!inBuckets.includes(evId), 'pas montré deux fois en vue Tout');
+
+  // filtre « Souvenirs » : événement + fragment, pas le chapitre
+  tl = buildJournalTimeline(s, now, { filter: 'felt' });
+  assert.equal(tl.total, 2);
+
+  // filtre « Gardés »
+  tl = buildJournalTimeline(s, now, { filter: 'pinned' });
+  assert.equal(tl.total, 1);
+  assert.equal(tl.pinned.length, 0, 'pas de section « Gardés » redondante quand on filtre dessus');
+
+  // désépingle
+  s = game.togglePinnedMemory(s, { id: evId }).state;
+  assert.equal(s.journal[0].pinned, false);
+  assert.equal(buildJournalTimeline(s, now, { filter: 'all' }).pinned.length, 0);
 });
 
 test('finishOnboarding : produit une journée jouable', () => {
