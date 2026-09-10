@@ -464,6 +464,10 @@ familles globalement alignées sur les poids de tirage, deux trous connus
 
 45/45 tests, `npm run quests` vert (4 points d'attention documentés).
 
+**Suivi 2026-09-10 :** les 4 trous comblés — banque à 118 curées + 48
+templates (~1 180 combinaisons). social/chaos conséquent remplis ; audace 4
+passe de 5 à 13, audace 5 de 1 à 7. `npm run quests` : zéro point d'attention.
+
 ### Addendum 2026-09-08 (suite) — réconciliation avec la session parallèle
 
 Une autre session Claude (panneau tmux parallèle, `session_0173Fo…`, commits

@@ -121,7 +121,7 @@ test('quêtes : intégrité du modèle', () => {
     }
     if (q.hidden) assert.ok(bilingual(q.fragment), `${q.id} fragment`);
   }
-  assert.ok(QUESTS.length >= 90, `banque trop petite : ${QUESTS.length}`);
+  assert.ok(QUESTS.length >= 110, `banque trop petite : ${QUESTS.length}`);
 });
 
 test('quêtes : pas de doublon de texte (fr / en)', () => {

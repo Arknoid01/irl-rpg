@@ -483,6 +483,65 @@ export const QUEST_TEMPLATES = [
       en: "You took a path that existed only for you. The map remembers.",
     },
   },
+  // ── Audace 3-4 : plus de choix pour les profils à l'aise ──
+  {
+    id: 'tpl_s_sondage',
+    famille: 'social', xp: 120, effort: 'leger', registre: 'quete', audace: 3,
+    contexte: ['presence_gens'], safe_fallback: FB_SOCIAL, defi_ami: true,
+    slots: { n: 'nombre_petit' },
+    text: {
+      fr: "Demande son avis à {n} personnes différentes sur une même petite question, aujourd\u2019hui.",
+      en: "Ask {n} different people for their take on the same small question today.",
+    },
+  },
+  {
+    id: 'tpl_e_traine',
+    famille: 'exploration', xp: 90, effort: 'leger', registre: 'experience', audace: 3,
+    contexte: ['exterieur'], safe_fallback: FB_DEHORS,
+    slots: { duree: 'duree_moyenne', lieu: 'lieu_proche' },
+    text: {
+      fr: "Tra\u00eene {duree} min du c\u00f4t\u00e9 d\u2019{lieu}, sans but pr\u00e9cis.",
+      en: "Wander around {lieu} for {duree} min, with no goal.",
+    },
+  },
+  {
+    id: 'tpl_e_quartier_loin',
+    famille: 'exploration', xp: 150, effort: 'moyen', registre: 'quete', audace: 4,
+    contexte: ['exterieur'], safe_fallback: FB_DEHORS,
+    slots: { duree: 'duree_moyenne', lieu: 'lieu_proche' },
+    text: {
+      fr: "Va {duree} min dans {lieu} d\u2019un quartier o\u00f9 tu ne vas presque jamais.",
+      en: "Spend {duree} min in {lieu} of a neighbourhood you almost never go to.",
+    },
+  },
+  {
+    id: 'tpl_c_decris',
+    famille: 'curiosite', xp: 90, effort: 'leger', registre: 'experience', audace: 3,
+    contexte: ['exterieur'], safe_fallback: FB_DEHORS,
+    slots: { duree: 'duree_courte', lieu: 'lieu_proche' },
+    text: {
+      fr: "Pendant {duree} min dans {lieu}, observe tout comme si tu devais le d\u00e9crire \u00e0 quelqu\u2019un qui ne l\u2019a jamais vu.",
+      en: "For {duree} min in {lieu}, observe everything as if describing it to someone who\u2019s never seen it.",
+    },
+  },
+  {
+    id: 'tpl_cr_banal_noble',
+    famille: 'creation', xp: 90, effort: 'leger', registre: 'experience', audace: 3,
+    slots: { medium: 'medium_crea' },
+    text: {
+      fr: "Fais {medium} de la chose la plus banale sous tes yeux, et donne-lui un titre s\u00e9rieux.",
+      en: "Make {medium} of the most ordinary thing in front of you, and give it a serious title.",
+    },
+  },
+  {
+    id: 'tpl_ch_regle_aprem',
+    famille: 'chaos', xp: 150, effort: 'consequent', registre: 'experience', audace: 4,
+    slots: { regle: 'regle_absurde' },
+    text: {
+      fr: "R\u00e8gle absurde pour l\u2019apr\u00e8s-midi : {regle}. Tiens-la sans d\u00e9ranger personne.",
+      en: "Absurd rule for the afternoon: {regle}. Keep it without bothering anyone.",
+    },
+  },
 ];
 
 export { FB_SOCIAL, FB_DEHORS, FB_LATER };

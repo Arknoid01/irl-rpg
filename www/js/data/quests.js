@@ -60,6 +60,17 @@ export const QUESTS = [
   { id: 's_inconnu_conseil', famille: 'social', xp: 150, effort: 'moyen', registre: 'quete', audace: 5, contexte: ['presence_gens', 'exterieur'], safe_fallback: FB_SOCIAL,
     text: { fr: "Demande un conseil sincère à quelqu'un que tu ne connais pas (resto, livre, coin sympa…).", en: "Ask a stranger for a sincere tip (a restaurant, a book, a nice spot…)." } },
 
+  { id: 's_retrouvailles', famille: 'social', xp: 160, effort: 'consequent', registre: 'quete', audace: 4, contexte: [], defi_ami: true,
+    text: { fr: "Reprends vraiment contact avec quelqu'un que tu as perdu de vue : un appel, un long vrai message, ou un rendez-vous.", en: "Properly reconnect with someone you've lost touch with: a call, a real long message, or a meet-up." } },
+  { id: 's_petit_rassemblement', famille: 'social', xp: 150, effort: 'consequent', registre: 'quete', audace: 3, contexte: [], defi_ami: true,
+    text: { fr: "Organise un petit moment à plusieurs — même deux personnes, même juste une balade.", en: "Organise a small get-together — even two people, even just a walk." } },
+  { id: 's_compliment_inconnu', famille: 'social', xp: 130, effort: 'leger', registre: 'quete', audace: 5, contexte: ['presence_gens'], safe_fallback: FB_SOCIAL, defi_ami: true,
+    text: { fr: "Fais un compliment sincère à un inconnu, sur un détail que tu remarques vraiment.", en: "Give a stranger a sincere compliment, about a detail you genuinely notice." } },
+  { id: 's_histoire_perso', famille: 'social', xp: 140, effort: 'moyen', registre: 'experience', audace: 5, contexte: ['presence_gens'], safe_fallback: FB_SOCIAL,
+    text: { fr: "Raconte à quelqu'un une petite histoire personnelle que tu ne partages pas d'habitude.", en: "Tell someone a small personal story you don't usually share." } },
+  { id: 's_chose_qui_gene', famille: 'social', xp: 130, effort: 'moyen', registre: 'quete', audace: 5, contexte: ['presence_gens'], safe_fallback: FB_SOCIAL,
+    text: { fr: "Dis gentiment à quelqu'un une petite chose qui te chiffonne depuis un moment — sans reproche, juste pour la poser.", en: "Kindly tell someone one small thing that's been niggling at you — no blame, just to put it out there." } },
+
   // ─────────────── EXPLORATION ───────────────
   { id: 'e_autre_chemin', famille: 'exploration', xp: 80, effort: 'moyen', registre: 'quete', audace: 2, contexte: ['trajet', 'exterieur'], safe_fallback: FB_DEHORS,
     text: { fr: "Prends un chemin différent de d'habitude pour rentrer chez toi.", en: "Take a different route home than usual." } },
@@ -91,6 +102,15 @@ export const QUESTS = [
     text: { fr: "Va dans un quartier de ta ville où tu ne vas presque jamais, même juste 20 minutes.", en: "Go to a part of your city you almost never visit, even just for 20 minutes." } },
   { id: 'e_bibli', famille: 'exploration', xp: 100, effort: 'moyen', registre: 'quete', audace: 2, contexte: ['exterieur'], safe_fallback: FB_DEHORS,
     text: { fr: "Entre dans une bibliothèque, une médiathèque ou un lieu culturel ouvert — même 5 minutes.", en: "Step into a library, media library or open cultural space — even for 5 minutes." } },
+
+  { id: 'e_fenetre', famille: 'exploration', xp: 50, effort: 'leger', registre: 'experience', audace: 1, contexte: [],
+    text: { fr: "Passe 3 minutes à une fenêtre à regarder ce qui se passe dehors — sans téléphone.", en: "Spend 3 minutes at a window watching what's happening outside — no phone." } },
+  { id: 'e_suivre_odeur', famille: 'exploration', xp: 60, effort: 'leger', registre: 'experience', audace: 2, contexte: ['exterieur'], safe_fallback: FB_DEHORS,
+    text: { fr: "Dehors, repère une odeur agréable et remonte-la jusqu'à sa source, si c'est facile.", en: "Outside, catch a pleasant smell and trace it back to its source, if it's easy." } },
+  { id: 'e_repas_seul_dehors', famille: 'exploration', xp: 150, effort: 'consequent', registre: 'experience', audace: 4, contexte: ['exterieur', 'commerce_ouvert'], safe_fallback: FB_DEHORS,
+    text: { fr: "Va manger ou boire seul quelque part, installe-toi vraiment, et reste sans téléphone 15 minutes.", en: "Go eat or drink somewhere alone, settle in properly, and stay phone-free for 15 minutes." } },
+  { id: 'e_demande_acces', famille: 'exploration', xp: 160, effort: 'moyen', registre: 'quete', audace: 5, contexte: ['exterieur', 'presence_gens'], safe_fallback: FB_DEHORS,
+    text: { fr: "Demande poliment à voir un endroit qui t'intrigue et où on n'entre pas d'habitude (un atelier, une arrière-cour, un toit).", en: "Politely ask to see a place that intrigues you and that people don't usually enter (a workshop, a back yard, a rooftop)." } },
 
   // ─────────────── CURIOSITÉ ───────────────
   { id: 'c_jamais_remarque', famille: 'curiosite', xp: 90, effort: 'moyen', registre: 'quete', audace: 1, contexte: ['exterieur'], safe_fallback: FB_DEHORS,
@@ -126,6 +146,11 @@ export const QUESTS = [
   { id: 'c_musee_5', famille: 'curiosite', xp: 130, effort: 'consequent', registre: 'quete', audace: 3, contexte: ['exterieur'], safe_fallback: FB_DEHORS,
     text: { fr: "Passe au moins 20 minutes dans un lieu d'exposition, une galerie ou un musée (même petit).", en: "Spend at least 20 minutes in an exhibition space, gallery or museum (even a small one)." } },
 
+  { id: 'c_question_naive', famille: 'curiosite', xp: 90, effort: 'leger', registre: 'quete', audace: 4, contexte: ['presence_gens'], safe_fallback: FB_SOCIAL,
+    text: { fr: "Pose à voix haute une question « bête » que tu n'oses pas poser d'habitude — et écoute vraiment la réponse.", en: "Ask out loud a “dumb” question you don't usually dare ask — and really listen to the answer." } },
+  { id: 'c_metier_inconnu', famille: 'curiosite', xp: 110, effort: 'moyen', registre: 'quete', audace: 4, contexte: ['presence_gens', 'commerce_ouvert'], safe_fallback: FB_SOCIAL,
+    text: { fr: "Demande à quelqu'un dont tu ignores le métier en quoi consiste sa journée.", en: "Ask someone whose job you don't know what their day actually involves." } },
+
   // ─────────────── CRÉATION ───────────────
   { id: 'cr_cuisine', famille: 'creation', xp: 100, effort: 'consequent', registre: 'quete', audace: 2, contexte: [],
     text: { fr: "Cuisine quelque chose que tu n'as jamais essayé.", en: "Cook something you've never tried." } },
@@ -156,6 +181,11 @@ export const QUESTS = [
   { id: 'cr_chanson', famille: 'creation', xp: 80, effort: 'moyen', registre: 'experience', audace: 2, contexte: [],
     text: { fr: "Apprends le refrain d'une chanson que tu ne connais pas encore.", en: "Learn the chorus of a song you don't know yet." } },
 
+  { id: 'cr_montre_ta_creation', famille: 'creation', xp: 130, effort: 'moyen', registre: 'quete', audace: 4, contexte: ['presence_gens'], safe_fallback: FB_SOCIAL, defi_ami: true,
+    text: { fr: "Montre quelque chose que tu as fait (dessin, plat, texte, bricolage) à quelqu'un dont l'avis compte pour toi.", en: "Show something you made (a drawing, a dish, a text, a fix) to someone whose opinion matters to you." } },
+  { id: 'cr_publie_petit', famille: 'creation', xp: 120, effort: 'moyen', registre: 'quete', audace: 5, contexte: [], defi_ami: true,
+    text: { fr: "Partage publiquement une petite chose que tu as créée — même modeste, même une seule fois.", en: "Publicly share one small thing you've made — even modest, even just once." } },
+
   // ─────────────── QUOTIDIEN (toujours avec une torsion) ───────────────
   { id: 'q_musique_range', famille: 'quotidien', xp: 60, effort: 'moyen', registre: 'quete', audace: 1, contexte: ['domicile'], safe_fallback: FB_LATER,
     text: { fr: "Range un espace qui te dérange — mais tu t'arrêtes dès que 2 morceaux de musique sont passés.", en: "Tidy a spot that bugs you — but stop as soon as 2 songs have played." } },
@@ -185,6 +215,15 @@ export const QUESTS = [
     text: { fr: "Fais une course à pied (ou une partie) que tu ferais d'habitude en voiture / transport.", en: "Do an errand on foot (or part of it) that you'd usually do by car / transit." } },
   { id: 'q_grand_menage_timer', famille: 'quotidien', xp: 110, effort: 'consequent', registre: 'quete', audace: 2, contexte: ['domicile'], safe_fallback: FB_LATER,
     text: { fr: "Choisis une pièce et remets-y de l'ordre pendant exactement 25 minutes — chrono, puis stop.", en: "Pick a room and tidy it for exactly 25 minutes — timer on, then stop." } },
+
+  { id: 'q_dire_non', famille: 'quotidien', xp: 90, effort: 'leger', registre: 'experience', audace: 4, contexte: [],
+    text: { fr: "Dis non (poliment) à une petite chose que tu accepterais d'habitude par automatisme.", en: "Say no (politely) to one small thing you'd usually accept out of habit." } },
+  { id: 'q_demande_service', famille: 'quotidien', xp: 100, effort: 'leger', registre: 'quete', audace: 4, contexte: ['presence_gens'], safe_fallback: FB_SOCIAL, defi_ami: true,
+    text: { fr: "Demande un petit service à quelqu'un — le genre de chose que tu ferais seul d'habitude.", en: "Ask someone for a small favour — the kind of thing you'd normally just do yourself." } },
+  { id: 'q_trajet_sans_ecran', famille: 'quotidien', xp: 60, effort: 'leger', registre: 'experience', audace: 1, contexte: [],
+    text: { fr: "Fais un trajet habituel sans écran ni musique — juste regarder autour de toi.", en: "Take a routine trip with no screen and no music — just look around." } },
+  { id: 'q_table_mise', famille: 'quotidien', xp: 50, effort: 'leger', registre: 'experience', audace: 1, contexte: ['domicile'], safe_fallback: FB_LATER,
+    text: { fr: "Mange un repas à une vraie table mise, même seul, même vite fait.", en: "Eat a meal at a properly set table, even alone, even a quick one." } },
 
   // ─────────────── CHAOS ───────────────
   { id: 'ch_piece_chemin', famille: 'chaos', xp: 90, effort: 'leger', registre: 'quete', audace: 2, contexte: ['exterieur'], safe_fallback: FB_DEHORS,
@@ -221,6 +260,13 @@ export const QUESTS = [
     text: { fr: "Lance un dé mental (1–6) : 1=assis 2 min, 2=photo ciel, 3=detour, 4=eau, 5=bonjour, 6=rien. Exécute.", en: "Roll a mental die (1–6): 1=sit 2 min, 2=sky photo, 3=detour, 4=water, 5=hello, 6=nothing. Do it." } },
   { id: 'ch_roi_ombre', famille: 'chaos', xp: 80, effort: 'leger', registre: 'experience', audace: 2, contexte: ['exterieur'], safe_fallback: FB_DEHORS,
     text: { fr: "Pendant 5 minutes, suis ton ombre comme si c'était ton guide officiel.", en: "For 5 minutes, follow your shadow as if it were your official guide." } },
+
+  { id: 'ch_regle_apresmidi', famille: 'chaos', xp: 150, effort: 'consequent', registre: 'experience', audace: 4, contexte: [],
+    text: { fr: "Invente une règle absurde et inoffensive, et tiens-la tout un après-midi (ne jamais marcher sur les lignes, saluer chaque chat…).", en: "Invent an absurd, harmless rule and keep it for a whole afternoon (never step on lines, salute every cat…)." } },
+  { id: 'ch_personnage_journee', famille: 'chaos', xp: 140, effort: 'consequent', registre: 'experience', audace: 3, contexte: [],
+    text: { fr: "Pendant une demi-journée, vis comme un personnage de ton choix : un détective, un touriste dans ta propre ville, un explorateur.", en: "For half a day, live as a character of your choice: a detective, a tourist in your own town, an explorer." } },
+  { id: 'ch_geste_absurde_public', famille: 'chaos', xp: 120, effort: 'leger', registre: 'experience', audace: 5, contexte: ['exterieur'], safe_fallback: FB_DEHORS,
+    text: { fr: "Fais une petite chose inoffensive et un peu absurde en public, et assume-la (marcher très lentement une rue entière, saluer une statue).", en: "Do one small, harmless, slightly absurd thing in public, and own it (walk very slowly down a whole street, salute a statue)." } },
 
   // ─────────────── QUÊTES CACHÉES ───────────────
   { id: 'h_gouter_inconnu', famille: 'curiosite', xp: 110, effort: 'moyen', registre: 'quete', audace: 3, poids: 'mystere', contexte: ['commerce_ouvert'], safe_fallback: FB_DEHORS, hidden: true,
