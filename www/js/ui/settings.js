@@ -235,7 +235,7 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
     const list = s.customQuests.length ? s.customQuests.map((c) => `
       <div class="set-row col">
         <span>${FAMILIES[c.famille].icon} ${esc(c.text)} <span class="tiny muted">· ${i18n.t('cq_effort_' + c.effort)}</span></span>
-        <div class="set-actions">
+        <div class="set-actions cq-actions">
           <button class="btn ghost small" data-set="cq-play" data-v="${c.id}"${playedToday ? ' disabled' : ''}>${i18n.t('cq_play')}</button>
           <button class="btn ghost small" data-set="cq-edit" data-v="${c.id}">${i18n.t('cq_edit')}</button>
           <button class="btn ghost small" data-set="cq-del" data-v="${c.id}">${i18n.t('cq_delete')}</button>

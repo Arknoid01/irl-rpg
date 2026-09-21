@@ -755,7 +755,7 @@
 .ob-nav .btn { flex: 1; }
 
 .onboarding input[type="text"], .onboarding input[type="number"],
-.sheet input[type="number"] {
+.sheet input[type="number"], .sheet input[type="text"] {
   width: 100%;
   background: rgba(255,255,255,.45);
   border: 1px solid rgba(42, 34, 24, .18);
@@ -763,6 +763,17 @@
   border-radius: 8px;
   padding: 11px 12px; margin: 8px 0;
 }
+/* Menus déroulants des réglages (quêtes perso) : mêmes teintes que les champs */
+.sheet select {
+  background: rgba(255,255,255,.45);
+  border: 1px solid rgba(42, 34, 24, .18);
+  color: var(--ink);
+  border-radius: 8px;
+  padding: 8px 10px; margin-left: 6px;
+  font: inherit;
+}
+.set-row.col label.tiny { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.set-row.col label.tiny select { flex: 1; max-width: 62%; }
 input[type="range"] { width: 100%; accent-color: var(--seal); margin: 12px 0 4px; }
 .range-ends, .set-row.col > span {
   display: flex; justify-content: space-between;
@@ -1434,3 +1445,7 @@ input[type="range"] { width: 100%; accent-color: var(--seal); margin: 12px 0 4px
 .shop-offer p { margin: 0 0 8px; }
 .shop-actions { display: inline-flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
 .shop-card-foot { flex-wrap: wrap; }
+
+/* Quêtes perso : 3 actions sur une ligne (après .set-actions .btn, qui fixe min-width) */
+.cq-actions { flex-wrap: nowrap; margin: 6px 0 4px; }
+.cq-actions .btn { min-width: 0; padding: 7px 4px; white-space: nowrap; }

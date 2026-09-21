@@ -187,7 +187,7 @@ export default {
   cq_add: 'Add to my list',
   cq_saved: 'My quests',
   cq_empty: 'No quests yet.',
-  cq_play: 'Play today',
+  cq_play: 'Play',
   cq_delete: 'Delete',
   cq_played_today: 'A custom quest is already in your day.',
   cq_full: 'Your list is full (30). Delete one.',

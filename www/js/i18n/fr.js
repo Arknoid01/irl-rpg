@@ -189,7 +189,7 @@ export default {
   cq_add: 'Ajouter à ma liste',
   cq_saved: 'Mes quêtes',
   cq_empty: 'Aucune quête pour l’instant.',
-  cq_play: 'Jouer aujourd’hui',
+  cq_play: 'Jouer',
   cq_delete: 'Supprimer',
   cq_played_today: 'Une quête perso est déjà dans ta journée.',
   cq_full: 'Ta liste est pleine (30). Supprime-en une.',

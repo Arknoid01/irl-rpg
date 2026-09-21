@@ -822,3 +822,18 @@ Reste : premier arc narratif, widget.
   réaffiche l'heure réellement retenue à la validation.
 81/81 tests, vérifié Chromium. Reste : préparation du test d'achat (Play
 Console), fiche store, premier arc, widget.
+
+### Addendum 2026-09-21 (suite 5) — préparation du test d'achat et de la fiche store
+
+- `android/app/build.gradle` : signature release **optionnelle** lue dans
+  `android/keystore.properties` (hors git) ; `versionCode 2` / `versionName
+  "1.1"`. Aucune clé n'a été créée : c'est un secret à toi (commande et
+  sauvegarde documentées dans `docs/STORE.md` « Signer l'AAB »).
+- `docs/STORE.md` : produit renommé « Cairn Complet » (id
+  `collection_des_mondes` conservé), descriptions FR/EN, textes du listing,
+  notes de version 1.1, checklist de test étendue (essai, rappels, Complet).
+- `resources/store/` : 5 captures 1080×2400 (accueil, boutique, mes quêtes,
+  rétrospective, thème cyberpunk). À régénérer quand l'arc narratif sera livré
+  (le badge « Bientôt » de la boutique disparaîtra).
+- Correctifs d'UI trouvés en générant les captures : champs et menus des
+  quêtes perso stylés (ils s'affichaient en gris natif), actions sur une ligne.
