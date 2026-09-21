@@ -704,3 +704,76 @@ Store / StoreKit se fige au premier upload — la renommer casserait la
 continuité) et la clé de sauvegarde `irlrpg_save_v2` dans `state/store.js`
 (la changer effacerait les parties en cours). Les docs d'analyse historiques
 gardent « IRL RPG » — non réécrites, ce sont des archives datées.
+
+## D19 — Modèle commercial révisé : « Cairn Complet » + extensions d'arcs (2026-09-21)
+
+**Constat (Yannick).** Le modèle D12/D17 (achat unique, cosmétique pur) est
+cohérent avec la philosophie de l'app mais ne rapporte rien : la boutique ne
+contient que de l'habillage, elle est peu lisible et le joueur n'a pas de
+raison claire d'acheter. Il faut pouvoir en vivre, sans pay-to-win.
+
+**Ce qui reste inchangé (verrous).** Jamais de pub (D12), zéro serveur / zéro
+cloud (D11), jamais d'avantage d'XP, de vitesse de progression ou de titre
+derrière un paiement (D3). Pas d'abonnement : il pousse à la pression de série,
+contraire à « jamais une injonction », et n'aurait de sens qu'avec un serveur.
+
+**Ce qui change : la limite « pas plus de quêtes » de D12 est levée** pour les
+fonctions de confort et les arcs narratifs. Le pool de 98 quêtes, la courbe
+d'XP et les compétences restent gratuits et identiques pour tous.
+
+**Offre (trois étages).**
+
+1. **Cairn Complet — achat unique, cible ~7 €.** Non-consommable.
+   Contenu : tous les thèmes (actuels et futurs), les fonctions de confort,
+   le premier arc narratif. L'id produit reste **`collection_des_mondes`**
+   (l'identité Play Store / StoreKit se fige à la déclaration — même logique
+   que D18) ; seul le libellé public devient « Cairn Complet ».
+2. **Extensions d'arcs — achats uniques séparés, cible 2–3 €.** Seule source
+   de revenu récurrent sans abonnement. Aucun serveur : contenu embarqué,
+   déverrouillé localement après achat. Autorisées avant le D30 si le premier
+   arc fonctionne (assouplit le « pas maintenant » de D17 §4.3).
+3. **Pot de soutien — consommable optionnel**, sans contrepartie.
+
+**Fonctions de confort candidates (ordre de mise en œuvre, coût croissant).**
+1. Quêtes personnalisées (créées par le joueur) — à préciser : XP identique
+   à une quête équivalente du pool, pour ne pas ouvrir de farm d'XP payant.
+2. Rétrospective mensuelle / annuelle + export du journal.
+3. Rappels multiples par jour.
+4. Widget d'accueil.
+5. Premier arc narratif exclusif.
+
+**Boutique (chantier de présentation).** Liste explicite de ce qui est inclus
+dès le premier écran ; aperçus (vidéos prévues, D12) ; point d'entrée au bon
+moment (après un jalon / un retour de série chaude, jamais en interruption),
+sans pression ni compte à rebours.
+
+**Hors périmètre du code.** Le revenu dépend surtout du volume de joueurs :
+fiche store, captures, vidéos et bouche-à-oreille sont un chantier à part.
+Le flow d'achat reste **à valider sur piste de test fermée** (jamais testé sur
+appareil, cf. D17 / `STORE.md`).
+
+**À faire ensuite.** Choisir la première fonction (proposition : quêtes
+personnalisées), ajouter un drapeau de droit « Complet » séparé du simple
+déblocage de thèmes, puis refondre l'écran boutique.
+
+### Addendum 2026-09-21 — quêtes perso livrées (première fonction de Complet)
+
+`state.complete` (droit « Cairn Complet », posé par `unlockCollection`, migré
+depuis les thèmes pour les acheteurs existants) et `state.customQuests`.
+`engine/game.js` : `addCustomQuest` / `deleteCustomQuest` / `playCustomQuest`.
+XP fixe par effort (`CUSTOM_XP` 60 / 90 / 120, sous la moyenne du pool),
+**1 quête perso jouée par jour**, 30 sauvegardées max, hors anti-répétition du
+pool. UI : onglet « Mes quêtes » des réglages (verrouillé => même achat que la
+Collection) + bouton sur l'accueil. 75/75 tests, simulation OK.
+Reste : rétrospective + export, rappels multiples, widget, premier arc, puis
+refonte de la boutique (libellé « Cairn Complet », liste des inclus, aperçus).
+
+### Addendum 2026-09-21 (suite) — boutique refondue
+
+Onglet « Thèmes » => **« Boutique »** (`ui/settings.js`) : héros « Cairn Complet »
+(cairn SVG, avantages ✓ livrés / « Bientôt » pour les fonctions pas encore
+faites — honnêteté envers l'acheteur, à retirer au fil des livraisons, CTA
+pleine largeur avec prix du store, pastilles de confiance : achat unique / zéro
+pub / jamais pay-to-win / reste sur le téléphone) ; carrousel horizontal
+(scroll-snap) des 7 mondes en aperçus live ; état « Complet est à toi » après
+achat. 75/75 tests, vérifié en capture Chromium mobile (390 px).

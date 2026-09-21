@@ -66,6 +66,7 @@ export function renderAdventure(state) {
     </div>
     ${elanLine}
     ${questsBlock}
+    <button class="btn ghost small" data-action="open-settings" data-tab="custom">${i18n.t('cq_cta')}${state.complete ? '' : ' ✨'}</button>
     ${eventCardHtml(state.event)}
     ${heroCardHtml(state)}
   `;

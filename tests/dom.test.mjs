@@ -162,10 +162,12 @@ test('réglages : onglet Thèmes — un achat débloque les 6 thèmes (D17)', as
   await click('[data-action="open-settings"]');
   await click('[data-set="tab"][data-v="themes"]');
   assert.ok($('.settings-sheet'), 'feuille de réglages affichée');
-  assert.ok($('.set-tab.active') && /Thèmes/.test($('.set-tab.active').textContent), 'onglet Thèmes actif');
+  assert.ok($('.set-tab.active') && /Boutique/.test($('.set-tab.active').textContent), 'onglet Boutique actif');
   assert.equal($$('.shop-card').length, 7, 'les 7 thèmes sont listés');
   assert.ok($('.shop-status.active'), 'un thème actif est marqué');
-  assert.ok($('.shop-collection'), 'bannière Collection affichée tant que tout n’est pas débloqué');
+  assert.ok($('.shop-hero:not(.owned) .shop-cta'), 'héros « Cairn Complet » avec bouton d’achat tant que non débloqué');
+  assert.equal($$('.shop-perks li.ok').length, 2, 'deux avantages disponibles');
+  assert.ok($$('.shop-perks li.soon').length >= 1, 'les avantages à venir sont marqués « Bientôt »');
   assert.ok($('[data-shop="unlock"][data-v="cyberpunk"]'), 'carte cyberpunk verrouillée');
   // Plus de vidéo : chaque carte a un aperçu live (mini-page thémée).
   assert.equal($('video'), null, 'aucun aperçu vidéo');
@@ -181,7 +183,8 @@ test('réglages : onglet Thèmes — un achat débloque les 6 thèmes (D17)', as
   for (const k of ['sombre', 'cyberpunk', 'enquete', 'mystique', 'postapo', 'cockpit']) {
     assert.ok(saved.unlockedThemes.includes(k), `${k} débloqué par la Collection`);
   }
-  assert.equal($('.shop-collection'), null, 'bannière retirée une fois tout débloqué');
+  assert.equal($('.shop-cta'), null, 'bouton d’achat retiré une fois débloqué');
+  assert.ok($('.shop-hero.owned'), 'héros passe en état « à toi »');
   assert.ok($('[data-shop="activate"][data-v="mystique"]'), 'les autres thèmes passent à « activer »');
 
   // Restaurer : présent, ne casse rien.

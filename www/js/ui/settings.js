@@ -6,14 +6,14 @@
 // impl « dev » (déblocage local) sur le web, impl native sur appareil.
 
 import { i18n, LANGS } from '../i18n/index.js';
-import { FAMILIES } from '../data/taxonomy.js';
+import { FAMILIES, FAMILY_KEYS } from '../data/taxonomy.js';
 import { PREFERABLE_FAMILIES } from '../data/quests.js';
 import { THEMES, THEME_KEYS, companionLineFor } from '../data/themes.js';
 import { getBilling, COLLECTION_PRODUCT } from '../platform/billing.js';
 import { $, esc, hideOverlay, showOverlay } from './dom.js';
 
 const PREVIEW_XP = 120;
-const TABS = ['adventure', 'themes', 'general'];
+const TABS = ['adventure', 'custom', 'themes', 'general'];
 
 /**
  * @param {object} opts
@@ -104,34 +104,68 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
     if (s.unlockedThemes.includes(key)) {
       return `<button class="btn ghost small" data-shop="activate" data-v="${key}"${busy ? ' disabled' : ''}>${i18n.t('shop_activate')}</button>`;
     }
-    // Verrouillé : l'achat de la Collection débloque tout ; on rappelle le
-    // thème cliqué pour l'activer tout de suite après.
+    // Verrouillé : l'achat débloque tout ; on rappelle le thème cliqué pour
+    // l'activer tout de suite après.
     return `<button class="btn primary small" data-shop="unlock" data-v="${key}"${busy ? ' disabled' : ''}>${i18n.t('shop_locked')}</button>`;
   }
 
-  function collectionBannerHtml(s) {
-    const allOwned = THEME_KEYS.every((k) => s.unlockedThemes.includes(k));
-    if (allOwned) return '';
+  // Un cairn : des pierres empilées, la marque de l'app. Couleur = `currentColor`.
+  const CAIRN_SVG = `<svg class="shop-cairn" viewBox="0 0 64 64" aria-hidden="true">
+    <ellipse cx="32" cy="52" rx="24" ry="8" fill="currentColor" opacity=".95"/>
+    <ellipse cx="31" cy="38" rx="17" ry="6.5" fill="currentColor" opacity=".8"/>
+    <ellipse cx="33" cy="26" rx="11" ry="5" fill="currentColor" opacity=".65"/>
+    <ellipse cx="32" cy="16" rx="6" ry="3.6" fill="currentColor" opacity=".5"/>
+  </svg>`;
+
+  function perksHtml() {
+    const yes = (k) => `<li class="ok"><span class="shop-tick">✓</span>${i18n.t(k)}</li>`;
+    const soon = (k) => `<li class="soon"><span class="shop-tick">○</span>${i18n.t(k)} <em>${i18n.t('shop_soon')}</em></li>`;
+    return `<ul class="shop-perks">
+      ${yes('shop_perk_themes')}${yes('shop_perk_custom')}
+      ${soon('shop_perk_retro')}${soon('shop_perk_remind')}${soon('shop_perk_arc')}
+    </ul>`;
+  }
+
+  function heroHtml(s) {
+    if (s.complete) {
+      return `<section class="shop-hero owned">
+        ${CAIRN_SVG}
+        <h3>${i18n.t('shop_owned_title')}</h3>
+        <p class="tiny">${i18n.t('shop_owned_sub')}</p>
+      </section>`;
+    }
     const price = collectionPrice ? ` · ${collectionPrice}` : '';
-    return `
-      <div class="shop-collection panel">
-        <h3>${i18n.t('shop_collection_title')}</h3>
-        <p class="tiny muted">${i18n.t('shop_collection_desc')}</p>
-        <button class="btn primary" data-shop="unlock" data-v=""${busy ? ' disabled' : ''}>${i18n.t('shop_unlock_collection')}${price}</button>
-        ${error ? `<p class="shop-error tiny">${i18n.t('shop_purchase_error')}</p>` : ''}
-      </div>`;
+    return `<section class="shop-hero">
+      ${CAIRN_SVG}
+      <p class="shop-kicker">${i18n.t('shop_hero_kicker')}</p>
+      <h3>${i18n.t('shop_hero_title')}</h3>
+      <p class="shop-sub">${i18n.t('shop_hero_sub')}</p>
+      ${perksHtml()}
+      <button class="btn primary shop-cta" data-shop="unlock" data-v=""${busy ? ' disabled' : ''}>${i18n.t('shop_cta')}${price}</button>
+      ${error ? `<p class="shop-error tiny">${i18n.t('shop_purchase_error')}</p>` : ''}
+      <ul class="shop-trust">
+        <li>${i18n.t('shop_trust_once')}</li><li>${i18n.t('shop_trust_noads')}</li>
+        <li>${i18n.t('shop_trust_fair')}</li><li>${i18n.t('shop_trust_local')}</li>
+      </ul>
+    </section>`;
   }
 
   function themesPanelHtml(s) {
     return `
-      <p class="tiny muted">${i18n.t('shop_intro')}</p>
-      ${collectionBannerHtml(s)}
-      <div class="shop-grid">
+      ${heroHtml(s)}
+      <div class="shop-worlds-head">
+        <h3>${i18n.t('shop_worlds')}</h3>
+        <span class="tiny muted">${i18n.t('shop_swipe')}</span>
+      </div>
+      <div class="shop-rail">
         ${THEME_KEYS.map((k) => `
-          <div class="shop-card">
+          <div class="shop-card${s.unlockedThemes.includes(k) ? '' : ' locked'}">
             ${previewHtml(k)}
             <div class="shop-card-foot">
-              <h3>${i18n.loc(THEMES[k].label)}</h3>
+              <div>
+                <h3>${i18n.loc(THEMES[k].label)}</h3>
+                ${k !== 'nordique' && !s.complete ? `<span class="tiny muted">${i18n.t('shop_in_complete')}</span>` : ''}
+              </div>
               ${themeStatusHtml(k, s)}
             </div>
           </div>`).join('')}
@@ -169,9 +203,46 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
       <p class="tiny muted">${esc(s.name)} · ${i18n.t('level')} ${s.level}</p>`;
   }
 
+  // Quêtes perso (Cairn Complet, D19) : verrouillé => même achat que la Collection.
+  function customPanelHtml(s) {
+    if (!s.complete) {
+      const price = collectionPrice ? ` · ${collectionPrice}` : '';
+      return `
+        <div class="shop-collection panel">
+          <h3>${i18n.t('cq_locked_title')}</h3>
+          <p class="tiny muted">${i18n.t('cq_locked_desc')}</p>
+          <button class="btn primary" data-shop="unlock" data-v="Q"${busy ? ' disabled' : ''}>${i18n.t('shop_unlock_collection')}${price}</button>
+          ${error ? `<p class="shop-error tiny">${i18n.t('shop_purchase_error')}</p>` : ''}
+        </div>`;
+    }
+    const playedToday = s.quests.some((q) => q.custom);
+    const fams = FAMILY_KEYS.map((f) => `<option value="${f}">${FAMILIES[f].icon} ${i18n.loc(FAMILIES[f].label)}</option>`).join('');
+    const efforts = ['leger', 'moyen', 'consequent'].map((e) => `<option value="${e}"${e === 'moyen' ? ' selected' : ''}>${i18n.t('cq_effort_' + e)}</option>`).join('');
+    const list = s.customQuests.length ? s.customQuests.map((c) => `
+      <div class="set-row col">
+        <span>${FAMILIES[c.famille].icon} ${esc(c.text)} <span class="tiny muted">· ${i18n.t('cq_effort_' + c.effort)}</span></span>
+        <div class="set-actions">
+          <button class="btn ghost small" data-set="cq-play" data-v="${c.id}"${playedToday ? ' disabled' : ''}>${i18n.t('cq_play')}</button>
+          <button class="btn ghost small" data-set="cq-del" data-v="${c.id}">${i18n.t('cq_delete')}</button>
+        </div>
+      </div>`).join('') : `<p class="tiny muted">${i18n.t('cq_empty')}</p>`;
+    return `
+      <p class="tiny muted">${i18n.t('cq_intro')}</p>
+      <div class="set-row col">
+        <input id="cq-text" type="text" maxlength="120" placeholder="${esc(i18n.t('cq_text_ph'))}" />
+        <label class="tiny">${i18n.t('cq_family')} <select id="cq-fam">${fams}</select></label>
+        <label class="tiny">${i18n.t('cq_effort')} <select id="cq-eff">${efforts}</select></label>
+        <button class="btn primary" data-set="cq-add">${i18n.t('cq_add')}</button>
+      </div>
+      <h3>${i18n.t('cq_saved')}</h3>
+      ${playedToday ? `<p class="tiny muted">${i18n.t('cq_played_today')}</p>` : ''}
+      ${list}`;
+  }
+
   function render() {
     const s = getState();
     const panel = activeTab === 'themes' ? themesPanelHtml(s)
+      : activeTab === 'custom' ? customPanelHtml(s)
       : activeTab === 'general' ? generalPanelHtml(s)
         : adventurePanelHtml(s);
     ov.innerHTML = `
@@ -214,6 +285,14 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
       dispatch('setPrefFamilies', { prefFamilies: list });
       return;
     }
+    if (k === 'cq-add') {
+      dispatch('addCustomQuest', {
+        text: $('#cq-text').value, famille: $('#cq-fam').value, effort: $('#cq-eff').value,
+      });
+      return;
+    }
+    if (k === 'cq-del') { dispatch('deleteCustomQuest', { id: el.dataset.v }); return; }
+    if (k === 'cq-play') { teardown(); close(); dispatch('playCustomQuest', { id: el.dataset.v }); return; }
     if (k === 'rename') {
       const input = $('#set-name');
       dispatch('renameHero', { name: input ? input.value : '' });
@@ -237,7 +316,7 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
         // Un seul achat débloque les 6. On active le thème cliqué s'il y en a
         // un (sinon rien ne semble se passer à l'écran — retour de test réel).
         dispatch('unlockCollection');
-        if (theme) dispatch('setTheme', { theme });
+        if (theme && theme !== 'Q') dispatch('setTheme', { theme });
         else render();
       } else if (res.error) {
         error = true; render();

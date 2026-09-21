@@ -13,6 +13,8 @@ export function defaultState() {
     lang: 'fr',            // 'fr' | 'en'
     theme: 'nordique',
     unlockedThemes: ['nordique'], // thèmes payants débloqués (D12) ; nordique gratuit
+    complete: false,       // droit « Cairn Complet » (D19) — jamais lié à la progression
+    customQuests: [],      // quêtes perso : { id, text, famille, effort } (Complet)
     comfort: 3,            // 1..5 — plafond d'audace des quêtes proposées
     prefFamilies: [],      // familles mises en avant au tirage
 

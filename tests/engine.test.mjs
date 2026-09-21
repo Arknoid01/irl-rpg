@@ -1370,3 +1370,55 @@ test('dates : la frontière du jour est locale (pas UTC)', async () => {
   assert.equal(daysBetween('2026-05-10', '2026-05-15'), 5);
   assert.equal(daysBetween('2026-02-27', '2026-03-02'), 3); // 2026 pas bissextile
 });
+
+test('quêtes perso (D19) : réservées à Complet, 1 par jour, XP sans farm', () => {
+  const now = new Date(2026, 8, 21, 10);
+  let s = game.newDay(game.finishOnboarding(defaultState(), { name: 'T', ageAck: true }).state, {}, { now }).state;
+
+  // sans Complet : refus, aucun effet
+  let r = game.addCustomQuest(s, { text: 'Ranger le bureau', famille: 'quotidien', effort: 'leger' });
+  assert.equal(r.state.customQuests.length, 0);
+
+  s = game.unlockCollection(s).state;
+  assert.equal(s.complete, true);
+
+  // validation : texte trop court / famille ou effort invalides refusés
+  assert.equal(game.addCustomQuest(s, { text: 'a', famille: 'quotidien', effort: 'leger' }).state.customQuests.length, 0);
+  assert.equal(game.addCustomQuest(s, { text: 'Ranger', famille: 'nope', effort: 'leger' }).state.customQuests.length, 0);
+  assert.equal(game.addCustomQuest(s, { text: 'Ranger', famille: 'quotidien', effort: 'xxl' }).state.customQuests.length, 0);
+
+  s = game.addCustomQuest(s, { text: '  Ranger   le bureau ', famille: 'quotidien', effort: 'moyen' }).state;
+  assert.equal(s.customQuests[0].text, 'Ranger le bureau');
+  s = game.addCustomQuest(s, { text: 'Marcher 20 min', famille: 'exploration', effort: 'leger' }).state;
+
+  s = game.playCustomQuest(s, { id: s.customQuests[0].id }, { now }).state;
+  const q = s.quests.find((x) => x.custom);
+  assert.equal(q.xp, game.CUSTOM_XP.moyen);
+  assert.equal(q.status, 'accepted');
+  assert.ok(q.xp <= 101, 'sous la moyenne du pool pour cet effort');
+
+  // une seule quête perso par jour
+  const n = s.quests.length;
+  s = game.playCustomQuest(s, { id: s.customQuests[1].id }, { now }).state;
+  assert.equal(s.quests.length, n);
+
+  // validation : XP + historique, mais pas dans l'anti-répétition du pool
+  const xp0 = s.xp;
+  s = game.completeQuest(s, { id: q.id }, { now }).state;
+  assert.ok(s.xp > xp0 || s.level > 1);
+  assert.ok(!s.history.completedQuestIds.includes(q.id));
+
+  // suppression
+  s = game.deleteCustomQuest(s, { id: s.customQuests[0].id }).state;
+  assert.equal(s.customQuests.length, 1);
+});
+
+test('normalize (D19) : acheteurs de la Collection => complete ; quêtes perso assainies', () => {
+  const old = defaultState();
+  old.unlockedThemes = ['nordique', ...THEME_KEYS.filter((k) => k !== 'nordique')];
+  assert.equal(normalize(old).complete, true);
+  assert.equal(normalize(defaultState()).complete, false);
+  const bad = defaultState();
+  bad.customQuests = [{ id: 'a', text: 'ok', famille: 'quotidien', effort: 'leger' }, { id: 'b', text: 5 }, null];
+  assert.equal(normalize(bad).customQuests.length, 1);
+});

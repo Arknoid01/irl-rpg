@@ -261,6 +261,19 @@ async function dispatch(action, args = {}) {
       softRerenderSettings();
       break;
     }
+    case 'addCustomQuest': {
+      const r = game.addCustomQuest(state, args);
+      state = r.state; persist();
+      showToast(i18n.t(r.effects.some((e) => e.type === 'custom-full') ? 'cq_full' : 'cq_added'));
+      softRerenderSettings();
+      break;
+    }
+    case 'deleteCustomQuest':
+      state = game.deleteCustomQuest(state, args).state; persist(); softRerenderSettings();
+      break;
+    case 'playCustomQuest':
+      apply(game.playCustomQuest(state, args));
+      break;
     case 'setLang':
       state.lang = args.lang === 'en' ? 'en' : 'fr';
       i18n.setLang(state.lang); persist(); render(); softRerenderSettings();

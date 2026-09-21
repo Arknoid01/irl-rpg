@@ -3,6 +3,8 @@
 import { defaultState, SAVE_VERSION } from './defaults.js';
 import { THEME_KEYS, DEFAULT_THEME } from '../data/themes.js';
 import { normalizeInventory } from '../engine/inventory.js';
+import { FAMILY_KEYS } from '../data/taxonomy.js';
+import { COLLECTION_THEMES } from '../platform/billing.js';
 
 export const STORAGE_KEY = 'irlrpg_save_v2';
 const LEGACY_KEY_V1 = 'irlrpg_save_v1';
@@ -86,6 +88,12 @@ export function normalize(state) {
     ? s.unlockedThemes.filter((k) => THEME_KEYS.includes(k))
     : [];
   if (!s.unlockedThemes.includes(DEFAULT_THEME)) s.unlockedThemes.push(DEFAULT_THEME);
+  // « Cairn Complet » (D19) : les acheteurs de la Collection l'ont déjà (migration).
+  s.complete = s.complete === true || COLLECTION_THEMES.every((k) => s.unlockedThemes.includes(k));
+  s.customQuests = (Array.isArray(s.customQuests) ? s.customQuests : [])
+    .filter((c) => c && typeof c.id === 'string' && typeof c.text === 'string' && FAMILY_KEYS.includes(c.famille) && ['leger', 'moyen', 'consequent'].includes(c.effort))
+    .map((c) => ({ id: c.id, text: c.text.slice(0, 120), famille: c.famille, effort: c.effort }))
+    .slice(0, 30);
   s.level = Math.max(1, Math.round(s.level) || 1);
   s.xp = Math.max(0, Math.round(s.xp) || 0);
   s.inventory = normalizeInventory(s.inventory).slice(0, 200);

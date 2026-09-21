@@ -6,7 +6,7 @@ import { drawDaily } from './draw.js';
 import {
   gainXp, gainSkills, bumpStreak, checkTitles,
 } from './progression.js';
-import { skillDeltasFor } from '../data/taxonomy.js';
+import { skillDeltasFor, FAMILY_KEYS } from '../data/taxonomy.js';
 import { todayStr } from './dates.js';
 import {
   addEntry, maybeMemorable, eventEntry, eventCoda, levelChapterEntry, regionRevealEntry,
@@ -200,7 +200,7 @@ export function completeQuest(state, { id }, ctx) {
   s.history.familleCompleted[q.famille] = (s.history.familleCompleted[q.famille] || 0) + 1;
   s.history.recentFamilles.push(q.famille);
   s.history.recentFamilles = s.history.recentFamilles.slice(-RECENT_FAMILLES_MEMORY);
-  if (!q.gentle) {
+  if (!q.gentle && !q.custom) {
     s.history.completedQuestIds.push(q.id);
     if (q.templateId) s.history.completedQuestIds.push(templateHistoryKey(q.templateId));
     s.history.completedQuestIds = s.history.completedQuestIds.slice(-RECENT_DONE_MEMORY);
@@ -347,10 +347,64 @@ export function unlockCollection(state) {
       added.push(theme);
     }
   }
+  const wasComplete = s.complete === true;
+  s.complete = true; // « Cairn Complet » (D19) : même produit, droit séparé des thèmes
   return {
     state: s,
-    effects: added.length ? [{ type: 'collection-unlocked', themes: added }] : [],
+    effects: added.length || !wasComplete ? [{ type: 'collection-unlocked', themes: added }] : [],
   };
+}
+
+/* ─────────────── Quêtes perso (Complet, D19) ─────────────── */
+
+// XP fixe par effort, volontairement un peu sous la moyenne du pool (75 / 101 /
+// 139) et 1 seule quête perso jouée par jour : aucune voie de farm d'XP payante.
+export const CUSTOM_XP = { leger: 60, moyen: 90, consequent: 120 };
+export const CUSTOM_MAX_SAVED = 30;
+export const CUSTOM_TEXT_MAX = 120;
+
+export function addCustomQuest(state, { text, famille, effort }) {
+  const s = clone(state);
+  const t = String(text || '').replace(/\s+/g, ' ').trim().slice(0, CUSTOM_TEXT_MAX);
+  if (!s.complete || t.length < 3 || !FAMILY_KEYS.includes(famille) || !CUSTOM_XP[effort]) {
+    return { state: s, effects: [] };
+  }
+  if (s.customQuests.length >= CUSTOM_MAX_SAVED) {
+    return { state: s, effects: [{ type: 'custom-full' }] };
+  }
+  const id = `c${Date.now().toString(36)}${s.customQuests.length}`;
+  s.customQuests.push({ id, text: t, famille, effort });
+  return { state: s, effects: [{ type: 'custom-added', id }] };
+}
+
+export function deleteCustomQuest(state, { id }) {
+  const s = clone(state);
+  s.customQuests = s.customQuests.filter((c) => c.id !== id);
+  return { state: s, effects: [] };
+}
+
+/** Ajoute une quête perso à la liste du jour (une seule par jour). */
+export function playCustomQuest(state, { id }, ctx) {
+  const { now } = ctxDefaults(ctx);
+  const s = clone(state);
+  const c = s.customQuests.find((x) => x.id === id);
+  if (!s.complete || !c || s.quests.some((q) => q.custom)) {
+    return { state: s, effects: [] };
+  }
+  s.quests.push({
+    id: `custom_${c.id}_${todayStr(now)}`,
+    famille: c.famille,
+    text: { fr: c.text, en: c.text },
+    xp: CUSTOM_XP[c.effort],
+    effort: c.effort,
+    registre: 'quete',
+    audace: 1,
+    contexte: [],
+    defi_ami: false,
+    custom: true,
+    status: 'accepted',
+  });
+  return { state: s, effects: [{ type: 'custom-played', id: c.id }] };
 }
 
 export function setComfort(state, { comfort }) {
