@@ -837,3 +837,25 @@ Console), fiche store, premier arc, widget.
   (le badge « Bientôt » de la boutique disparaîtra).
 - Correctifs d'UI trouvés en générant les captures : champs et menus des
   quêtes perso stylés (ils s'affichaient en gris natif), actions sur une ligne.
+
+### Addendum 2026-09-21 (suite 6) — premier arc exclusif : « Le Sentier »
+
+Choix de Yannick : concept **Le Sentier** (le joueur construit son propre
+cairn : repérer un lieu, y associer un détail, le marquer sans rien laisser,
+y revenir, le partager, en trouver un second, les relier), **7 étapes**,
+départ **dès l'achat**.
+
+- `data/arcs.js` : arc `sentier` (`exclusive: true`), familles
+  exploration ×4 / curiosité / création / social ; jamais de chaos, toutes
+  étapes accessibles (repli sûr, « en pensée » possible pour la dernière),
+  « sans rien laisser derrière toi » (pas de pierres déplacées dans la
+  nature). Butin : relique « Ton premier cairn ».
+- `engine/arcs.js` `nextArc` : les arcs exclusifs ne sont proposés qu'avec
+  Complet et **passent avant les arcs gratuits**, mais n'interrompent jamais
+  un arc déjà commencé (attente ≤ quelques semaines).
+- Boutique : « Bientôt » supprimé — tout ce que la boutique promet est livré.
+  Le texte des étapes est un premier jet à relire/réécrire par Yannick : c'est
+  sa voix (les indices et la révélation sont habillés par la voix du thème
+  comme les autres arcs).
+82/82 tests, simulation sans violation.
+Reste : widget d'accueil (Android natif), tests sur appareil, Play Console.

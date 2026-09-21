@@ -248,7 +248,7 @@ export default {
   shop_soon: 'Bientôt',
   shop_perk_retro: 'Rétrospective du mois et export du journal',
   shop_perk_remind: 'Plusieurs rappels dans la journée',
-  shop_perk_arc: 'Un premier arc narratif exclusif',
+  shop_perk_arc: 'Un premier arc narratif exclusif : « Le Sentier »',
   shop_trust_once: 'Achat unique',
   shop_trust_noads: 'Zéro pub',
   shop_trust_fair: 'Jamais pay-to-win',

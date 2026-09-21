@@ -20,14 +20,22 @@ export function arcState(state) {
   };
 }
 
-/** L'arc en cours, ou le prochain arc à commencer, ou null si tout est fait. */
+/**
+ * L'arc en cours, ou le prochain arc à commencer, ou null si tout est fait.
+ * Les arcs exclusifs (Cairn Complet, D19) ne sont proposés qu'aux acheteurs et
+ * passent avant les arcs gratuits — mais jamais en interrompant un arc commencé.
+ */
 export function nextArc(state) {
   const { active, completed } = arcState(state);
   const done = new Set(completed);
+  const open = (a) => !a.exclusive || !!(state && state.complete);
   if (active && !done.has(active)) {
-    return ARCS.find((a) => a.id === active) || null;
+    const a = ARCS.find((x) => x.id === active);
+    if (a && open(a)) return a;
   }
-  return ARCS.find((a) => !done.has(a.id)) || null;
+  const exclusive = ARCS.find((a) => a.exclusive && open(a) && !done.has(a.id));
+  if (exclusive) return exclusive;
+  return ARCS.find((a) => !a.exclusive && !done.has(a.id)) || null;
 }
 
 /** Vrai tant qu'un arc a été commencé mais pas terminé. */

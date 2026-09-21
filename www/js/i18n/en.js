@@ -246,7 +246,7 @@ export default {
   shop_soon: 'Soon',
   shop_perk_retro: 'Monthly look-back and journal export',
   shop_perk_remind: 'Several reminders through the day',
-  shop_perk_arc: 'A first exclusive story arc',
+  shop_perk_arc: 'A first exclusive story arc: “The Path”',
   shop_trust_once: 'One-time purchase',
   shop_trust_noads: 'No ads',
   shop_trust_fair: 'Never pay-to-win',

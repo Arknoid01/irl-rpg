@@ -61,8 +61,8 @@ l’application :
 | Type | **Produit non consommable** (achat unique, à vie) |
 | Prix | ~6,99 € (ajustable par région) |
 | Nom | **Cairn Complet** |
-| Description FR | Un seul achat, à vie : les 6 mondes (police, couleurs, cadres, voix du compagnon), tes propres quêtes, la rétrospective du mois avec export du journal, jusqu'à 3 rappels par jour. Aucun avantage de progression. |
-| Description EN | One purchase, for life: all 6 worlds (font, colours, frames, companion voice), your own quests, the monthly look-back with journal export, up to 3 reminders a day. No progression advantage. |
+| Description FR | Un seul achat, à vie : les 6 mondes (police, couleurs, cadres, voix du compagnon), tes propres quêtes, la rétrospective du mois avec export du journal, jusqu'à 3 rappels par jour, l'arc narratif « Le Sentier ». Aucun avantage de progression. |
+| Description EN | One purchase, for life: all 6 worlds (font, colours, frames, companion voice), your own quests, the monthly look-back with journal export, up to 3 reminders a day, the “The Path” story arc. No progression advantage. |
 
 Le même ID sert pour App Store Connect (produit non consommable) le jour d’un
 build iOS.
@@ -133,6 +133,7 @@ ignores ou tu valides sur l’honneur — ignorer ne coûte jamais rien.
 • Tes propres quêtes  
 • La rétrospective du mois, avec export de ton journal  
 • Jusqu’à 3 rappels par jour  
+• « Le Sentier », un arc narratif exclusif en 7 étapes  
 Chaque thème s’essaie gratuitement 24 h. 16+.
 
 **Long EN :**  
@@ -149,10 +150,11 @@ on the honor system — skipping never costs you anything.
 • Your own quests  
 • The monthly look-back, with journal export  
 • Up to 3 reminders a day  
+• “The Path”, an exclusive 7-step story arc  
 Every theme can be tried free for 24 h. Ages 16+.
 
-**Notes de version 1.1 (FR) :** Cairn Complet : tes propres quêtes, rétrospective du mois et export du journal, jusqu’à 3 rappels par jour, 6 mondes à essayer 24 h gratuitement. Boutique refaite.  
-**Release notes 1.1 (EN):** Cairn Complete: your own quests, monthly look-back and journal export, up to 3 reminders a day, 6 worlds to try free for 24 h. Redesigned shop.
+**Notes de version 1.1 (FR) :** Cairn Complet : tes propres quêtes, rétrospective du mois et export du journal, jusqu’à 3 rappels par jour, « Le Sentier » (arc narratif exclusif), 6 mondes à essayer 24 h gratuitement. Boutique refaite.  
+**Release notes 1.1 (EN):** Cairn Complete: your own quests, monthly look-back and journal export, up to 3 reminders a day, “The Path” (exclusive story arc), 6 worlds to try free for 24 h. Redesigned shop.
 
 ## Captures d'écran
 

@@ -161,8 +161,8 @@ test('réglages : onglet Thèmes — un achat débloque les 6 thèmes (D17)', as
   assert.equal($$('.shop-card').length, 7, 'les 7 thèmes sont listés');
   assert.ok($('.shop-status.active'), 'un thème actif est marqué');
   assert.ok($('.shop-hero:not(.owned) .shop-cta'), 'héros « Cairn Complet » avec bouton d’achat tant que non débloqué');
-  assert.equal($$('.shop-perks li.ok').length, 4, 'quatre avantages disponibles');
-  assert.ok($$('.shop-perks li.soon').length >= 1, 'les avantages à venir sont marqués « Bientôt »');
+  assert.equal($$('.shop-perks li.ok').length, 5, 'cinq avantages livrés');
+  assert.equal($$('.shop-perks li.soon').length, 0, 'plus aucun « Bientôt » : tout ce qui est promis est livré');
   assert.ok($('[data-shop="unlock"][data-v="cyberpunk"]'), 'carte cyberpunk verrouillée');
   // Plus de vidéo : chaque carte a un aperçu live (mini-page thémée).
   assert.equal($('video'), null, 'aucun aperçu vidéo');

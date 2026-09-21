@@ -579,7 +579,8 @@ test('mini-arcs : contenu bien formé (Phase 3.3)', () => {
   for (const arc of ARCS) {
     assert.ok(!ids.has(arc.id), `arc dupliqué : ${arc.id}`);
     ids.add(arc.id);
-    assert.ok(arc.steps.length >= 3 && arc.steps.length <= 5, `${arc.id} : 3-5 étapes`);
+    if (arc.exclusive) assert.equal(arc.steps.length, 7, `${arc.id} : arc exclusif de 7 étapes`);
+    else assert.ok(arc.steps.length >= 3 && arc.steps.length <= 5, `${arc.id} : 3-5 étapes`);
     assert.ok(FAMILY_KEYS.includes(arc.famille));
     assert.ok(bilingual(arc.loot.item) && bilingual(arc.loot.lore));
     assert.ok(LOOT_KINDS[arc.loot.kind], `${arc.id} loot kind`);
@@ -591,7 +592,8 @@ test('mini-arcs : contenu bien formé (Phase 3.3)', () => {
       assert.ok(bilingual(last ? s.revelation : s.indice), `${arc.id}#${i} ${last ? 'revelation' : 'indice'}`);
     });
   }
-  assert.equal(ARCS.length, 7);
+  assert.equal(ARCS.filter((a) => !a.exclusive).length, 7, '7 mini-arcs gratuits');
+  assert.deepEqual(ARCS.filter((a) => a.exclusive).map((a) => a.id), ['sentier']);
 });
 
 test('mini-arcs : moteur — proposition, avancement, révélation', () => {
@@ -1571,4 +1573,43 @@ test('quêtes perso (D19) : modification', () => {
   // invalide : inchangé
   assert.equal(game.updateCustomQuest(s, { id, text: 'a', famille: 'quotidien', effort: 'moyen' }).state.customQuests[0].text, 'Marcher 30 min');
   assert.equal(game.updateCustomQuest(s, { id: 'nope', text: 'Ok ok', famille: 'quotidien', effort: 'moyen' }).effects.length, 0);
+});
+
+test('arc exclusif « Le Sentier » (D19) : réservé à Complet, prioritaire, sans interrompre', () => {
+  // sans Complet : jamais proposé, les 7 arcs gratuits passent d'abord
+  let s = defaultState();
+  assert.notEqual(nextArc(s).id, 'sentier');
+  s.arcs = { active: null, step: 0, completed: ARCS.filter((a) => !a.exclusive).map((a) => a.id) };
+  assert.equal(nextArc(s), null, 'tout le gratuit fini, l\'exclusif reste fermé');
+  assert.equal(currentArcStep(s), null);
+
+  // avec Complet et aucun arc en cours : il passe en premier
+  s = { ...defaultState(), complete: true };
+  assert.equal(nextArc(s).id, 'sentier');
+  assert.equal(currentArcStep(s).arcId, 'sentier');
+
+  // achat pendant un arc gratuit commencé : on ne l'interrompt pas
+  s.arcs = { active: ARCS[0].id, step: 1, completed: [] };
+  assert.equal(nextArc(s).id, ARCS[0].id);
+  // ... il démarre juste après
+  s.arcs = { active: null, step: 0, completed: [ARCS[0].id] };
+  assert.equal(nextArc(s).id, 'sentier');
+
+  // parcours complet des 7 étapes : révélation + pièce de musée
+  const ctx = { now: new Date('2026-09-04T10:00:00'), rng: mulberry32(5) };
+  let g = game.unlockCollection(game.finishOnboarding(defaultState(), { name: 'P', comfort: 4, ageAck: true }, ctx).state).state;
+  for (let i = 0; i < 7; i += 1) {
+    const q = { ...currentArcStep(g), status: 'accepted' };
+    assert.equal(q.arcId, 'sentier');
+    assert.equal(q.arcStep, i);
+    g.quests = [q];
+    const r = game.completeQuest(g, { id: q.id }, ctx);
+    g = r.state;
+    if (i === 6) {
+      assert.ok(r.effects.some((e) => e.type === 'arc-done' && e.arcId === 'sentier'));
+      assert.ok(g.inventory.some((it) => it.id === 'arc_sentier'));
+    }
+  }
+  assert.ok(g.arcs.completed.includes('sentier'));
+  assert.notEqual(nextArc(g).id, 'sentier', 'terminé : les arcs gratuits reprennent');
 });

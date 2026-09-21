@@ -16,7 +16,12 @@ const FB = {
   en: "Keep the idea for when it comes up — no rush.",
 };
 
-/** @type {Array<{id:string, famille:string, steps:object[], loot:object}>} */
+const FB_SOCIAL = {
+  fr: "Si personne ne s’y prête, raconte-le simplement à quelqu’un — ou garde l’idée pour plus tard.",
+  en: "If nobody's around for it, simply tell someone — or keep the idea for later.",
+};
+
+/** @type {Array<{id:string, famille:string, exclusive?:boolean, steps:object[], loot:object}>} */
 export const ARCS = [
   {
     id: 'passage',
@@ -396,4 +401,99 @@ export const ARCS = [
       },
     },
   },
+  // ── Arc exclusif « Cairn Complet » (D19) : plus ample que les mini-arcs
+  // (7 étapes), il démarre dès l'achat et passe avant les arcs gratuits. ──
+  {
+    id: 'sentier',
+    famille: 'exploration',
+    exclusive: true,
+    steps: [
+      {
+        famille: 'exploration', xp: 110, contexte: ['exterieur'], safe_fallback: FB,
+        text: {
+          fr: "Repère un endroit de ton quotidien où tu ralentis ou t’arrêtes sans trop savoir pourquoi : un banc, un angle de rue, une vue.",
+          en: "Spot a place in your everyday life where you slow down or stop without quite knowing why: a bench, a street corner, a view.",
+        },
+        indice: {
+          fr: "Il y a un endroit qui t’arrête depuis toujours. Tu viens seulement de le remarquer.",
+          en: "There's a place that has always stopped you. You've only just noticed it.",
+        },
+      },
+      {
+        famille: 'curiosite', xp: 110, contexte: [], safe_fallback: FB,
+        text: {
+          fr: "Trouve un détail qui n’appartient qu’à cet endroit : une couleur, un bruit, une odeur, une forme. Retiens-le.",
+          en: "Find one detail that belongs only to that place: a colour, a sound, a smell, a shape. Remember it.",
+        },
+        indice: {
+          fr: "L’endroit a un détail que personne d’autre ne remarque. À partir de maintenant, c’est le tien.",
+          en: "The place has a detail nobody else notices. From now on, it's yours.",
+        },
+      },
+      {
+        famille: 'creation', xp: 120, contexte: ['exterieur'], safe_fallback: FB,
+        text: {
+          fr: "Fais-en un premier repère : une photo, un croquis, trois mots notés sur place. Sans rien laisser derrière toi.",
+          en: "Make it a first landmark: a photo, a sketch, three words jotted down on the spot. Leave nothing behind.",
+        },
+        indice: {
+          fr: "Un premier repère, posé sans rien déplacer : une pierre de plus sur ton chemin, invisible pour les autres.",
+          en: "A first landmark, placed without moving anything: one more stone on your way, invisible to everyone else.",
+        },
+      },
+      {
+        famille: 'exploration', xp: 120, contexte: ['exterieur'], safe_fallback: FB,
+        text: {
+          fr: "Reviens-y un autre jour, à une autre heure. Regarde ce qui a changé — et ce qui n’a pas bougé.",
+          en: "Go back on another day, at another hour. See what has changed — and what hasn't.",
+        },
+        indice: {
+          fr: "Le même endroit, un autre jour : il n’est pas tout à fait le même. Toi non plus.",
+          en: "The same place on another day: not quite the same. Neither are you.",
+        },
+      },
+      {
+        famille: 'social', xp: 130, contexte: ['presence_gens'], safe_fallback: FB_SOCIAL,
+        text: {
+          fr: "Parle de cet endroit à quelqu’un — ou emmène-le y faire un tour. Dis-lui pourquoi il compte pour toi.",
+          en: "Tell someone about that place — or take them there. Say why it matters to you.",
+        },
+        indice: {
+          fr: "Quelqu’un d’autre connaît l’endroit, maintenant. Un repère qu’on partage compte double.",
+          en: "Someone else knows the place now. A landmark you share counts twice.",
+        },
+      },
+      {
+        famille: 'exploration', xp: 130, contexte: ['exterieur'], safe_fallback: FB,
+        text: {
+          fr: "Trouve un deuxième endroit qui lui répond : la même ambiance, ou tout le contraire. Fais-en un repère à ton tour.",
+          en: "Find a second place that answers the first: the same mood, or the exact opposite. Make it a landmark too.",
+        },
+        indice: {
+          fr: "Deux repères. Deux points, c’est déjà une direction.",
+          en: "Two landmarks. Two points already make a direction.",
+        },
+      },
+      {
+        famille: 'exploration', xp: 150, contexte: ['exterieur', 'trajet'], safe_fallback: FB,
+        text: {
+          fr: "Relie les deux : va de l’un à l’autre en prenant ton temps, à pied si tu peux. Si le trajet ne s’y prête pas, fais-le en pensée.",
+          en: "Link the two: go from one to the other, taking your time, on foot if you can. If the route doesn't allow it, do it in your head.",
+        },
+        revelation: {
+          fr: "Il y a maintenant un sentier entre deux endroits qui n’avaient rien à voir. Personne ne l’a tracé : tu l’as marché. Un sentier n’existe que parce qu’on le parcourt.",
+          en: "There is now a path between two places that had nothing to do with each other. Nobody drew it: you walked it. A path only exists because someone walks it.",
+        },
+      },
+    ],
+    loot: {
+      item: { fr: '\ud83e\udea8 Ton premier cairn', en: '\ud83e\udea8 Your first cairn' },
+      kind: 'relic',
+      lore: {
+        fr: "Deux pierres qui ne se ressemblent pas, et un chemin entre elles. Le premier repère d’une longue série.",
+        en: "Two stones that don't look alike, and a path between them. The first landmark of a long line.",
+      },
+    },
+  },
 ];
+
