@@ -777,3 +777,16 @@ pleine largeur avec prix du store, pastilles de confiance : achat unique / zéro
 pub / jamais pay-to-win / reste sur le téléphone) ; carrousel horizontal
 (scroll-snap) des 7 mondes en aperçus live ; état « Complet est à toi » après
 achat. 75/75 tests, vérifié en capture Chromium mobile (390 px).
+
+### Addendum 2026-09-21 (suite 2) — rétrospective + export du journal livrés
+
+`history.months` : cumul par mois (`done`, `xp`, `activeDays`, `bestStreak`,
+`fam`) alimenté par `completeQuest` / `completeEvent`. **Pas de reconstitution
+des mois passés** (rien n'était enregistré) : le suivi commence à la mise à
+jour, dit en toutes lettres dans l'UI. `engine/retrospective.js` (pur) :
+`buildRetrospective`, `retrospectiveText`, `journalMarkdown`. UI : panneau en
+tête du Journal (sélecteur de mois, 4 chiffres, familles les plus vécues, 3
+souvenirs — épinglés d'abord —, partage du bilan, export Markdown du journal
+entier via `shareText`) ; vitrine verrouillée sans Complet. Boutique : la
+rétrospective passe de « Bientôt » à livrée. 76/76 tests, vérifié Chromium.
+Reste : rappels multiples, widget, premier arc.

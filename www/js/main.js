@@ -7,7 +7,10 @@ import { applyTheme } from './ui/theme.js';
 import { $, focusables } from './ui/dom.js';
 import { renderAdventure } from './ui/screens/adventure.js';
 import { renderWorld, selectWorldRegion } from './ui/screens/world.js';
-import { renderJournal, setJournalFilter } from './ui/screens/journal.js';
+import {
+  renderJournal, setJournalFilter, setRetroMonth, currentRetroMonth,
+} from './ui/screens/journal.js';
+import { retrospectiveText, journalMarkdown } from './engine/retrospective.js';
 import { renderCharacter } from './ui/screens/character.js';
 import { playEffects, closeOverlay, showToast, themeTipOverlay } from './ui/feedback.js';
 import { startOnboarding } from './ui/onboarding.js';
@@ -169,6 +172,27 @@ async function dispatch(action, args = {}) {
       view = 'journal';
       render();
       break;
+
+    case 'retro-month':
+      setRetroMonth(args.id);
+      view = 'journal';
+      render();
+      break;
+
+    case 'share-retro': {
+      const res = await shareText(
+        retrospectiveText(state, currentRetroMonth(state), state.lang),
+        i18n.t('retro_share_title'),
+      );
+      if (res === 'copied') showToast(i18n.t('set_copied'));
+      break;
+    }
+
+    case 'export-journal': {
+      const res = await shareText(journalMarkdown(state, state.lang), i18n.t('retro_export_title'));
+      if (res === 'copied') showToast(i18n.t('set_copied'));
+      break;
+    }
 
     case 'pin-memory':
       state = game.togglePinnedMemory(state, { id: args.id }).state;

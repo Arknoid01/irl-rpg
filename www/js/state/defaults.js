@@ -57,6 +57,7 @@ export function defaultState() {
       lastMilestone: null,  // { key, date } — dernier jalon, pour la voix du compagnon
       comebacks: 0,         // nombre de retours après absence (KPI rétention, local)
       lastComebackDate: null, // dédup du compteur ci-dessus
+      months: {},           // 'YYYY-MM' -> { done, xp, activeDays, lastDay, bestStreak, fam } (rétrospective, D19)
     },
 
     seeds: { companion: 0 },

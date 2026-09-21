@@ -94,6 +94,21 @@ export function normalize(state) {
     .filter((c) => c && typeof c.id === 'string' && typeof c.text === 'string' && FAMILY_KEYS.includes(c.famille) && ['leger', 'moyen', 'consequent'].includes(c.effort))
     .map((c) => ({ id: c.id, text: c.text.slice(0, 120), famille: c.famille, effort: c.effort }))
     .slice(0, 30);
+  {
+    const src = s.history.months && typeof s.history.months === 'object' && !Array.isArray(s.history.months) ? s.history.months : {};
+    const num = (v) => Math.max(0, Math.round(v) || 0);
+    s.history.months = {};
+    for (const [k, m] of Object.entries(src)) {
+      if (!/^\d{4}-\d{2}$/.test(k) || !m || typeof m !== 'object') continue;
+      const fam = {};
+      for (const f of FAMILY_KEYS) if (m.fam && num(m.fam[f])) fam[f] = num(m.fam[f]);
+      s.history.months[k] = {
+        done: num(m.done), xp: num(m.xp), activeDays: num(m.activeDays),
+        lastDay: typeof m.lastDay === 'string' ? m.lastDay : null,
+        bestStreak: num(m.bestStreak), fam,
+      };
+    }
+  }
   s.level = Math.max(1, Math.round(s.level) || 1);
   s.xp = Math.max(0, Math.round(s.xp) || 0);
   s.inventory = normalizeInventory(s.inventory).slice(0, 200);

@@ -1,6 +1,8 @@
 import { i18n } from '../../i18n/index.js';
 import { daysBetween, todayStr } from '../../engine/dates.js';
 import { buildJournalTimeline } from '../../engine/journal.js';
+import { FAMILIES } from '../../data/taxonomy.js';
+import { buildRetrospective, retroMonths, monthLabel } from '../../engine/retrospective.js';
 import { esc } from '../dom.js';
 
 const KIND_ICON = {
@@ -19,6 +21,52 @@ const KIND_ICON = {
 let filter = 'all';
 export function setJournalFilter(id) {
   filter = ['pinned', 'felt'].includes(id) ? id : 'all';
+}
+
+// Mois affiché dans la rétrospective : local, non persisté (comme le filtre).
+let retroKey = null;
+export function setRetroMonth(key) { retroKey = /^\d{4}-\d{2}$/.test(key || '') ? key : null; }
+export function currentRetroMonth(state) {
+  const months = retroMonths(state);
+  return retroKey && months.includes(retroKey) ? retroKey : months[0];
+}
+
+// Cairn Complet (D19) : bilan du mois + export. Verrouillé => vitrine.
+function retroHtml(state) {
+  if (!state.complete) {
+    return `<section class="panel retro locked">
+      <p class="retro-kicker">✨ ${i18n.t('retro_kicker')}</p>
+      <p class="tiny muted">${i18n.t('retro_locked_desc')}</p>
+      <button class="btn ghost small" data-action="open-settings" data-tab="themes">${i18n.t('retro_see')}</button>
+    </section>`;
+  }
+  const months = retroMonths(state);
+  const key = currentRetroMonth(state);
+  const r = buildRetrospective(state, key);
+  const lang = i18n.lang;
+  const chips = months.slice(0, 6).map((k) => `<button class="journal-filter${k === key ? ' active' : ''}"
+    data-action="retro-month" data-id="${k}">${esc(monthLabel(k, lang))}</button>`).join('');
+  const body = r.empty ? `<p class="tiny muted">${i18n.t('retro_empty')}</p>` : `
+    <div class="retro-stats">
+      <div><b>${r.done}</b><span>${i18n.t('retro_quests')}</span></div>
+      <div><b>${r.xp}</b><span>XP</span></div>
+      <div><b>${r.activeDays}</b><span>${i18n.t('retro_days')}</span></div>
+      <div><b>${r.bestStreak}</b><span>${i18n.t('retro_streak')}</span></div>
+    </div>
+    ${r.top.length ? `<p class="retro-h">${i18n.t('retro_top')}</p>
+      <p class="retro-top">${r.top.map((x) => `${FAMILIES[x.famille].icon} ${esc(i18n.loc(FAMILIES[x.famille].label))} <span class="muted">×${x.n}</span>`).join(' &nbsp; ')}</p>` : ''}
+    ${r.highlights.length ? `<p class="retro-h">${i18n.t('retro_memories')}</p>
+      <ul class="retro-memories">${r.highlights.map((e) => `<li>${e.title ? `<b>${esc(i18n.loc(e.title))}</b> — ` : ''}${esc(i18n.loc(e.text))}</li>`).join('')}</ul>` : ''}`;
+  const note = months.length === 1 ? `<p class="tiny muted">${i18n.t('retro_note')}</p>` : '';
+  return `<section class="panel retro">
+    <p class="retro-kicker">✨ ${i18n.t('retro_kicker')}</p>
+    <div class="journal-filters">${chips}</div>
+    ${body}${note}
+    <div class="set-actions">
+      <button class="btn ghost small" data-action="share-retro"${r.empty ? ' disabled' : ''}>${i18n.t('retro_share')}</button>
+      <button class="btn ghost small" data-action="export-journal">${i18n.t('retro_export')}</button>
+    </div>
+  </section>`;
 }
 
 function relDate(dateStr, today) {
@@ -129,11 +177,11 @@ export function renderJournal(state) {
     </header>`;
 
   if (timeline.empty) {
-    return `${header}
+    return `${header}${retroHtml(state)}
       <div class="panel empty"><p class="muted">${i18n.t('journal_empty')}</p></div>`;
   }
 
-  const filters = filtersHtml(timeline.counts, timeline.filter);
+  const filters = retroHtml(state) + filtersHtml(timeline.counts, timeline.filter);
 
   const pinnedSection = timeline.pinned.length ? `
     <div class="journal-section journal-kept">

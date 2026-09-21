@@ -121,8 +121,8 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
     const yes = (k) => `<li class="ok"><span class="shop-tick">✓</span>${i18n.t(k)}</li>`;
     const soon = (k) => `<li class="soon"><span class="shop-tick">○</span>${i18n.t(k)} <em>${i18n.t('shop_soon')}</em></li>`;
     return `<ul class="shop-perks">
-      ${yes('shop_perk_themes')}${yes('shop_perk_custom')}
-      ${soon('shop_perk_retro')}${soon('shop_perk_remind')}${soon('shop_perk_arc')}
+      ${yes('shop_perk_themes')}${yes('shop_perk_custom')}${yes('shop_perk_retro')}
+      ${soon('shop_perk_remind')}${soon('shop_perk_arc')}
     </ul>`;
   }
 

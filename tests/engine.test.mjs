@@ -1422,3 +1422,36 @@ test('normalize (D19) : acheteurs de la Collection => complete ; quêtes perso a
   bad.customQuests = [{ id: 'a', text: 'ok', famille: 'quotidien', effort: 'leger' }, { id: 'b', text: 5 }, null];
   assert.equal(normalize(bad).customQuests.length, 1);
 });
+
+test('rétrospective (D19) : cumul mensuel, bilan, export', async () => {
+  const { buildRetrospective, retroMonths, retrospectiveText, journalMarkdown } = await import('../www/js/engine/retrospective.js');
+  const now = new Date(2026, 8, 21, 10);
+  let s = game.newDay(game.finishOnboarding(defaultState(), { name: 'T', ageAck: true }).state, {}, { now }).state;
+  const ids = s.quests.map((q) => q.id);
+  for (const id of ids.slice(0, 2)) {
+    s = game.acceptQuest(s, { id }).state;
+    s = game.completeQuest(s, { id }, { now }).state;
+  }
+  const m = s.history.months['2026-09'];
+  assert.equal(m.done, 2);
+  assert.equal(m.activeDays, 1, 'deux quêtes le même jour = 1 jour actif');
+  assert.ok(m.xp > 0 && m.bestStreak >= 1);
+  assert.equal(Object.values(m.fam).reduce((a, b) => a + b, 0), 2);
+
+  const r = buildRetrospective(s, '2026-09');
+  assert.equal(r.empty, false);
+  assert.equal(r.done, 2);
+  assert.ok(buildRetrospective(s, '2026-08').empty, 'mois sans suivi = vide, pas inventé');
+  assert.ok(retroMonths(s, now).includes('2026-09'));
+
+  const txt = retrospectiveText(s, '2026-09', 'fr');
+  assert.match(txt, /Cairn — Septembre 2026/);
+  assert.match(txt, /2 quêtes/);
+  assert.match(retrospectiveText(s, '2026-09', 'en'), /2 quests/);
+  assert.match(journalMarkdown(s, 'fr'), /^# Mon journal Cairn — T/);
+
+  // le suivi survit à normalize et rejette les clés invalides
+  const n = normalize({ ...s, history: { ...s.history, months: { ...s.history.months, bad: { done: 9 } } } });
+  assert.equal(n.history.months['2026-09'].done, 2);
+  assert.equal(n.history.months.bad, undefined);
+});

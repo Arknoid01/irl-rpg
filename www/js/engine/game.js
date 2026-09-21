@@ -178,6 +178,20 @@ export function ignoreQuest(state, { id }) {
   return { state: s, effects: [] };
 }
 
+/** Cumul mensuel pour la rétrospective (D19) — appelé après bumpStreak. */
+function recordMonth(s, today, xp, famille) {
+  const key = today.slice(0, 7);
+  if (!s.history.months) s.history.months = {};
+  const m = s.history.months[key] || (s.history.months[key] = {
+    done: 0, xp: 0, activeDays: 0, lastDay: null, bestStreak: 0, fam: {},
+  });
+  m.done += 1;
+  m.xp += Math.max(0, Math.round(xp) || 0);
+  if (m.lastDay !== today) { m.activeDays += 1; m.lastDay = today; }
+  m.bestStreak = Math.max(m.bestStreak, s.streak || 0);
+  if (famille) m.fam[famille] = (m.fam[famille] || 0) + 1;
+}
+
 export function completeQuest(state, { id }, ctx) {
   const { now, rng } = ctxDefaults(ctx);
   const s = clone(state);
@@ -193,6 +207,7 @@ export function completeQuest(state, { id }, ctx) {
   gainXp(s, effects, q.xp);
   gainSkills(s, effects, skillDeltasFor(q));
   bumpStreak(s, effects, today);
+  recordMonth(s, today, q.xp, q.famille);
   applyLevelLoot(s, effects, today);
 
   // Historique
@@ -280,6 +295,7 @@ export function completeEvent(state, _args, ctx) {
     s.history.familleCompleted[ev.famille] = (s.history.familleCompleted[ev.famille] || 0) + 1;
   }
   bumpStreak(s, effects, today);
+  recordMonth(s, today, ev.xp, ev.famille);
   applyLevelLoot(s, effects, today);
 
   const loot = lootFromEvent(ev, today);
