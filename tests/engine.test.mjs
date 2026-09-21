@@ -1455,3 +1455,51 @@ test('rétrospective (D19) : cumul mensuel, bilan, export', async () => {
   assert.equal(n.history.months['2026-09'].done, 2);
   assert.equal(n.history.months.bad, undefined);
 });
+
+test('rappels multiples (D19) : réservés à Complet, assainis, plafonnés', () => {
+  let s = defaultState();
+  // sans Complet : les rappels en plus sont ignorés
+  let r = game.setNotifications(s, { enabled: true, hour: 9, extra: [13, 19] });
+  assert.deepEqual(r.state.notifications.extra, []);
+
+  s = game.unlockCollection(s).state;
+  r = game.setNotifications(s, { enabled: true, hour: 9, extra: [19, 13, 9, 13, 3, 25, 20] });
+  assert.deepEqual(r.state.notifications.extra, [13, 19], 'triés, sans doublon, ≠ heure principale, 6..22, max 2');
+
+  // changer l'heure principale retire l'éventuel doublon
+  s = r.state;
+  r = game.setNotifications(s, { hour: 13 });
+  assert.deepEqual(r.state.notifications.extra, [19]);
+
+  // la sauvegarde assainit aussi (import trafiqué)
+  const n = normalize({ ...s, notifications: { enabled: true, hour: 9, extra: [9, 7, 7, 30, 'x', 21, 15] } });
+  assert.deepEqual(n.notifications.extra, [7, 15]);
+});
+
+test('rappels multiples (D19) : planification native (plugin simulé)', async () => {
+  const { syncDailyReminder } = await import('../www/js/platform/notifications.js');
+  const calls = { cancel: [], schedule: [] };
+  globalThis.window = { Capacitor: { Plugins: { LocalNotifications: {
+    cancel: async (a) => calls.cancel.push(a),
+    requestPermissions: async () => ({ display: 'granted' }),
+    schedule: async (a) => calls.schedule.push(a),
+  } } } };
+  try {
+    let s = game.unlockCollection(defaultState()).state;
+    s = game.setNotifications(s, { enabled: true, hour: 9, extra: [13, 19] }).state;
+    await syncDailyReminder(s);
+    assert.deepEqual(calls.cancel[0].notifications.map((n) => n.id), [1001, 1002, 1003], 'annule les 3 ids');
+    const hrs = calls.schedule[0].notifications.map((n) => [n.id, n.schedule.on.hour]);
+    assert.deepEqual(hrs, [[1001, 9], [1002, 13], [1003, 19]]);
+    const bodies = new Set(calls.schedule[0].notifications.map((n) => n.body));
+    assert.equal(bodies.size, 2, 'les rappels en plus ont un ton différent');
+
+    // sans Complet (ex. sauvegarde importée) : un seul rappel, même si des extras traînent
+    const free = { ...s, complete: false };
+    await syncDailyReminder(free);
+    assert.equal(calls.schedule[1].notifications.length, 1);
+    // désactivé : annule tout, ne planifie rien
+    await syncDailyReminder({ ...s, notifications: { ...s.notifications, enabled: false } });
+    assert.equal(calls.schedule.length, 2);
+  } finally { delete globalThis.window; }
+});

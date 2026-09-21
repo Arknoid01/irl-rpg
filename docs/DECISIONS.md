@@ -790,3 +790,17 @@ souvenirs — épinglés d'abord —, partage du bilan, export Markdown du journ
 entier via `shareText`) ; vitrine verrouillée sans Complet. Boutique : la
 rétrospective passe de « Bientôt » à livrée. 76/76 tests, vérifié Chromium.
 Reste : rappels multiples, widget, premier arc.
+
+### Addendum 2026-09-21 (suite 3) — rappels multiples livrés
+
+`notifications.extra` : jusqu'à **2 rappels en plus** de l'heure principale
+(Complet). Assainis (6..22, sans doublon ni l'heure principale, triés) dans
+`setNotifications` et `normalize`. `platform/notifications.js` : ids 1001
+(principal) + 1002/1003, tous annulés à chaque synchro ; les extras ne sont
+planifiés que si `state.complete`. Texte des rappels en plus volontairement
+distinct et sans pression (`notif_body_extra`) — cohérent avec « jamais une
+injonction ». Sans Complet : un bouton ✨ mène à la boutique. 78/78 tests
+(dont planification avec plugin simulé), vérifié Chromium.
+**Non testé sur appareil** : permissions et déclenchement réel des 3
+notifications (à valider avec le test du flow d'achat, piste fermée).
+Reste : premier arc narratif, widget.

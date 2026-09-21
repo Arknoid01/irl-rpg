@@ -281,6 +281,10 @@ export default {
   tip_theme_cta: 'Voir les thèmes',
   tip_theme_later: 'Plus tard',
 
+  notif_body_extra: 'Un petit moment pour toi ? Ta quête du jour t’attend, sans pression.',
+  set_notif_extra: 'Rappel en plus',
+  set_notif_extra_none: 'Aucun',
+  set_notif_extra_locked: '✨ Plusieurs rappels par jour — avec Cairn Complet',
   notif_body: 'Ton compagnon a de quoi remplir la journée. Rien d’obligatoire.',
   share_text: 'Défi Cairn pour toi : {quest}',
   share_title: 'Un défi pour toi',

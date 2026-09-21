@@ -18,7 +18,7 @@ export function defaultState() {
     comfort: 3,            // 1..5 — plafond d'audace des quêtes proposées
     prefFamilies: [],      // familles mises en avant au tirage
 
-    notifications: { enabled: false, hour: 9 },
+    notifications: { enabled: false, hour: 9, extra: [] }, // extra : rappels en plus (Complet, D19)
 
     // Bulles d'aide affichées une seule fois (découverte de fonctionnalités).
     hints: { themeTip: false },

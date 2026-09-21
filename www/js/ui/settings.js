@@ -121,8 +121,8 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
     const yes = (k) => `<li class="ok"><span class="shop-tick">✓</span>${i18n.t(k)}</li>`;
     const soon = (k) => `<li class="soon"><span class="shop-tick">○</span>${i18n.t(k)} <em>${i18n.t('shop_soon')}</em></li>`;
     return `<ul class="shop-perks">
-      ${yes('shop_perk_themes')}${yes('shop_perk_custom')}${yes('shop_perk_retro')}
-      ${soon('shop_perk_remind')}${soon('shop_perk_arc')}
+      ${yes('shop_perk_themes')}${yes('shop_perk_custom')}${yes('shop_perk_retro')}${yes('shop_perk_remind')}
+      ${soon('shop_perk_arc')}
     </ul>`;
   }
 
@@ -187,6 +187,12 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
         <span>${i18n.t('set_notif_hour')}</span>
         <input type="number" min="6" max="22" value="${s.notifications.hour}" data-set="notif-hour" />
       </label>
+      ${s.complete ? [0, 1].map((i) => `
+      <label class="switch-row">
+        <span>${i18n.t('set_notif_extra')} ${i + 1}</span>
+        <input type="number" min="6" max="22" value="${(s.notifications.extra || [])[i] ?? ''}" placeholder="${esc(i18n.t('set_notif_extra_none'))}" data-set="notif-extra" />
+      </label>`).join('') : `
+      <button class="btn ghost small" data-set="cq-shop">${i18n.t('set_notif_extra_locked')}</button>`}
 
       <h3>${i18n.t('set_data')}</h3>
       <p class="tiny muted">${i18n.t('set_data_body')}</p>
@@ -267,7 +273,10 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
     const k = el.dataset.set;
     if (k === 'comfort') dispatch('setComfort', { comfort: Number(el.value) });
     else if (k === 'notif-hour') dispatch('setNotifications', { hour: Number(el.value) });
-    else if (k === 'notif-enable') dispatch('setNotifications', { enabled: el.checked });
+    else if (k === 'notif-extra') {
+      const vals = [...ov.querySelectorAll('[data-set="notif-extra"]')].map((i) => i.value).filter((v) => v !== '');
+      dispatch('setNotifications', { extra: vals.map(Number) });
+    } else if (k === 'notif-enable') dispatch('setNotifications', { enabled: el.checked });
   }
 
   function handleSet(el) {
@@ -285,6 +294,7 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
       dispatch('setPrefFamilies', { prefFamilies: list });
       return;
     }
+    if (k === 'cq-shop') { activeTab = 'themes'; render(); return; }
     if (k === 'cq-add') {
       dispatch('addCustomQuest', {
         text: $('#cq-text').value, famille: $('#cq-fam').value, effort: $('#cq-eff').value,

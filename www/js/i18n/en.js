@@ -279,6 +279,10 @@ export default {
   tip_theme_cta: 'See the themes',
   tip_theme_later: 'Later',
 
+  notif_body_extra: 'A quiet moment for you? Today’s quest is waiting, no pressure.',
+  set_notif_extra: 'Extra reminder',
+  set_notif_extra_none: 'None',
+  set_notif_extra_locked: '✨ Several reminders a day — with Cairn Complete',
   notif_body: 'Your companion has enough to fill the day. Nothing required.',
   share_text: 'Cairn challenge for you: {quest}',
   share_title: 'A challenge for you',

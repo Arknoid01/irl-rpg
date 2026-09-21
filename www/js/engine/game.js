@@ -435,11 +435,27 @@ export function setPrefFamilies(state, { prefFamilies }) {
   return { state: s, effects: [] };
 }
 
-export function setNotifications(state, { enabled, hour }) {
+export const EXTRA_REMINDERS_MAX = 2;
+
+/** Heures valides (6..22), sans doublon ni l'heure principale, plafonnées. */
+export function cleanExtraHours(list, mainHour) {
+  const out = [];
+  for (const v of Array.isArray(list) ? list : []) {
+    const h = Math.round(Number(v));
+    if (h >= 6 && h <= 22 && h !== mainHour && !out.includes(h)) out.push(h);
+  }
+  return out.sort((x, y) => x - y).slice(0, EXTRA_REMINDERS_MAX);
+}
+
+export function setNotifications(state, { enabled, hour, extra }) {
   const s = clone(state);
+  const mainHour = hour != null ? Math.min(22, Math.max(6, Math.round(hour))) : s.notifications.hour;
+  // Rappels supplémentaires : réservés à Complet (D19).
+  const wanted = extra !== undefined ? extra : s.notifications.extra;
   s.notifications = {
     enabled: enabled != null ? !!enabled : s.notifications.enabled,
-    hour: hour != null ? Math.min(22, Math.max(6, Math.round(hour))) : s.notifications.hour,
+    hour: mainHour,
+    extra: s.complete ? cleanExtraHours(wanted, mainHour) : [],
   };
   return { state: s, effects: [{ type: 'notifications', ...s.notifications }] };
 }

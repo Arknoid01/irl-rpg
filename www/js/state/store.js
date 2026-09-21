@@ -109,6 +109,15 @@ export function normalize(state) {
       };
     }
   }
+  if (s.notifications && typeof s.notifications === 'object') {
+    const h = Math.min(22, Math.max(6, Math.round(s.notifications.hour) || 9));
+    const seen = [];
+    for (const v of Array.isArray(s.notifications.extra) ? s.notifications.extra : []) {
+      const x = Math.round(Number(v));
+      if (x >= 6 && x <= 22 && x !== h && !seen.includes(x)) seen.push(x);
+    }
+    s.notifications = { enabled: !!s.notifications.enabled, hour: h, extra: seen.sort((a, b) => a - b).slice(0, 2) };
+  }
   s.level = Math.max(1, Math.round(s.level) || 1);
   s.xp = Math.max(0, Math.round(s.xp) || 0);
   s.inventory = normalizeInventory(s.inventory).slice(0, 200);
