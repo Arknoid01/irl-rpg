@@ -97,23 +97,30 @@ function nativeBilling(plugin) {
     });
   }
 
-  /** Attend l'issue du flux d'achat déclenché par buy(). */
+  /**
+   * Attend l'issue du flux d'achat déclenché par buy().
+   * @returns {{promise: Promise<object>, cancel: () => void}} `cancel` retire
+   *          l'écouteur et la minuterie (buy() a échoué tout de suite).
+   */
   function waitForPurchase(timeoutMs = 180000) {
-    return new Promise((resolve) => {
-      let done = false;
-      let handle = null;
-      const finish = (res) => {
-        if (done) return;
-        done = true;
-        if (handle && typeof handle.remove === 'function') handle.remove();
-        resolve(res);
-      };
-      Promise.resolve(plugin.addListener('purchasesUpdated', (data) => {
-        const list = (data && data.purchases) || [];
-        if (list.some(isOurPurchase)) finish({ ok: true, purchases: list });
-      })).then((h) => { handle = h; }).catch(() => {});
-      setTimeout(() => finish({ ok: false, error: 'timeout' }), timeoutMs);
-    });
+    let done = false;
+    let handle = null;
+    let timer = null;
+    let resolveFn = () => {};
+    const promise = new Promise((resolve) => { resolveFn = resolve; });
+    const finish = (res) => {
+      if (done) return;
+      done = true;
+      if (timer) clearTimeout(timer);
+      if (handle && typeof handle.remove === 'function') handle.remove();
+      resolveFn(res);
+    };
+    Promise.resolve(plugin.addListener('purchasesUpdated', (data) => {
+      const list = (data && data.purchases) || [];
+      if (list.some(isOurPurchase)) finish({ ok: true, purchases: list });
+    })).then((h) => { handle = h; if (done && h && typeof h.remove === 'function') h.remove(); }).catch(() => {});
+    timer = setTimeout(() => finish({ ok: false, error: 'timeout' }), timeoutMs);
+    return { promise, cancel: () => finish({ ok: false, error: 'cancelled' }) };
   }
 
   return {
@@ -141,15 +148,25 @@ function nativeBilling(plugin) {
           await acknowledgeIfNeeded(existing);
           return { ok: true, themes: COLLECTION_THEMES.slice() };
         }
-        const settled = waitForPurchase();
+        // Le plugin n'accepte buy() que pour un produit déjà « enregistré » par
+        // getAvailableProducts : on l'appelle nous-mêmes, sans compter sur
+        // l'ouverture préalable de la boutique.
+        try {
+          await plugin.getAvailableProducts({ inAppSkus: [COLLECTION_PRODUCT], subsSkus: [] });
+        } catch { /* le buy() ci-dessous remontera l'erreur utile */ }
+        const wait = waitForPurchase();
         try {
           await plugin.buy({ productId: COLLECTION_PRODUCT });
         } catch (e) {
+          wait.cancel();
           const msg = String((e && e.message) || e);
           if (/cancel/i.test(msg)) return { ok: false, cancelled: true };
+          // Produit inconnu de Google Play : non déclaré au Play Console, ou
+          // build installé hors du store (sideload / debug).
+          if (/not registered|not found|unavailable/i.test(msg)) return { ok: false, error: msg, unavailable: true };
           return { ok: false, error: msg };
         }
-        const r = await settled;
+        const r = await wait.promise;
         if (!r.ok) return { ok: false, error: r.error || 'purchase-failed' };
         await acknowledgeIfNeeded(r.purchases);
         return { ok: true, themes: COLLECTION_THEMES.slice() };

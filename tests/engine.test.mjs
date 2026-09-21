@@ -1613,3 +1613,24 @@ test('arc exclusif « Le Sentier » (D19) : réservé à Complet, prioritaire, s
   assert.ok(g.arcs.completed.includes('sentier'));
   assert.notEqual(nextArc(g).id, 'sentier', 'terminé : les arcs gratuits reprennent');
 });
+
+test('billing natif (D19) : enregistre le produit avant buy(), signale un produit inconnu', async () => {
+  const { getBilling } = await import('../www/js/platform/billing.js');
+  const calls = [];
+  const mk = (buyErr) => ({
+    init: async () => {}, getPurchases: async () => ({ purchases: [] }),
+    getAvailableProducts: async (a) => { calls.push('products'); return { products: [] }; },
+    buy: async () => { calls.push('buy'); if (buyErr) throw new Error(buyErr); },
+    addListener: async () => ({ remove() {} }),
+  });
+  globalThis.window = { Capacitor: { isNativePlatform: () => true, Plugins: { PurchasePlugin: mk('Product not registered: collection_des_mondes') } } };
+  try {
+    const r = await getBilling().purchase();
+    assert.equal(r.ok, false);
+    assert.equal(r.unavailable, true, 'produit inconnu => message dédié, pas un échec générique');
+    assert.ok(calls.indexOf('products') >= 0 && calls.indexOf('products') < calls.indexOf('buy'), 'produits chargés avant buy()');
+    // annulation : neutre, pas une erreur
+    globalThis.window.Capacitor.Plugins.PurchasePlugin = mk('User cancelled');
+    assert.deepEqual(await getBilling().purchase(), { ok: false, cancelled: true });
+  } finally { delete globalThis.window; }
+});

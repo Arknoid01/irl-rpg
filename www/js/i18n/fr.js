@@ -270,6 +270,7 @@ export default {
   shop_collection_desc: 'Un seul achat, à vie : les 6 thèmes (police, couleurs, cadres, voix du compagnon). Jamais le contenu du jeu.',
   shop_unlock_collection: 'Débloquer la Collection',
   shop_restore: 'Restaurer mes achats',
+  shop_purchase_unavailable: 'L’achat n’est pas encore disponible sur cet appareil : Google Play ne connaît pas ce produit (version de test installée hors du store).',
   shop_purchase_error: 'L’achat n’a pas abouti. Réessaie plus tard.',
   shop_unlock_dev_note: 'Démo locale — achat réel pas encore branché.',
   toast_theme_unlocked: 'Thème débloqué : {label}',

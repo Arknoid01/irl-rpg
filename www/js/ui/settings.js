@@ -34,7 +34,7 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
   let activeTab = TABS.includes(tab) ? tab : 'adventure';
   let collectionPrice = null; // prix affichable de la Collection (string) ou null
   let busy = false;           // un achat / une restauration est en cours
-  let error = false;          // le dernier achat a échoué
+  let error = false;          // le dernier achat a échoué : false | 'failed' | 'unavailable'
   let editingId = null;       // quête perso en cours de modification
 
   billing.listProducts().then((list) => {
@@ -146,7 +146,7 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
       <p class="shop-sub">${i18n.t('shop_hero_sub')}</p>
       ${perksHtml()}
       <button class="btn primary shop-cta" data-shop="unlock" data-v=""${busy ? ' disabled' : ''}>${i18n.t('shop_cta')}${price}</button>
-      ${error ? `<p class="shop-error tiny">${i18n.t('shop_purchase_error')}</p>` : ''}
+      ${error ? `<p class="shop-error tiny">${i18n.t(error === 'unavailable' ? 'shop_purchase_unavailable' : 'shop_purchase_error')}</p>` : ''}
       <ul class="shop-trust">
         <li>${i18n.t('shop_trust_once')}</li><li>${i18n.t('shop_trust_noads')}</li>
         <li>${i18n.t('shop_trust_fair')}</li><li>${i18n.t('shop_trust_local')}</li>
@@ -222,7 +222,7 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
           <h3>${i18n.t('cq_locked_title')}</h3>
           <p class="tiny muted">${i18n.t('cq_locked_desc')}</p>
           <button class="btn primary" data-shop="unlock" data-v="Q"${busy ? ' disabled' : ''}>${i18n.t('shop_unlock_collection')}${price}</button>
-          ${error ? `<p class="shop-error tiny">${i18n.t('shop_purchase_error')}</p>` : ''}
+          ${error ? `<p class="shop-error tiny">${i18n.t(error === 'unavailable' ? 'shop_purchase_unavailable' : 'shop_purchase_error')}</p>` : ''}
         </div>`;
     }
     const playedToday = s.quests.some((q) => q.custom);
@@ -338,7 +338,7 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
         if (theme && theme !== 'Q') dispatch('setTheme', { theme });
         else render();
       } else if (res.error) {
-        error = true; render();
+        error = res.unavailable ? 'unavailable' : 'failed'; render();
       } else {
         render(); // annulation : on réaffiche simplement les boutons
       }

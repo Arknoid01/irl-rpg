@@ -268,6 +268,7 @@ export default {
   shop_collection_desc: 'One purchase, for life: all 6 themes (font, colours, frames, companion voice). Never the game content.',
   shop_unlock_collection: 'Unlock the Collection',
   shop_restore: 'Restore my purchases',
+  shop_purchase_unavailable: 'Purchase isn’t available on this device yet: Google Play doesn’t know this product (test build installed outside the store).',
   shop_purchase_error: 'The purchase didn’t go through. Try again later.',
   shop_unlock_dev_note: 'Local demo — real purchase not wired up yet.',
   toast_theme_unlocked: 'Theme unlocked: {label}',
