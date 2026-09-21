@@ -26,7 +26,7 @@ import {
 import { recordDiscoveries } from './discoveries.js';
 import { advanceArc } from './arcs.js';
 import { isComebackDay } from './comeback.js';
-import { THEME_KEYS } from '../data/themes.js';
+import { THEME_KEYS, DEFAULT_THEME } from '../data/themes.js';
 import { COLLECTION_THEMES } from '../platform/billing.js';
 
 const RECENT_DONE_MEMORY = 56;
@@ -327,9 +327,11 @@ export function dismissEvent(state) {
 
 /* ─────────────── Réglages ─────────────── */
 
-export function setTheme(state, { theme }) {
+export function setTheme(state, { theme }, ctx) {
+  const { now } = ctxDefaults(ctx);
   const s = clone(state);
-  if (!s.unlockedThemes.includes(theme)) return { state: s, effects: [] };
+  const onTrial = s.trial && s.trial.theme === theme && now.getTime() < s.trial.until;
+  if (!s.unlockedThemes.includes(theme) && !onTrial) return { state: s, effects: [] };
   s.theme = theme;
   return { state: s, effects: [{ type: 'theme', theme }] };
 }
@@ -364,6 +366,7 @@ export function unlockCollection(state) {
     }
   }
   const wasComplete = s.complete === true;
+  s.trial = null; // l'essai n'a plus lieu d'être : le thème reste, débloqué
   s.complete = true; // « Cairn Complet » (D19) : même produit, droit séparé des thèmes
   return {
     state: s,
@@ -375,6 +378,52 @@ export function unlockCollection(state) {
 
 // XP fixe par effort, volontairement un peu sous la moyenne du pool (75 / 101 /
 // 139) et 1 seule quête perso jouée par jour : aucune voie de farm d'XP payante.
+/* ─────────────── Essai 24 h d'un thème (D19) ─────────────── */
+
+export const TRIAL_MS = 24 * 60 * 60 * 1000;
+export const SHOP_OFFER_AFTER = 5; // quêtes accomplies avant la carte « Complet »
+
+/** Un thème payant est essayable : pas de Complet, jamais essayé, aucun essai en cours. */
+export function canTrial(state, theme, now = new Date()) {
+  const active = state.trial && now.getTime() < state.trial.until;
+  return !state.complete && !active && COLLECTION_THEMES.includes(theme)
+    && THEME_KEYS.includes(theme) && !state.unlockedThemes.includes(theme)
+    && !(state.trialsUsed || []).includes(theme);
+}
+
+export function startTrial(state, { theme }, ctx) {
+  const { now } = ctxDefaults(ctx);
+  const s = clone(state);
+  if (!canTrial(s, theme, now)) return { state: s, effects: [] };
+  s.trial = { theme, until: now.getTime() + TRIAL_MS };
+  s.trialsUsed = [...(s.trialsUsed || []), theme];
+  s.theme = theme;
+  return { state: s, effects: [{ type: 'trial-start', theme }] };
+}
+
+/** Fin d'essai : retour au thème de départ si le thème d'essai est encore actif. */
+export function expireTrial(state, ctx) {
+  const { now } = ctxDefaults(ctx);
+  const s = clone(state);
+  if (!s.trial || now.getTime() < s.trial.until) return { state: s, effects: [] };
+  const theme = s.trial.theme;
+  s.trial = null;
+  const revert = s.theme === theme && !s.unlockedThemes.includes(theme);
+  if (revert) s.theme = DEFAULT_THEME;
+  return { state: s, effects: [{ type: 'trial-end', theme, reverted: revert }] };
+}
+
+/** La carte « Cairn Complet » de l'accueil : une fois, après quelques quêtes vécues. */
+export function shopOfferDue(state) {
+  return !state.complete && !state.hints?.shopOffer && state.history.totalCompleted >= SHOP_OFFER_AFTER;
+}
+
+export function dismissShopOffer(state) {
+  const s = clone(state);
+  s.hints = { ...s.hints, shopOffer: true };
+  return { state: s, effects: [] };
+}
+
 export const CUSTOM_XP = { leger: 60, moyen: 90, consequent: 120 };
 export const CUSTOM_MAX_SAVED = 30;
 export const CUSTOM_TEXT_MAX = 120;
@@ -391,6 +440,17 @@ export function addCustomQuest(state, { text, famille, effort }) {
   const id = `c${Date.now().toString(36)}${s.customQuests.length}`;
   s.customQuests.push({ id, text: t, famille, effort });
   return { state: s, effects: [{ type: 'custom-added', id }] };
+}
+
+export function updateCustomQuest(state, { id, text, famille, effort }) {
+  const s = clone(state);
+  const c = s.customQuests.find((x) => x.id === id);
+  const txt = String(text || '').replace(/\s+/g, ' ').trim().slice(0, CUSTOM_TEXT_MAX);
+  if (!s.complete || !c || txt.length < 3 || !FAMILY_KEYS.includes(famille) || !CUSTOM_XP[effort]) {
+    return { state: s, effects: [] };
+  }
+  Object.assign(c, { text: txt, famille, effort });
+  return { state: s, effects: [{ type: 'custom-updated', id }] };
 }
 
 export function deleteCustomQuest(state, { id }) {

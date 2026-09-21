@@ -5,6 +5,7 @@ import { esc } from '../dom.js';
 import { heroCardHtml } from '../components/charBits.js';
 import { questCardHtml } from '../components/questCard.js';
 import { eventCardHtml } from '../components/eventCard.js';
+import { shopOfferDue } from '../../engine/game.js';
 
 // Accueil : les aventures d'abord (ROADMAP Phase 0). Ordre = jour → le
 // compagnon plante le décor → les 3 propositions → l'événement → un résumé
@@ -66,6 +67,14 @@ export function renderAdventure(state) {
     </div>
     ${elanLine}
     ${questsBlock}
+    ${shopOfferDue(state) ? `<section class="panel shop-offer">
+      <p class="retro-kicker">${i18n.t('offer_title')}</p>
+      <p class="tiny">${i18n.t('offer_body')}</p>
+      <div class="set-actions">
+        <button class="btn primary small" data-action="shop-offer-open">${i18n.t('offer_cta')}</button>
+        <button class="btn ghost small" data-action="dismiss-shop-offer">${i18n.t('offer_later')}</button>
+      </div>
+    </section>` : ''}
     <button class="btn ghost small" data-action="open-settings" data-tab="custom">${i18n.t('cq_cta')}${state.complete ? '' : ' ✨'}</button>
     ${eventCardHtml(state.event)}
     ${heroCardHtml(state)}

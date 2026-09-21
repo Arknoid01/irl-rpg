@@ -1135,13 +1135,13 @@ test('normalize : migre les thèmes legacy', () => {
   assert.ok(THEME_KEYS.includes(normalize({ theme: 'inconnu' }).theme));
 });
 
-test('normalize : le flag d’astuce thème est toujours booléen', () => {
-  assert.equal(defaultState().hints.themeTip, false);
-  assert.equal(normalize({}).hints.themeTip, false);
-  assert.equal(normalize({ hints: { themeTip: true } }).hints.themeTip, true);
-  assert.equal(normalize({ hints: 'corrompu' }).hints.themeTip, false);
-  // une sauvegarde d'avant la fonctionnalité : l'astuce reste à montrer
-  assert.equal(normalize({ onboarded: true, name: 'X' }).hints.themeTip, false);
+test('normalize : le flag de la carte boutique est toujours booléen', () => {
+  assert.equal(defaultState().hints.shopOffer, false);
+  assert.equal(normalize({}).hints.shopOffer, false);
+  assert.equal(normalize({ hints: { shopOffer: true } }).hints.shopOffer, true);
+  assert.equal(normalize({ hints: 'corrompu' }).hints.shopOffer, false);
+  // une sauvegarde d'avant la fonctionnalité : la carte reste à montrer (le moment venu)
+  assert.equal(normalize({ onboarded: true, name: 'X' }).hints.shopOffer, false);
 });
 
 test('loadState : migration depuis v1', () => {
@@ -1502,4 +1502,73 @@ test('rappels multiples (D19) : planification native (plugin simulé)', async ()
     await syncDailyReminder({ ...s, notifications: { ...s.notifications, enabled: false } });
     assert.equal(calls.schedule.length, 2);
   } finally { delete globalThis.window; }
+});
+
+test('essai 24 h (D19) : un par thème, un à la fois, retour au thème de départ', () => {
+  const t0 = new Date(2026, 8, 21, 10);
+  const later = new Date(t0.getTime() + 25 * 3600 * 1000);
+  let s = defaultState();
+
+  // setTheme refuse toujours un thème payant sans essai
+  assert.equal(game.setTheme(s, { theme: 'cyberpunk' }, { now: t0 }).state.theme, 'nordique');
+  assert.equal(game.canTrial(s, 'cyberpunk', t0), true);
+  assert.equal(game.canTrial(s, 'nordique', t0), false, 'le thème gratuit n’a pas d’essai');
+
+  let r = game.startTrial(s, { theme: 'cyberpunk' }, { now: t0 });
+  s = r.state;
+  assert.equal(s.theme, 'cyberpunk');
+  assert.deepEqual(r.effects, [{ type: 'trial-start', theme: 'cyberpunk' }]);
+  assert.equal(s.trial.until, t0.getTime() + game.TRIAL_MS);
+  assert.deepEqual(s.trialsUsed, ['cyberpunk']);
+
+  // un seul essai à la fois ; le même thème ne se réessaie pas
+  assert.equal(game.canTrial(s, 'sombre', t0), false, 'un essai est déjà en cours');
+  assert.equal(game.startTrial(s, { theme: 'sombre' }, { now: t0 }).effects.length, 0);
+  // pendant l'essai on peut changer pour le thème d'essai
+  assert.equal(game.setTheme({ ...s, theme: 'nordique' }, { theme: 'cyberpunk' }, { now: t0 }).state.theme, 'cyberpunk');
+
+  // pas encore expiré : rien ne bouge
+  assert.equal(game.expireTrial(s, { now: t0 }).effects.length, 0);
+
+  // expiré : retour au thème de départ, et le thème ne se réessaie pas
+  r = game.expireTrial(s, { now: later });
+  assert.equal(r.state.theme, 'nordique');
+  assert.equal(r.state.trial, null);
+  assert.deepEqual(r.effects, [{ type: 'trial-end', theme: 'cyberpunk', reverted: true }]);
+  assert.equal(game.canTrial(r.state, 'cyberpunk', later), false);
+  assert.equal(game.canTrial(r.state, 'sombre', later), true, 'un autre thème reste essayable');
+  assert.equal(game.setTheme(r.state, { theme: 'cyberpunk' }, { now: later }).state.theme, 'nordique');
+
+  // l'achat pendant l'essai : le thème reste, débloqué, et l'essai disparaît
+  const bought = game.unlockCollection(s).state;
+  assert.equal(bought.trial, null);
+  assert.equal(bought.theme, 'cyberpunk');
+  assert.equal(game.canTrial(bought, 'sombre', t0), false, 'plus d’essai une fois Complet');
+  assert.equal(game.expireTrial({ ...s, trial: { theme: 'cyberpunk', until: t0.getTime() }, complete: true, unlockedThemes: [...s.unlockedThemes, 'cyberpunk'] }, { now: later }).state.theme, 'cyberpunk');
+
+  // la sauvegarde assainit un essai corrompu
+  assert.equal(normalize({ trial: { theme: 'nope', until: 5 } }).trial, null);
+  assert.equal(normalize({ trial: { theme: 'sombre', until: 'x' } }).trial, null);
+  assert.deepEqual(normalize({ trialsUsed: ['sombre', 'zzz'] }).trialsUsed, ['sombre']);
+});
+
+test('carte boutique (D19) : après 5 quêtes, une seule fois, jamais si Complet', () => {
+  let s = defaultState();
+  assert.equal(game.shopOfferDue(s), false, 'pas avant d’avoir joué');
+  s.history.totalCompleted = 5;
+  assert.equal(game.shopOfferDue(s), true);
+  assert.equal(game.shopOfferDue({ ...s, complete: true }), false);
+  s = game.dismissShopOffer(s).state;
+  assert.equal(game.shopOfferDue(s), false, 'écartée pour de bon');
+});
+
+test('quêtes perso (D19) : modification', () => {
+  let s = game.unlockCollection(defaultState()).state;
+  s = game.addCustomQuest(s, { text: 'Marcher', famille: 'exploration', effort: 'leger' }).state;
+  const id = s.customQuests[0].id;
+  s = game.updateCustomQuest(s, { id, text: '  Marcher 30 min ', famille: 'quotidien', effort: 'moyen' }).state;
+  assert.deepEqual(s.customQuests[0], { id, text: 'Marcher 30 min', famille: 'quotidien', effort: 'moyen' });
+  // invalide : inchangé
+  assert.equal(game.updateCustomQuest(s, { id, text: 'a', famille: 'quotidien', effort: 'moyen' }).state.customQuests[0].text, 'Marcher 30 min');
+  assert.equal(game.updateCustomQuest(s, { id: 'nope', text: 'Ok ok', famille: 'quotidien', effort: 'moyen' }).effects.length, 0);
 });

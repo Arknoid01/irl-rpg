@@ -12,7 +12,7 @@ import {
 } from './ui/screens/journal.js';
 import { retrospectiveText, journalMarkdown } from './engine/retrospective.js';
 import { renderCharacter } from './ui/screens/character.js';
-import { playEffects, closeOverlay, showToast, themeTipOverlay } from './ui/feedback.js';
+import { playEffects, closeOverlay, showToast } from './ui/feedback.js';
 import { startOnboarding } from './ui/onboarding.js';
 import { openSettings } from './ui/settings.js';
 import { syncDailyReminder, shareText } from './platform/notifications.js';
@@ -51,6 +51,11 @@ function boot() {
     state.lang = detectLang();
   }
   i18n.setLang(state.lang);
+  let trialEndedAtBoot = false;
+  if (state.trial) {
+    const r = game.expireTrial(state);
+    if (r.effects.length) { state = r.state; persist(); trialEndedAtBoot = true; }
+  }
   applyTheme(state.theme);
   syncStatusBar(state.theme);
 
@@ -66,7 +71,6 @@ function boot() {
       playEffects(r.effects.filter((e) => e.type !== 'onboarded'), state);
       syncDailyReminder(state);
       scheduleDayWatch();
-      maybeShowThemeTip();
     });
     return;
   }
@@ -77,7 +81,7 @@ function boot() {
   render();
   syncDailyReminder(state);
   scheduleDayWatch();
-  maybeShowThemeTip();
+  if (trialEndedAtBoot) showToast(i18n.t('trial_ended'));
 }
 
 let dayWatchTimer = null;
@@ -98,15 +102,18 @@ function rollDayIfNeeded() {
   return true;
 }
 
-// Bulle d'aide unique : on peut changer de thème. Montrée après l'onboarding
-// (et une fois pour les sauvegardes d'avant cette version), puis jamais plus.
-function maybeShowThemeTip() {
-  if (!state.onboarded || state.hints?.themeTip) return;
-  themeTipOverlay((choice) => {
-    state.hints = { ...state.hints, themeTip: true };
-    persist();
-    if (choice === 'shop') dispatch('open-shop');
-  });
+/**
+ * Fin d'un essai de thème (D19) : retour au thème de départ si besoin.
+ * @returns {boolean} true si l'état a changé.
+ */
+function expireTrialIfNeeded() {
+  if (!state || !state.trial) return false;
+  const r = game.expireTrial(state);
+  if (!r.effects.length) return false;
+  state = r.state;
+  applyTheme(state.theme); syncStatusBar(state.theme);
+  persist();
+  return true;
 }
 
 function ensureDay() {
@@ -121,9 +128,12 @@ function ensureDay() {
  */
 function scheduleDayWatch() {
   if (dayWatchTimer) clearTimeout(dayWatchTimer);
-  const delay = Math.min(msUntilNextMidnight(), 6 * 60 * 60 * 1000);
+  let delay = Math.min(msUntilNextMidnight(), 6 * 60 * 60 * 1000);
+  if (state && state.trial) delay = Math.min(delay, Math.max(1000, state.trial.until - Date.now() + 1000));
   dayWatchTimer = setTimeout(() => {
+    const ended = expireTrialIfNeeded();
     const rolled = rollDayIfNeeded();
+    if (ended && document.visibilityState === 'visible') { render(); softRerenderSettings(); showToast(i18n.t('trial_ended')); }
     if (rolled && document.visibilityState === 'visible') {
       view = 'adventure';
       render();
@@ -278,6 +288,21 @@ async function dispatch(action, args = {}) {
       softRerenderSettings();
       break;
     }
+    case 'startTrial': {
+      const r = game.startTrial(state, args);
+      if (!r.effects.length) break;
+      state = r.state;
+      applyTheme(state.theme); syncStatusBar(state.theme);
+      persist(); render(); softRerenderSettings();
+      showToast(i18n.t('trial_started'));
+      scheduleDayWatch();
+      break;
+    }
+    case 'dismiss-shop-offer': apply(game.dismissShopOffer(state)); break;
+    case 'shop-offer-open':
+      state = game.dismissShopOffer(state).state; persist(); render();
+      dispatch('open-shop');
+      break;
     case 'unlockCollection': {
       const r = game.unlockCollection(state);
       state = r.state; persist(); render();
@@ -289,6 +314,13 @@ async function dispatch(action, args = {}) {
       const r = game.addCustomQuest(state, args);
       state = r.state; persist();
       showToast(i18n.t(r.effects.some((e) => e.type === 'custom-full') ? 'cq_full' : 'cq_added'));
+      softRerenderSettings();
+      break;
+    }
+    case 'updateCustomQuest': {
+      const r = game.updateCustomQuest(state, args);
+      state = r.state; persist();
+      if (r.effects.length) showToast(i18n.t('cq_saved_ok'));
       softRerenderSettings();
       break;
     }
@@ -444,6 +476,7 @@ if (document.readyState === 'loading') {
 // veille (le minuteur de minuit ne s'exécute pas toujours en arrière-plan).
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState !== 'visible' || !state || !state.onboarded) return;
+  if (expireTrialIfNeeded()) { render(); showToast(i18n.t('trial_ended')); }
   if (rollDayIfNeeded()) {
     view = 'adventure';
     render();

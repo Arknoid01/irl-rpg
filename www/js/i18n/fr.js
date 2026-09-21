@@ -276,10 +276,17 @@ export default {
   toast_collection_unlocked: '🌍 Collection des Mondes débloquée — les 6 thèmes sont à toi.',
 
   // Bulle d'aide unique — découverte de la boutique de thèmes
-  tip_theme_title: 'Change d’ambiance quand tu veux',
-  tip_theme_body: 'Police, couleurs, cadres, voix de ton compagnon : sept univers à essayer. Ça ne change jamais tes quêtes ni ton XP.',
-  tip_theme_cta: 'Voir les thèmes',
-  tip_theme_later: 'Plus tard',
+  offer_title: '✨ Cairn Complet',
+  offer_body: 'Sept univers, tes propres quêtes, ta rétrospective du mois. Un seul achat, jamais d’avantage de progression.',
+  offer_cta: 'Découvrir',
+  offer_later: 'Plus tard',
+  shop_trial: 'Essayer 24 h',
+  shop_trial_left: 'Essai · {h} h restantes',
+  trial_started: 'Essai de 24 h lancé — bon voyage !',
+  trial_ended: 'Ton essai est terminé : retour au thème de départ.',
+  cq_edit: 'Modifier',
+  cq_save: 'Enregistrer',
+  cq_saved_ok: 'Quête modifiée',
 
   notif_body_extra: 'Un petit moment pour toi ? Ta quête du jour t’attend, sans pression.',
   set_notif_extra: 'Rappel en plus',

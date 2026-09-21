@@ -274,10 +274,17 @@ export default {
   toast_collection_unlocked: '🌍 Collection of Worlds unlocked — all 6 themes are yours.',
 
   // One-time coach mark — theme shop discovery
-  tip_theme_title: 'Switch the mood anytime',
-  tip_theme_body: 'Font, colours, frames, your companion’s voice: seven worlds to try. It never changes your quests or your XP.',
-  tip_theme_cta: 'See the themes',
-  tip_theme_later: 'Later',
+  offer_title: '✨ Cairn Complete',
+  offer_body: 'Seven worlds, your own quests, your monthly look-back. One purchase, never a progression advantage.',
+  offer_cta: 'Discover',
+  offer_later: 'Later',
+  shop_trial: 'Try for 24 h',
+  shop_trial_left: 'Trial · {h} h left',
+  trial_started: '24-hour trial started — enjoy!',
+  trial_ended: 'Your trial is over: back to the starting theme.',
+  cq_edit: 'Edit',
+  cq_save: 'Save',
+  cq_saved_ok: 'Quest updated',
 
   notif_body_extra: 'A quiet moment for you? Today’s quest is waiting, no pressure.',
   set_notif_extra: 'Extra reminder',

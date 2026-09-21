@@ -21,7 +21,9 @@ export function defaultState() {
     notifications: { enabled: false, hour: 9, extra: [] }, // extra : rappels en plus (Complet, D19)
 
     // Bulles d'aide affichées une seule fois (découverte de fonctionnalités).
-    hints: { themeTip: false },
+    hints: { shopOffer: false }, // carte « Cairn Complet » de l'accueil : vue / écartée (D19)
+    trial: null,           // essai 24 h d'un thème payant : { theme, until } (D19)
+    trialsUsed: [],        // thèmes déjà essayés (un essai par thème)
 
     level: 1,
     xp: 0,

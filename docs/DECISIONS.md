@@ -804,3 +804,21 @@ injonction ». Sans Complet : un bouton ✨ mène à la boutique. 78/78 tests
 **Non testé sur appareil** : permissions et déclenchement réel des 3
 notifications (à valider avec le test du flow d'achat, piste fermée).
 Reste : premier arc narratif, widget.
+
+### Addendum 2026-09-21 (suite 4) — entrée boutique contextuelle, essai 24 h, finitions
+
+- **Le pop-up d'astuce « Voir les thèmes » est supprimé.** Il s'ouvrait juste
+  après l'onboarding, avant toute expérience de jeu : l'interruption que D19
+  voulait éviter. Remplacé par une **carte discrète** sur l'accueil
+  (`hints.shopOffer`), affichée **une seule fois après 5 quêtes** accomplies,
+  jamais si Complet, écartable (« Plus tard » = pour de bon).
+- **Essai de 24 h d'un thème payant** : un par thème, un à la fois, jamais
+  avec Complet (`state.trial`, `trialsUsed`). Purement cosmétique — aucune
+  incidence sur XP/quêtes/progression. Fin d'essai : retour à `nordique`
+  (boot, retour au premier plan, minuterie), sauvegardé immédiatement, toast
+  d'information. L'achat pendant l'essai garde le thème. Honor-system
+  (horloge de l'appareil), assumé comme D3 : c'est du cosmétique.
+- Finitions : modification d'une quête perso ; le champ « rappel en plus »
+  réaffiche l'heure réellement retenue à la validation.
+81/81 tests, vérifié Chromium. Reste : préparation du test d'achat (Play
+Console), fiche store, premier arc, widget.

@@ -10,6 +10,7 @@ import { FAMILIES, FAMILY_KEYS } from '../data/taxonomy.js';
 import { PREFERABLE_FAMILIES } from '../data/quests.js';
 import { THEMES, THEME_KEYS, companionLineFor } from '../data/themes.js';
 import { getBilling, COLLECTION_PRODUCT } from '../platform/billing.js';
+import { canTrial } from '../engine/game.js';
 import { $, esc, hideOverlay, showOverlay } from './dom.js';
 
 const PREVIEW_XP = 120;
@@ -34,6 +35,7 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
   let collectionPrice = null; // prix affichable de la Collection (string) ou null
   let busy = false;           // un achat / une restauration est en cours
   let error = false;          // le dernier achat a échoué
+  let editingId = null;       // quête perso en cours de modification
 
   billing.listProducts().then((list) => {
     const p = list.find((x) => x.productId === COLLECTION_PRODUCT) || list[0];
@@ -98,15 +100,19 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
   }
 
   function themeStatusHtml(key, s) {
+    const onTrial = s.trial && s.trial.theme === key && Date.now() < s.trial.until;
     if (s.theme === key) {
-      return `<span class="shop-status active">${i18n.t('shop_active')}</span>`;
+      const left = onTrial ? ` · ${i18n.t('shop_trial_left', { h: Math.max(1, Math.ceil((s.trial.until - Date.now()) / 3600000)) })}` : '';
+      return `<span class="shop-status active">${i18n.t('shop_active')}${left}</span>`;
     }
-    if (s.unlockedThemes.includes(key)) {
+    if (s.unlockedThemes.includes(key) || onTrial) {
       return `<button class="btn ghost small" data-shop="activate" data-v="${key}"${busy ? ' disabled' : ''}>${i18n.t('shop_activate')}</button>`;
     }
     // Verrouillé : l'achat débloque tout ; on rappelle le thème cliqué pour
-    // l'activer tout de suite après.
-    return `<button class="btn primary small" data-shop="unlock" data-v="${key}"${busy ? ' disabled' : ''}>${i18n.t('shop_locked')}</button>`;
+    // l'activer tout de suite après. Un essai de 24 h par thème est offert.
+    const trial = canTrial(s, key)
+      ? `<button class="btn ghost small" data-shop="trial" data-v="${key}"${busy ? ' disabled' : ''}>${i18n.t('shop_trial')}</button>` : '';
+    return `<span class="shop-actions">${trial}<button class="btn primary small" data-shop="unlock" data-v="${key}"${busy ? ' disabled' : ''}>${i18n.t('shop_locked')}</button></span>`;
   }
 
   // Un cairn : des pierres empilées, la marque de l'app. Couleur = `currentColor`.
@@ -222,23 +228,26 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
         </div>`;
     }
     const playedToday = s.quests.some((q) => q.custom);
-    const fams = FAMILY_KEYS.map((f) => `<option value="${f}">${FAMILIES[f].icon} ${i18n.loc(FAMILIES[f].label)}</option>`).join('');
-    const efforts = ['leger', 'moyen', 'consequent'].map((e) => `<option value="${e}"${e === 'moyen' ? ' selected' : ''}>${i18n.t('cq_effort_' + e)}</option>`).join('');
+    const editing = s.customQuests.find((c) => c.id === editingId) || null;
+    if (!editing) editingId = null;
+    const fams = FAMILY_KEYS.map((f) => `<option value="${f}"${editing && editing.famille === f ? ' selected' : ''}>${FAMILIES[f].icon} ${i18n.loc(FAMILIES[f].label)}</option>`).join('');
+    const efforts = ['leger', 'moyen', 'consequent'].map((e) => `<option value="${e}"${(editing ? editing.effort : 'moyen') === e ? ' selected' : ''}>${i18n.t('cq_effort_' + e)}</option>`).join('');
     const list = s.customQuests.length ? s.customQuests.map((c) => `
       <div class="set-row col">
         <span>${FAMILIES[c.famille].icon} ${esc(c.text)} <span class="tiny muted">· ${i18n.t('cq_effort_' + c.effort)}</span></span>
         <div class="set-actions">
           <button class="btn ghost small" data-set="cq-play" data-v="${c.id}"${playedToday ? ' disabled' : ''}>${i18n.t('cq_play')}</button>
+          <button class="btn ghost small" data-set="cq-edit" data-v="${c.id}">${i18n.t('cq_edit')}</button>
           <button class="btn ghost small" data-set="cq-del" data-v="${c.id}">${i18n.t('cq_delete')}</button>
         </div>
       </div>`).join('') : `<p class="tiny muted">${i18n.t('cq_empty')}</p>`;
     return `
       <p class="tiny muted">${i18n.t('cq_intro')}</p>
       <div class="set-row col">
-        <input id="cq-text" type="text" maxlength="120" placeholder="${esc(i18n.t('cq_text_ph'))}" />
+        <input id="cq-text" type="text" maxlength="120" value="${editing ? esc(editing.text) : ''}" placeholder="${esc(i18n.t('cq_text_ph'))}" />
         <label class="tiny">${i18n.t('cq_family')} <select id="cq-fam">${fams}</select></label>
         <label class="tiny">${i18n.t('cq_effort')} <select id="cq-eff">${efforts}</select></label>
-        <button class="btn primary" data-set="cq-add">${i18n.t('cq_add')}</button>
+        <button class="btn primary" data-set="cq-add">${i18n.t(editing ? 'cq_save' : 'cq_add')}</button>
       </div>
       <h3>${i18n.t('cq_saved')}</h3>
       ${playedToday ? `<p class="tiny muted">${i18n.t('cq_played_today')}</p>` : ''}
@@ -276,6 +285,7 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
     else if (k === 'notif-extra') {
       const vals = [...ov.querySelectorAll('[data-set="notif-extra"]')].map((i) => i.value).filter((v) => v !== '');
       dispatch('setNotifications', { extra: vals.map(Number) });
+      if (e.type === 'change') render(); // montre l'état réellement retenu (doublons, hors plage)
     } else if (k === 'notif-enable') dispatch('setNotifications', { enabled: el.checked });
   }
 
@@ -296,12 +306,12 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
     }
     if (k === 'cq-shop') { activeTab = 'themes'; render(); return; }
     if (k === 'cq-add') {
-      dispatch('addCustomQuest', {
-        text: $('#cq-text').value, famille: $('#cq-fam').value, effort: $('#cq-eff').value,
-      });
+      const f = { text: $('#cq-text').value, famille: $('#cq-fam').value, effort: $('#cq-eff').value };
+      if (editingId) { const id = editingId; editingId = null; dispatch('updateCustomQuest', { id, ...f }); } else dispatch('addCustomQuest', f);
       return;
     }
-    if (k === 'cq-del') { dispatch('deleteCustomQuest', { id: el.dataset.v }); return; }
+    if (k === 'cq-edit') { editingId = el.dataset.v; render(); return; }
+    if (k === 'cq-del') { if (editingId === el.dataset.v) editingId = null; dispatch('deleteCustomQuest', { id: el.dataset.v }); return; }
     if (k === 'cq-play') { teardown(); close(); dispatch('playCustomQuest', { id: el.dataset.v }); return; }
     if (k === 'rename') {
       const input = $('#set-name');
@@ -316,6 +326,7 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
     const k = el.dataset.shop;
 
     if (k === 'activate') { dispatch('setTheme', { theme: el.dataset.v }); return; }
+    if (k === 'trial') { dispatch('startTrial', { theme: el.dataset.v }); return; }
 
     if (k === 'unlock') {
       const theme = el.dataset.v; // '' depuis la bannière, une clé depuis une carte

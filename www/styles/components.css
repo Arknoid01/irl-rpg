@@ -1428,3 +1428,9 @@ input[type="range"] { width: 100%; accent-color: var(--seal); margin: 12px 0 4px
 .retro-top { margin: 0; }
 .retro-memories { margin: 0; padding-left: 18px; font-size: .9rem; display: grid; gap: 4px; }
 .retro .set-actions { margin-top: 12px; }
+
+/* Carte « Cairn Complet » de l'accueil (D19) : discrète, écartable, une seule fois */
+.shop-offer { margin: 10px 0 12px; border-color: var(--gold); }
+.shop-offer p { margin: 0 0 8px; }
+.shop-actions { display: inline-flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.shop-card-foot { flex-wrap: wrap; }
