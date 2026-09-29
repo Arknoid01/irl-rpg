@@ -28,6 +28,7 @@ import { advanceArc } from './arcs.js';
 import { isComebackDay } from './comeback.js';
 import { THEME_KEYS, DEFAULT_THEME } from '../data/themes.js';
 import { COLLECTION_THEMES } from '../platform/billing.js';
+import { hasAccess, trialExhausted } from './access.js';
 
 const RECENT_DONE_MEMORY = 56;
 const RECENT_FAMILLES_MEMORY = 12;
@@ -130,6 +131,18 @@ export function newDay(state, _args, ctx) {
       const recap = dailyRecapEntry(s.history.daysPlayed, doneFams, s.theme, s.seeds?.companion || 0);
       if (recap) addEntry(s, { date: s.drawDate, text: recap, kind: 'jour' });
     }
+  }
+
+  // Essai terminé sans achat (D20) : l'aventure se met en pause. Pas de tirage,
+  // pas de jour joué compté ; journal, personnage et carte restent lisibles.
+  if (trialExhausted(s)) {
+    const first = !s.trialEnded;
+    s.trialEnded = true;
+    s.quests = [];
+    s.event = null;
+    s.drawDate = today;
+    if (!s.unlockedThemes.includes(s.theme)) s.theme = DEFAULT_THEME;
+    return { state: s, effects: [{ type: 'trial-over', first }] };
   }
 
   const { quests, event } = drawDaily(s, { now, rng });
@@ -327,11 +340,12 @@ export function dismissEvent(state) {
 
 /* ─────────────── Réglages ─────────────── */
 
-export function setTheme(state, { theme }, ctx) {
-  const { now } = ctxDefaults(ctx);
+export function setTheme(state, { theme }) {
   const s = clone(state);
-  const onTrial = s.trial && s.trial.theme === theme && now.getTime() < s.trial.until;
-  if (!s.unlockedThemes.includes(theme) && !onTrial) return { state: s, effects: [] };
+  // Pendant l'essai (D20), tous les mondes sont ouverts.
+  if (!THEME_KEYS.includes(theme) || (!s.unlockedThemes.includes(theme) && !hasAccess(s))) {
+    return { state: s, effects: [] };
+  }
   s.theme = theme;
   return { state: s, effects: [{ type: 'theme', theme }] };
 }
@@ -366,64 +380,23 @@ export function unlockCollection(state) {
     }
   }
   const wasComplete = s.complete === true;
-  s.trial = null; // l'essai n'a plus lieu d'être : le thème reste, débloqué
   s.complete = true; // « Cairn Complet » (D19) : même produit, droit séparé des thèmes
+  // Achat après l'essai (D20) : l'aventure reprend tout de suite — le jour
+  // bloqué est retiré pour que le prochain passage tire les quêtes.
+  if (s.trialEnded) {
+    s.trialEnded = false;
+    if (!s.quests.length && !s.event) s.drawDate = null;
+  }
   return {
     state: s,
     effects: added.length || !wasComplete ? [{ type: 'collection-unlocked', themes: added }] : [],
   };
 }
 
-/* ─────────────── Quêtes perso (Complet, D19) ─────────────── */
+/* ─────────────── Quêtes perso (Complet, D19 ; ouvertes pendant l'essai, D20) ─────────────── */
 
 // XP fixe par effort, volontairement un peu sous la moyenne du pool (75 / 101 /
 // 139) et 1 seule quête perso jouée par jour : aucune voie de farm d'XP payante.
-/* ─────────────── Essai 24 h d'un thème (D19) ─────────────── */
-
-export const TRIAL_MS = 24 * 60 * 60 * 1000;
-export const SHOP_OFFER_AFTER = 5; // quêtes accomplies avant la carte « Complet »
-
-/** Un thème payant est essayable : pas de Complet, jamais essayé, aucun essai en cours. */
-export function canTrial(state, theme, now = new Date()) {
-  const active = state.trial && now.getTime() < state.trial.until;
-  return !state.complete && !active && COLLECTION_THEMES.includes(theme)
-    && THEME_KEYS.includes(theme) && !state.unlockedThemes.includes(theme)
-    && !(state.trialsUsed || []).includes(theme);
-}
-
-export function startTrial(state, { theme }, ctx) {
-  const { now } = ctxDefaults(ctx);
-  const s = clone(state);
-  if (!canTrial(s, theme, now)) return { state: s, effects: [] };
-  s.trial = { theme, until: now.getTime() + TRIAL_MS };
-  s.trialsUsed = [...(s.trialsUsed || []), theme];
-  s.theme = theme;
-  return { state: s, effects: [{ type: 'trial-start', theme }] };
-}
-
-/** Fin d'essai : retour au thème de départ si le thème d'essai est encore actif. */
-export function expireTrial(state, ctx) {
-  const { now } = ctxDefaults(ctx);
-  const s = clone(state);
-  if (!s.trial || now.getTime() < s.trial.until) return { state: s, effects: [] };
-  const theme = s.trial.theme;
-  s.trial = null;
-  const revert = s.theme === theme && !s.unlockedThemes.includes(theme);
-  if (revert) s.theme = DEFAULT_THEME;
-  return { state: s, effects: [{ type: 'trial-end', theme, reverted: revert }] };
-}
-
-/** La carte « Cairn Complet » de l'accueil : une fois, après quelques quêtes vécues. */
-export function shopOfferDue(state) {
-  return !state.complete && !state.hints?.shopOffer && state.history.totalCompleted >= SHOP_OFFER_AFTER;
-}
-
-export function dismissShopOffer(state) {
-  const s = clone(state);
-  s.hints = { ...s.hints, shopOffer: true };
-  return { state: s, effects: [] };
-}
-
 export const CUSTOM_XP = { leger: 60, moyen: 90, consequent: 120 };
 export const CUSTOM_MAX_SAVED = 30;
 export const CUSTOM_TEXT_MAX = 120;
@@ -431,7 +404,7 @@ export const CUSTOM_TEXT_MAX = 120;
 export function addCustomQuest(state, { text, famille, effort }) {
   const s = clone(state);
   const t = String(text || '').replace(/\s+/g, ' ').trim().slice(0, CUSTOM_TEXT_MAX);
-  if (!s.complete || t.length < 3 || !FAMILY_KEYS.includes(famille) || !CUSTOM_XP[effort]) {
+  if (!hasAccess(s) || t.length < 3 || !FAMILY_KEYS.includes(famille) || !CUSTOM_XP[effort]) {
     return { state: s, effects: [] };
   }
   if (s.customQuests.length >= CUSTOM_MAX_SAVED) {
@@ -446,7 +419,7 @@ export function updateCustomQuest(state, { id, text, famille, effort }) {
   const s = clone(state);
   const c = s.customQuests.find((x) => x.id === id);
   const txt = String(text || '').replace(/\s+/g, ' ').trim().slice(0, CUSTOM_TEXT_MAX);
-  if (!s.complete || !c || txt.length < 3 || !FAMILY_KEYS.includes(famille) || !CUSTOM_XP[effort]) {
+  if (!hasAccess(s) || !c || txt.length < 3 || !FAMILY_KEYS.includes(famille) || !CUSTOM_XP[effort]) {
     return { state: s, effects: [] };
   }
   Object.assign(c, { text: txt, famille, effort });
@@ -464,7 +437,7 @@ export function playCustomQuest(state, { id }, ctx) {
   const { now } = ctxDefaults(ctx);
   const s = clone(state);
   const c = s.customQuests.find((x) => x.id === id);
-  if (!s.complete || !c || s.quests.some((q) => q.custom)) {
+  if (!hasAccess(s) || !c || s.quests.some((q) => q.custom)) {
     return { state: s, effects: [] };
   }
   s.quests.push({
@@ -510,12 +483,12 @@ export function cleanExtraHours(list, mainHour) {
 export function setNotifications(state, { enabled, hour, extra }) {
   const s = clone(state);
   const mainHour = hour != null ? Math.min(22, Math.max(6, Math.round(hour))) : s.notifications.hour;
-  // Rappels supplémentaires : réservés à Complet (D19).
+  // Rappels supplémentaires : Complet (D19), ouverts pendant l'essai (D20).
   const wanted = extra !== undefined ? extra : s.notifications.extra;
   s.notifications = {
     enabled: enabled != null ? !!enabled : s.notifications.enabled,
     hour: mainHour,
-    extra: s.complete ? cleanExtraHours(wanted, mainHour) : [],
+    extra: hasAccess(s) ? cleanExtraHours(wanted, mainHour) : [],
   };
   return { state: s, effects: [{ type: 'notifications', ...s.notifications }] };
 }

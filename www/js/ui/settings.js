@@ -10,7 +10,7 @@ import { FAMILIES, FAMILY_KEYS } from '../data/taxonomy.js';
 import { PREFERABLE_FAMILIES } from '../data/quests.js';
 import { THEMES, THEME_KEYS, companionLineFor } from '../data/themes.js';
 import { getBilling, COLLECTION_PRODUCT } from '../platform/billing.js';
-import { canTrial } from '../engine/game.js';
+import { hasAccess, inTrial, trialDay, TRIAL_DAYS } from '../engine/access.js';
 import { $, esc, hideOverlay, showOverlay } from './dom.js';
 
 const PREVIEW_XP = 120;
@@ -99,20 +99,17 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
       </div>`;
   }
 
+  // Un monde est utilisable s'il est acheté, ou pendant l'essai de 7 jours (D20).
+  const usable = (key, s) => s.unlockedThemes.includes(key) || hasAccess(s);
+
   function themeStatusHtml(key, s) {
-    const onTrial = s.trial && s.trial.theme === key && Date.now() < s.trial.until;
-    if (s.theme === key) {
-      const left = onTrial ? ` · ${i18n.t('shop_trial_left', { h: Math.max(1, Math.ceil((s.trial.until - Date.now()) / 3600000)) })}` : '';
-      return `<span class="shop-status active">${i18n.t('shop_active')}${left}</span>`;
-    }
-    if (s.unlockedThemes.includes(key) || onTrial) {
+    if (s.theme === key) return `<span class="shop-status active">${i18n.t('shop_active')}</span>`;
+    if (usable(key, s)) {
       return `<button class="btn ghost small" data-shop="activate" data-v="${key}"${busy ? ' disabled' : ''}>${i18n.t('shop_activate')}</button>`;
     }
     // Verrouillé : l'achat débloque tout ; on rappelle le thème cliqué pour
-    // l'activer tout de suite après. Un essai de 24 h par thème est offert.
-    const trial = canTrial(s, key)
-      ? `<button class="btn ghost small" data-shop="trial" data-v="${key}"${busy ? ' disabled' : ''}>${i18n.t('shop_trial')}</button>` : '';
-    return `<span class="shop-actions">${trial}<button class="btn primary small" data-shop="unlock" data-v="${key}"${busy ? ' disabled' : ''}>${i18n.t('shop_locked')}</button></span>`;
+    // l'activer tout de suite après.
+    return `<button class="btn primary small" data-shop="unlock" data-v="${key}"${busy ? ' disabled' : ''}>${i18n.t('shop_locked')}</button>`;
   }
 
   // Un cairn : des pierres empilées, la marque de l'app. Couleur = `currentColor`.
@@ -126,7 +123,7 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
   function perksHtml() {
     const yes = (k) => `<li class="ok"><span class="shop-tick">✓</span>${i18n.t(k)}</li>`;
     return `<ul class="shop-perks">
-      ${yes('shop_perk_themes')}${yes('shop_perk_custom')}${yes('shop_perk_retro')}${yes('shop_perk_remind')}${yes('shop_perk_arc')}
+      ${yes('shop_perk_adventure')}${yes('shop_perk_themes')}${yes('shop_perk_custom')}${yes('shop_perk_remind')}${yes('shop_perk_arc')}
     </ul>`;
   }
 
@@ -139,9 +136,15 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
       </section>`;
     }
     const price = collectionPrice ? ` · ${collectionPrice}` : '';
+    // Où en est l'essai (D20) : pendant, ou terminé.
+    const day = trialDay(s);
+    const status = inTrial(s)
+      ? i18n.t(day >= TRIAL_DAYS ? 'shop_trial_last' : 'shop_trial_status', { n: TRIAL_DAYS - day + 1 })
+      : i18n.t('shop_trial_over');
     return `<section class="shop-hero">
       ${CAIRN_SVG}
       <p class="shop-kicker">${i18n.t('shop_hero_kicker')}</p>
+      <p class="shop-trial-status tiny">${status}</p>
       <h3>${i18n.t('shop_hero_title')}</h3>
       <p class="shop-sub">${i18n.t('shop_hero_sub')}</p>
       ${perksHtml()}
@@ -163,7 +166,7 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
       </div>
       <div class="shop-rail">
         ${THEME_KEYS.map((k) => `
-          <div class="shop-card${s.unlockedThemes.includes(k) ? '' : ' locked'}">
+          <div class="shop-card${usable(k, s) ? '' : ' locked'}">
             ${previewHtml(k)}
             <div class="shop-card-foot">
               <div>
@@ -191,7 +194,7 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
         <span>${i18n.t('set_notif_hour')}</span>
         <input type="number" min="6" max="22" value="${s.notifications.hour}" data-set="notif-hour" />
       </label>
-      ${s.complete ? [0, 1].map((i) => `
+      ${hasAccess(s) ? [0, 1].map((i) => `
       <label class="switch-row">
         <span>${i18n.t('set_notif_extra')} ${i + 1}</span>
         <input type="number" min="6" max="22" value="${(s.notifications.extra || [])[i] ?? ''}" placeholder="${esc(i18n.t('set_notif_extra_none'))}" data-set="notif-extra" />
@@ -213,9 +216,9 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
       <p class="tiny muted">${esc(s.name)} · ${i18n.t('level')} ${s.level}</p>`;
   }
 
-  // Quêtes perso (Cairn Complet, D19) : verrouillé => même achat que la Collection.
+  // Quêtes perso (Cairn Complet, D19 ; ouvertes pendant l'essai, D20).
   function customPanelHtml(s) {
-    if (!s.complete) {
+    if (!hasAccess(s)) {
       const price = collectionPrice ? ` · ${collectionPrice}` : '';
       return `
         <div class="shop-collection panel">
@@ -324,7 +327,6 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
     const k = el.dataset.shop;
 
     if (k === 'activate') { dispatch('setTheme', { theme: el.dataset.v }); return; }
-    if (k === 'trial') { dispatch('startTrial', { theme: el.dataset.v }); return; }
 
     if (k === 'unlock') {
       const theme = el.dataset.v; // '' depuis la bannière, une clé depuis une carte

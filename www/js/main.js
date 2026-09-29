@@ -51,11 +51,6 @@ function boot() {
     state.lang = detectLang();
   }
   i18n.setLang(state.lang);
-  let trialEndedAtBoot = false;
-  if (state.trial) {
-    const r = game.expireTrial(state);
-    if (r.effects.length) { state = r.state; persist(); trialEndedAtBoot = true; }
-  }
   applyTheme(state.theme);
   syncStatusBar(state.theme);
 
@@ -81,7 +76,6 @@ function boot() {
   render();
   syncDailyReminder(state);
   scheduleDayWatch();
-  if (trialEndedAtBoot) showToast(i18n.t('trial_ended'));
 }
 
 let dayWatchTimer = null;
@@ -99,20 +93,11 @@ function rollDayIfNeeded() {
   // petite variété de la phrase du compagnon
   state.seeds.companion = (state.seeds.companion || 0) + 1;
   persist();
-  return true;
-}
-
-/**
- * Fin d'un essai de thème (D19) : retour au thème de départ si besoin.
- * @returns {boolean} true si l'état a changé.
- */
-function expireTrialIfNeeded() {
-  if (!state || !state.trial) return false;
-  const r = game.expireTrial(state);
-  if (!r.effects.length) return false;
-  state = r.state;
-  applyTheme(state.theme); syncStatusBar(state.theme);
-  persist();
+  // Fin de l'essai (D20) : thème de départ rétabli, rappels coupés.
+  if (r.effects.some((e) => e.type === 'trial-over' && e.first)) {
+    applyTheme(state.theme); syncStatusBar(state.theme);
+    syncDailyReminder(state);
+  }
   return true;
 }
 
@@ -128,16 +113,13 @@ function ensureDay() {
  */
 function scheduleDayWatch() {
   if (dayWatchTimer) clearTimeout(dayWatchTimer);
-  let delay = Math.min(msUntilNextMidnight(), 6 * 60 * 60 * 1000);
-  if (state && state.trial) delay = Math.min(delay, Math.max(1000, state.trial.until - Date.now() + 1000));
+  const delay = Math.min(msUntilNextMidnight(), 6 * 60 * 60 * 1000);
   dayWatchTimer = setTimeout(() => {
-    const ended = expireTrialIfNeeded();
     const rolled = rollDayIfNeeded();
-    if (ended && document.visibilityState === 'visible') { render(); softRerenderSettings(); showToast(i18n.t('trial_ended')); }
     if (rolled && document.visibilityState === 'visible') {
       view = 'adventure';
       render();
-      showToast(i18n.t('new_day_hint'));
+      if (state.quests.length) showToast(i18n.t('new_day_hint'));
     }
     scheduleDayWatch();
   }, Math.max(1000, delay));
@@ -288,24 +270,13 @@ async function dispatch(action, args = {}) {
       softRerenderSettings();
       break;
     }
-    case 'startTrial': {
-      const r = game.startTrial(state, args);
-      if (!r.effects.length) break;
-      state = r.state;
-      applyTheme(state.theme); syncStatusBar(state.theme);
-      persist(); render(); softRerenderSettings();
-      showToast(i18n.t('trial_started'));
-      scheduleDayWatch();
-      break;
-    }
-    case 'dismiss-shop-offer': apply(game.dismissShopOffer(state)); break;
-    case 'shop-offer-open':
-      state = game.dismissShopOffer(state).state; persist(); render();
-      dispatch('open-shop');
-      break;
     case 'unlockCollection': {
       const r = game.unlockCollection(state);
-      state = r.state; persist(); render();
+      state = r.state; persist();
+      // Achat après l'essai (D20) : l'aventure reprend dès maintenant.
+      if (rollDayIfNeeded()) view = 'adventure';
+      syncDailyReminder(state);
+      render();
       playEffects(r.effects, state);
       softRerenderSettings();
       break;
@@ -476,7 +447,6 @@ if (document.readyState === 'loading') {
 // veille (le minuteur de minuit ne s'exécute pas toujours en arrière-plan).
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState !== 'visible' || !state || !state.onboarded) return;
-  if (expireTrialIfNeeded()) { render(); showToast(i18n.t('trial_ended')); }
   if (rollDayIfNeeded()) {
     view = 'adventure';
     render();

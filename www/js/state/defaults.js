@@ -14,16 +14,12 @@ export function defaultState() {
     theme: 'nordique',
     unlockedThemes: ['nordique'], // thèmes payants débloqués (D12) ; nordique gratuit
     complete: false,       // droit « Cairn Complet » (D19) — jamais lié à la progression
+    trialEnded: false,     // essai de 7 jours joués terminé sans achat : aventure en pause (D20)
     customQuests: [],      // quêtes perso : { id, text, famille, effort } (Complet)
     comfort: 3,            // 1..5 — plafond d'audace des quêtes proposées
     prefFamilies: [],      // familles mises en avant au tirage
 
     notifications: { enabled: false, hour: 9, extra: [] }, // extra : rappels en plus (Complet, D19)
-
-    // Bulles d'aide affichées une seule fois (découverte de fonctionnalités).
-    hints: { shopOffer: false }, // carte « Cairn Complet » de l'accueil : vue / écartée (D19)
-    trial: null,           // essai 24 h d'un thème payant : { theme, until } (D19)
-    trialsUsed: [],        // thèmes déjà essayés (un essai par thème)
 
     level: 1,
     xp: 0,

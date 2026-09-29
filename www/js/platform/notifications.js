@@ -2,6 +2,7 @@
 // côté client, aucun serveur). Sur le web : pas de planification fiable -> no-op.
 
 import { i18n } from '../i18n/index.js';
+import { hasAccess } from '../engine/access.js';
 
 const DAILY_ID = 1001;
 const EXTRA_IDS = [1002, 1003]; // rappels supplémentaires (Cairn Complet, D19)
@@ -23,6 +24,9 @@ export async function syncDailyReminder(state) {
   try {
     await LN.cancel({ notifications: [DAILY_ID, ...EXTRA_IDS].map((id) => ({ id })) });
     if (!state.notifications.enabled) return { scheduled: false, reason: 'disabled' };
+    // Aventure en pause après l'essai (D20) : aucun rappel — rien à faire, et
+    // pas question de relancer quelqu'un pour qu'il achète.
+    if (!hasAccess(state)) return { scheduled: false, reason: 'paused' };
 
     const perm = await LN.requestPermissions();
     if (perm.display !== 'granted') return { scheduled: false, reason: 'denied' };
@@ -34,7 +38,7 @@ export async function syncDailyReminder(state) {
       schedule: { on: { hour, minute: 0 }, repeats: true, allowWhileIdle: true },
     });
     const list = [at(DAILY_ID, state.notifications.hour, i18n.t('notif_body'))];
-    if (state.complete) {
+    if (hasAccess(state)) {
       (state.notifications.extra || []).slice(0, EXTRA_IDS.length).forEach((h, i) => {
         list.push(at(EXTRA_IDS[i], h, i18n.t('notif_body_extra')));
       });

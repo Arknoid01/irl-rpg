@@ -1,3 +1,4 @@
+import * as access from '../www/js/engine/access.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
@@ -1137,13 +1138,20 @@ test('normalize : migre les thèmes legacy', () => {
   assert.ok(THEME_KEYS.includes(normalize({ theme: 'inconnu' }).theme));
 });
 
-test('normalize : le flag de la carte boutique est toujours booléen', () => {
-  assert.equal(defaultState().hints.shopOffer, false);
-  assert.equal(normalize({}).hints.shopOffer, false);
-  assert.equal(normalize({ hints: { shopOffer: true } }).hints.shopOffer, true);
-  assert.equal(normalize({ hints: 'corrompu' }).hints.shopOffer, false);
-  // une sauvegarde d'avant la fonctionnalité : la carte reste à montrer (le moment venu)
-  assert.equal(normalize({ onboarded: true, name: 'X' }).hints.shopOffer, false);
+test('normalize : essai de 7 jours (D20) — flag booléen, anciens essais de thème retirés', () => {
+  assert.equal(defaultState().trialEnded, false);
+  assert.equal(normalize({}).trialEnded, false);
+  assert.equal(normalize({ trialEnded: 'oui' }).trialEnded, false);
+  assert.equal(normalize({ trialEnded: true }).trialEnded, true);
+  assert.equal(normalize({ trialEnded: true, complete: true }).trialEnded, false, 'un acheteur n’est jamais en pause');
+  // en pause : un thème non acheté (choisi pendant l'essai) revient au thème de départ
+  assert.equal(normalize({ trialEnded: true, theme: 'cyberpunk' }).theme, 'nordique');
+  assert.equal(normalize({ theme: 'cyberpunk' }).theme, 'cyberpunk', 'pendant l’essai : tous les mondes');
+  // clés D19 abandonnées (essai 24 h, carte d'offre)
+  const n = normalize({ hints: { shopOffer: true }, trial: { theme: 'sombre', until: 5 }, trialsUsed: ['sombre'] });
+  assert.equal(n.hints, undefined);
+  assert.equal(n.trial, undefined);
+  assert.equal(n.trialsUsed, undefined);
 });
 
 test('loadState : migration depuis v1', () => {
@@ -1325,10 +1333,14 @@ test('boutique de thèmes (D12) : déblocage local + activation verrouillée', (
   let s = defaultState();
   assert.deepEqual(s.unlockedThemes, ['nordique']);
 
-  // setTheme refuse un thème non débloqué : aucune faille pour contourner un achat.
+  // Essai (D20) : tous les mondes. Après l'essai sans achat, setTheme refuse
+  // un thème non débloqué : aucune faille pour contourner un achat.
+  assert.equal(game.setTheme(s, { theme: 'cyberpunk' }).state.theme, 'cyberpunk', 'ouvert pendant l’essai');
+  s = { ...s, trialEnded: true };
   let r = game.setTheme(s, { theme: 'cyberpunk' });
   assert.equal(r.state.theme, 'nordique', 'refuse un thème non débloqué');
   assert.equal(r.effects.length, 0);
+  assert.equal(game.setTheme(s, { theme: 'imaginaire' }).effects.length, 0);
 
   r = game.unlockTheme(s, { theme: 'cyberpunk' });
   s = r.state;
@@ -1373,12 +1385,14 @@ test('dates : la frontière du jour est locale (pas UTC)', async () => {
   assert.equal(daysBetween('2026-02-27', '2026-03-02'), 3); // 2026 pas bissextile
 });
 
-test('quêtes perso (D19) : réservées à Complet, 1 par jour, XP sans farm', () => {
+test('quêtes perso (D19) : Complet ou essai, 1 par jour, XP sans farm', () => {
   const now = new Date(2026, 8, 21, 10);
   let s = game.newDay(game.finishOnboarding(defaultState(), { name: 'T', ageAck: true }).state, {}, { now }).state;
 
-  // sans Complet : refus, aucun effet
-  let r = game.addCustomQuest(s, { text: 'Ranger le bureau', famille: 'quotidien', effort: 'leger' });
+  // pendant l'essai (D20) : ouvert
+  assert.equal(game.addCustomQuest(s, { text: 'Ranger le bureau', famille: 'quotidien', effort: 'leger' }).state.customQuests.length, 1);
+  // après l'essai sans achat : refus, aucun effet
+  let r = game.addCustomQuest({ ...s, trialEnded: true }, { text: 'Ranger le bureau', famille: 'quotidien', effort: 'leger' });
   assert.equal(r.state.customQuests.length, 0);
 
   s = game.unlockCollection(s).state;
@@ -1458,10 +1472,12 @@ test('rétrospective (D19) : cumul mensuel, bilan, export', async () => {
   assert.equal(n.history.months.bad, undefined);
 });
 
-test('rappels multiples (D19) : réservés à Complet, assainis, plafonnés', () => {
+test('rappels multiples (D19) : Complet ou essai, assainis, plafonnés', () => {
   let s = defaultState();
-  // sans Complet : les rappels en plus sont ignorés
-  let r = game.setNotifications(s, { enabled: true, hour: 9, extra: [13, 19] });
+  // pendant l'essai (D20) : acceptés
+  assert.deepEqual(game.setNotifications(s, { enabled: true, hour: 9, extra: [13] }).state.notifications.extra, [13]);
+  // après l'essai sans achat : les rappels en plus sont ignorés
+  let r = game.setNotifications({ ...s, trialEnded: true }, { enabled: true, hour: 9, extra: [13, 19] });
   assert.deepEqual(r.state.notifications.extra, []);
 
   s = game.unlockCollection(s).state;
@@ -1496,72 +1512,68 @@ test('rappels multiples (D19) : planification native (plugin simulé)', async ()
     const bodies = new Set(calls.schedule[0].notifications.map((n) => n.body));
     assert.equal(bodies.size, 2, 'les rappels en plus ont un ton différent');
 
-    // sans Complet (ex. sauvegarde importée) : un seul rappel, même si des extras traînent
-    const free = { ...s, complete: false };
-    await syncDailyReminder(free);
-    assert.equal(calls.schedule[1].notifications.length, 1);
+    // essai en cours, sans achat : les rappels en plus sont planifiés aussi (D20)
+    await syncDailyReminder({ ...s, complete: false });
+    assert.equal(calls.schedule[1].notifications.length, 3);
+    // aventure en pause après l'essai : aucun rappel du tout (jamais une relance d'achat)
+    const r = await syncDailyReminder({ ...s, complete: false, trialEnded: true });
+    assert.equal(r.reason, 'paused');
+    assert.equal(calls.schedule.length, 2);
+    assert.equal(calls.cancel.length, 3, 'les rappels existants sont annulés');
     // désactivé : annule tout, ne planifie rien
     await syncDailyReminder({ ...s, notifications: { ...s.notifications, enabled: false } });
     assert.equal(calls.schedule.length, 2);
   } finally { delete globalThis.window; }
 });
 
-test('essai 24 h (D19) : un par thème, un à la fois, retour au thème de départ', () => {
-  const t0 = new Date(2026, 8, 21, 10);
-  const later = new Date(t0.getTime() + 25 * 3600 * 1000);
-  let s = defaultState();
+test('essai de 7 jours joués (D20) : tout ouvert, puis pause, puis reprise à l’achat', () => {
+  const day = (n) => ({ now: new Date(2026, 8, 1 + n, 10), rng: () => 0.42 });
+  let s = game.finishOnboarding(defaultState(), { name: 'T', ageAck: true }, day(0)).state;
+  assert.equal(s.history.daysPlayed, 1);
+  assert.equal(access.inTrial(s), true);
+  assert.equal(access.trialDay(s), 1);
+  s = game.setTheme(s, { theme: 'cyberpunk' }).state;
+  assert.equal(s.theme, 'cyberpunk', 'tous les mondes pendant l’essai');
 
-  // setTheme refuse toujours un thème payant sans essai
-  assert.equal(game.setTheme(s, { theme: 'cyberpunk' }, { now: t0 }).state.theme, 'nordique');
-  assert.equal(game.canTrial(s, 'cyberpunk', t0), true);
-  assert.equal(game.canTrial(s, 'nordique', t0), false, 'le thème gratuit n’a pas d’essai');
+  // jours 2 à 7 : tirage normal. Un jour sans ouverture ne consomme rien.
+  for (const n of [1, 2, 3, 5, 9, 10]) {
+    const r = game.newDay(s, {}, day(n));
+    s = r.state;
+    assert.ok(s.quests.length > 0);
+    assert.equal(r.effects[0].type, 'newday');
+  }
+  assert.equal(s.history.daysPlayed, 7);
+  assert.equal(access.trialDay(s), 7, 'dernier jour d’essai');
+  assert.equal(access.hasAccess(s), true);
 
-  let r = game.startTrial(s, { theme: 'cyberpunk' }, { now: t0 });
+  // 8e jour joué sans achat : pause, pas de tirage, thème de départ, jour non compté
+  let r = game.newDay(s, {}, day(11));
   s = r.state;
-  assert.equal(s.theme, 'cyberpunk');
-  assert.deepEqual(r.effects, [{ type: 'trial-start', theme: 'cyberpunk' }]);
-  assert.equal(s.trial.until, t0.getTime() + game.TRIAL_MS);
-  assert.deepEqual(s.trialsUsed, ['cyberpunk']);
+  assert.deepEqual(r.effects, [{ type: 'trial-over', first: true }]);
+  assert.equal(s.trialEnded, true);
+  assert.deepEqual(s.quests, []);
+  assert.equal(s.event, null);
+  assert.equal(s.theme, 'nordique');
+  assert.equal(s.history.daysPlayed, 7);
+  assert.equal(access.hasAccess(s), false);
+  assert.equal(game.setTheme(s, { theme: 'cyberpunk' }).state.theme, 'nordique');
+  // les jours suivants : toujours en pause, signal « first » une seule fois
+  r = game.newDay(s, {}, day(12));
+  s = r.state;
+  assert.deepEqual(r.effects, [{ type: 'trial-over', first: false }]);
+  assert.equal(game.needsNewDay(s, day(12)), false);
 
-  // un seul essai à la fois ; le même thème ne se réessaie pas
-  assert.equal(game.canTrial(s, 'sombre', t0), false, 'un essai est déjà en cours');
-  assert.equal(game.startTrial(s, { theme: 'sombre' }, { now: t0 }).effects.length, 0);
-  // pendant l'essai on peut changer pour le thème d'essai
-  assert.equal(game.setTheme({ ...s, theme: 'nordique' }, { theme: 'cyberpunk' }, { now: t0 }).state.theme, 'cyberpunk');
-
-  // pas encore expiré : rien ne bouge
-  assert.equal(game.expireTrial(s, { now: t0 }).effects.length, 0);
-
-  // expiré : retour au thème de départ, et le thème ne se réessaie pas
-  r = game.expireTrial(s, { now: later });
-  assert.equal(r.state.theme, 'nordique');
-  assert.equal(r.state.trial, null);
-  assert.deepEqual(r.effects, [{ type: 'trial-end', theme: 'cyberpunk', reverted: true }]);
-  assert.equal(game.canTrial(r.state, 'cyberpunk', later), false);
-  assert.equal(game.canTrial(r.state, 'sombre', later), true, 'un autre thème reste essayable');
-  assert.equal(game.setTheme(r.state, { theme: 'cyberpunk' }, { now: later }).state.theme, 'nordique');
-
-  // l'achat pendant l'essai : le thème reste, débloqué, et l'essai disparaît
-  const bought = game.unlockCollection(s).state;
-  assert.equal(bought.trial, null);
-  assert.equal(bought.theme, 'cyberpunk');
-  assert.equal(game.canTrial(bought, 'sombre', t0), false, 'plus d’essai une fois Complet');
-  assert.equal(game.expireTrial({ ...s, trial: { theme: 'cyberpunk', until: t0.getTime() }, complete: true, unlockedThemes: [...s.unlockedThemes, 'cyberpunk'] }, { now: later }).state.theme, 'cyberpunk');
-
-  // la sauvegarde assainit un essai corrompu
-  assert.equal(normalize({ trial: { theme: 'nope', until: 5 } }).trial, null);
-  assert.equal(normalize({ trial: { theme: 'sombre', until: 'x' } }).trial, null);
-  assert.deepEqual(normalize({ trialsUsed: ['sombre', 'zzz'] }).trialsUsed, ['sombre']);
-});
-
-test('carte boutique (D19) : après 5 quêtes, une seule fois, jamais si Complet', () => {
-  let s = defaultState();
-  assert.equal(game.shopOfferDue(s), false, 'pas avant d’avoir joué');
-  s.history.totalCompleted = 5;
-  assert.equal(game.shopOfferDue(s), true);
-  assert.equal(game.shopOfferDue({ ...s, complete: true }), false);
-  s = game.dismissShopOffer(s).state;
-  assert.equal(game.shopOfferDue(s), false, 'écartée pour de bon');
+  // achat : l'aventure reprend le jour même
+  s = game.unlockCollection(s).state;
+  assert.equal(s.complete, true);
+  assert.equal(s.trialEnded, false);
+  assert.equal(game.needsNewDay(s, day(12)), true, 'le jour bloqué est à retirer');
+  r = game.newDay(s, {}, day(12));
+  assert.ok(r.state.quests.length > 0);
+  assert.equal(r.state.history.daysPlayed, 8);
+  assert.equal(access.inTrial(r.state), false);
+  // acheteur : jamais de pause, même bien après
+  assert.ok(game.newDay(r.state, {}, day(40)).state.quests.length > 0);
 });
 
 test('quêtes perso (D19) : modification', () => {

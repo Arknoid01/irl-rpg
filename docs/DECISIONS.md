@@ -859,3 +859,60 @@ départ **dès l'achat**.
   comme les autres arcs).
 82/82 tests, simulation sans violation.
 Reste : widget d'accueil (Android natif), tests sur appareil, Play Console.
+
+## D20 — Essai gratuit de 7 jours joués, puis achat unique pour continuer (2026-09-29)
+
+**Remplace l'offre de D19** (Complet = bonus facultatif par-dessus une app
+entièrement gratuite). **Constat (Yannick) :** tant que la boucle quotidienne
+reste gratuite, presque personne n'achète ; mettre l'app payante à
+l'installation en ferait acheter encore moins sur le Play Store. Le marché des
+apps d'habitudes fait essai court (3–7 jours) puis abonnement ; Cairn garde
+l'**essai**, mais avec un **achat unique** à la place de l'abonnement.
+
+**Pourquoi pas un palier de niveau (niveau 7–8, idée de départ).** Le niveau
+ne verrouille presque rien : au-delà du niveau 8, il ne débloque que des
+reliques décoratives et le Château (« purement symbolique »). Figer le niveau
+aurait été un verrou vide. Et un palier en niveau fait une durée d'essai qui
+dépend du rythme du joueur (≈ 3 semaines pour un assidu, 6 pour un tranquille),
+trop tard : la plupart des gens décrochent avant.
+
+**Règle.**
+- **7 jours joués** (`TRIAL_DAYS`, `engine/access.js`) = 7 tirages quotidiens
+  (`history.daysPlayed`). Installer puis oublier l'app ne consomme pas l'essai.
+- Pendant l'essai, **tout est ouvert** : les 7 mondes, les quêtes perso, les
+  rappels en plus. Seul l'arc exclusif « Le Sentier » reste réservé à
+  l'achat : il démarre dès l'achat, c'est la récompense.
+- **8e jour joué sans achat : l'aventure se met en pause** (`state.trialEnded`) :
+  pas de tirage, jour non compté, thème de départ rétabli, **aucune
+  notification** (jamais une relance pour vendre). **Le journal, la carte, le
+  personnage, la rétrospective et l'export restent accessibles à vie** : ce
+  sont les souvenirs du joueur.
+- **Achat** (`unlockCollection`, même produit `collection_des_mondes`) : la
+  pause est levée et les quêtes du jour sont tirées tout de suite.
+- Honor-system (verrou local, zéro serveur), assumé comme D3.
+
+**Retiré.** L'essai de 24 h par thème et la carte d'offre « après 5 quêtes »
+(D19, addendum 4) : l'essai de 7 jours les remplace. La rétrospective n'est
+plus réservée à Complet.
+
+**Communication (anti avis 1★ « paywall surprise »).** Annoncé à l'onboarding
+(`ob_trial`), sur l'accueil (« Essai gratuit · jour X sur 7 », discret, jamais
+un compte à rebours rouge), dans la boutique et dans la fiche store (textes
+courts et longs mis à jour dans `STORE.md`).
+
+**Inchangé.** Jamais de pub, zéro cloud, pas d'abonnement, rien de payant qui
+fasse gagner de l'XP. D3 tient : on ne vend pas un avantage, on vend la suite.
+
+**Repère de simulation.** À la fin de l'essai, un joueur assidu est niveau 4
+environ, avec 13 à 16 quêtes vécues.
+
+**Prix de lancement : 5,99 €** (Yannick), fixé dans la Play Console, pas dans
+le code.
+
+**Le Sentier reste inclus dans Complet** (Yannick) : c'est l'arc qui donne
+envie d'acheter. Pas de produit séparé pour l'instant ; les extensions payantes
+(D19 §2) viendront avec les arcs suivants, une fois l'achat principal éprouvé.
+
+**Encore ouvert.** Le pot de soutien (D19 §3). Les sauvegardes existantes de
+plus de 7 jours (testeurs) passent en pause au prochain jour : accepté, puisque
+rien n'est encore publié.

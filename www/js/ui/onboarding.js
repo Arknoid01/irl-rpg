@@ -61,6 +61,7 @@ export function startOnboarding(initial, onComplete) {
         <h2 class="ob-title">${i18n.t('ob_welcome_title')}</h2>
         <p>${i18n.t('ob_welcome_body')}</p>
         <p class="tiny muted">${i18n.t('ob_age')}</p>
+        <p class="tiny muted">${i18n.t('ob_trial')}</p>
         <label class="switch-row age-ack">
           <input id="ob-age" type="checkbox" ${data.ageAck ? 'checked' : ''} />
           <span>${i18n.t('ob_age_ack')}</span>

@@ -31,15 +31,9 @@ export function currentRetroMonth(state) {
   return retroKey && months.includes(retroKey) ? retroKey : months[0];
 }
 
-// Cairn Complet (D19) : bilan du mois + export. Verrouillé => vitrine.
+// Bilan du mois + export du journal. Ouvert à tous et pour toujours (D20) :
+// ce sont les souvenirs du joueur, même quand l'aventure est en pause.
 function retroHtml(state) {
-  if (!state.complete) {
-    return `<section class="panel retro locked">
-      <p class="retro-kicker">✨ ${i18n.t('retro_kicker')}</p>
-      <p class="tiny muted">${i18n.t('retro_locked_desc')}</p>
-      <button class="btn ghost small" data-action="open-settings" data-tab="themes">${i18n.t('retro_see')}</button>
-    </section>`;
-  }
   const months = retroMonths(state);
   const key = currentRetroMonth(state);
   const r = buildRetrospective(state, key);

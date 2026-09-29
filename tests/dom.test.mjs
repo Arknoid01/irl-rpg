@@ -153,7 +153,7 @@ test('parcours complet dans le DOM', async () => {
   assert.equal(ignoredQuest.status, 'ignored');
 });
 
-test('réglages : onglet Thèmes — un achat débloque les 6 thèmes (D17)', async () => {
+test('réglages : onglet Boutique — essai en cours, puis un achat débloque tout (D17/D20)', async () => {
   await click('[data-action="open-settings"]');
   await click('[data-set="tab"][data-v="themes"]');
   assert.ok($('.settings-sheet'), 'feuille de réglages affichée');
@@ -163,13 +163,16 @@ test('réglages : onglet Thèmes — un achat débloque les 6 thèmes (D17)', as
   assert.ok($('.shop-hero:not(.owned) .shop-cta'), 'héros « Cairn Complet » avec bouton d’achat tant que non débloqué');
   assert.equal($$('.shop-perks li.ok').length, 5, 'cinq avantages livrés');
   assert.equal($$('.shop-perks li.soon').length, 0, 'plus aucun « Bientôt » : tout ce qui est promis est livré');
-  assert.ok($('[data-shop="unlock"][data-v="cyberpunk"]'), 'carte cyberpunk verrouillée');
+  assert.match($('.shop-trial-status').textContent, /Essai gratuit en cours/, 'état de l’essai affiché');
+  assert.ok($('[data-shop="activate"][data-v="cyberpunk"]'), 'pendant l’essai, tous les mondes s’activent');
+  assert.equal($('[data-shop="unlock"][data-v="cyberpunk"]'), null);
   // Plus de vidéo : chaque carte a un aperçu live (mini-page thémée).
   assert.equal($('video'), null, 'aucun aperçu vidéo');
   assert.equal($$('.shop-preview .page').length, 7, 'chaque thème a un aperçu live rendu');
 
-  // Cliquer une carte verrouillée : achète la Collection (les 6) + active ce thème.
-  await click('[data-shop="unlock"][data-v="cyberpunk"]');
+  // Acheter Cairn Complet (les 6 mondes à vie), puis activer cyberpunk.
+  await click('.shop-cta');
+  await click('[data-shop="activate"][data-v="cyberpunk"]');
   assert.equal(window.document.documentElement.dataset.theme, 'cyberpunk', 'thème appliqué au document');
   assert.match($('.section-label span').textContent, /Missions du jour/, 'vocab cyberpunk sur l’écran');
 
@@ -264,4 +267,26 @@ test('hideOverlay : fondu synchrone, contenu vidé après coup', async () => {
   assert.notEqual(ov.innerHTML, '', 'un overlay rouvert entre-temps ne doit pas être vidé');
 
   ov.remove();
+});
+
+test('aventure en pause après l’essai (D20) : panneau de fin de prologue, souvenirs gardés', async () => {
+  const { renderAdventure } = await import('../www/js/ui/screens/adventure.js');
+  const { defaultState } = await import('../www/js/state/defaults.js');
+  const base = { ...defaultState(), name: 'Léa', onboarded: true };
+  base.history = { ...base.history, daysPlayed: 3, totalCompleted: 5 };
+
+  const trial = renderAdventure({ ...base, quests: [] });
+  assert.match(trial, /Essai gratuit · jour 3 sur 7/);
+  const last = renderAdventure({ ...base, quests: [], history: { ...base.history, daysPlayed: 7 } });
+  assert.match(last, /Dernier jour de ton essai gratuit/);
+
+  const paused = renderAdventure({ ...base, trialEnded: true, quests: [] });
+  assert.match(paused, /class="panel trial-over"/);
+  assert.match(paused, /Léa, tu as atteint la crête/);
+  assert.match(paused, /5 quêtes vécues/);
+  assert.match(paused, /data-action="open-shop"/);
+  assert.doesNotMatch(paused, /Essai gratuit · jour/);
+
+  const owner = renderAdventure({ ...base, complete: true, quests: [] });
+  assert.doesNotMatch(owner, /trial-line|trial-over/, 'rien pour un acheteur');
 });

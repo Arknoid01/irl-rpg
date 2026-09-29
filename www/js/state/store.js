@@ -121,11 +121,10 @@ export function normalize(state) {
   s.level = Math.max(1, Math.round(s.level) || 1);
   s.xp = Math.max(0, Math.round(s.xp) || 0);
   s.inventory = normalizeInventory(s.inventory).slice(0, 200);
-  if (!s.hints || typeof s.hints !== 'object' || Array.isArray(s.hints)) s.hints = { shopOffer: false };
-  s.hints = { shopOffer: !!s.hints.shopOffer };
-  s.trialsUsed = (Array.isArray(s.trialsUsed) ? s.trialsUsed : []).filter((k) => THEME_KEYS.includes(k));
-  s.trial = s.trial && THEME_KEYS.includes(s.trial.theme) && Number.isFinite(s.trial.until)
-    ? { theme: s.trial.theme, until: s.trial.until } : null;
+  // Essai de thème 24 h et carte d'offre (D19) remplacés par l'essai de 7 jours (D20).
+  delete s.hints; delete s.trial; delete s.trialsUsed;
+  s.trialEnded = s.complete ? false : s.trialEnded === true;
+  if (!s.complete && s.trialEnded && !s.unlockedThemes.includes(s.theme)) s.theme = DEFAULT_THEME;
   if (!s.milestones || typeof s.milestones !== 'object' || Array.isArray(s.milestones)) {
     s.milestones = {};
   }

@@ -48,6 +48,8 @@ step('onboarding', () => game.finishOnboarding(state, {
 }, dCtx('2026-09-04')));
 
 let completedTotal = 0;
+let pausedDays = 0;
+let boughtOn = null;
 let ignoredTotal = 0;
 let eventsDone = 0;
 
@@ -68,6 +70,18 @@ for (let d = 0; d < DAYS; d++) {
   // rollover naturel : la date avance chaque jour, pas de re-tirage forcé —
   // ça exerce l'entrée de journal « du jour » (Phase 3.2).
   step(`day ${d} newDay`, () => game.newDay(state, {}, ctx));
+
+  // Essai de 7 jours joués (D20) : pause sans tirage, puis achat 2 jours plus
+  // tard — la suite de la simulation éprouve un joueur qui a acheté.
+  if (state.trialEnded) {
+    if (state.quests.length || state.event) violations.push(`day ${d} : tirage pendant la pause`);
+    if (++pausedDays >= 2) {
+      step(`day ${d} achat`, () => game.unlockCollection(state));
+      boughtOn = d;
+      step(`day ${d} reprise`, () => game.newDay(state, {}, ctx));
+      if (!state.quests.length) violations.push(`day ${d} : pas de reprise après achat`);
+    }
+  }
 
   // le joueur accepte ~80 % des quêtes, en ignore le reste
   for (const q of [...state.quests]) {
@@ -132,6 +146,7 @@ console.log('─'.repeat(56));
 console.log(`  Simulation Cairn — ${DAYS} jours, seed ${SEED}`);
 console.log('─'.repeat(56));
 console.log(`  Niveau final ............ ${state.level}  (${state.xp} XP en cours)`);
+console.log(`  Essai / achat ........... pause ${pausedDays} j, achat au jour ${boughtOn ?? '—'}${state.complete ? '' : ' (non acheté)'}`);
 console.log(`  Compétences ............. ${Object.entries(state.skills).map(([k, v]) => `${k} ${v}`).join(', ')}`);
 console.log(`  Style ................... ${loc(computeStyle(state), 'fr')}`);
 console.log(`  Série actuelle / record  ${state.streak} / ${state.history.bestStreak}`);

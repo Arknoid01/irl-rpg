@@ -13,8 +13,8 @@ Référence produit : `com.pegasuscorp.irlrpg` (nom public : **Cairn**) · Capac
 **Descripteurs typiques à cocher avec prudence :** interactions sociales suggérées
 dans le monde réel ; pas de contenu sexuel, pas de drogue, pas de violence
 graphique, pas de pubs. **Achats in-app : oui** — un seul, non consommable
-(« Cairn Complet » : thèmes + fonctions de confort ; jamais d’avantage d’XP, de
-vitesse ou de titre, D12/D19).
+(« Cairn Complet » : débloque la suite de l’aventure après l’essai gratuit de
+7 jours joués, D20 ; jamais d’avantage d’XP, de vitesse ou de titre).
 
 ## Textes légaux / URLs
 
@@ -59,10 +59,10 @@ l’application :
 |---|---|
 | ID produit | `collection_des_mondes` (doit correspondre à `COLLECTION_PRODUCT` dans `www/js/platform/billing.js`) — **id conservé** malgré le nouveau nom public : il se fige à la déclaration (D19) |
 | Type | **Produit non consommable** (achat unique, à vie) |
-| Prix | ~6,99 € (ajustable par région) |
+| Prix | **5,99 €** pour le lancement (D20, ajustable par région ; c’est désormais le prix de l’app, et non plus un bonus) |
 | Nom | **Cairn Complet** |
-| Description FR | Un seul achat, à vie : les 6 mondes (police, couleurs, cadres, voix du compagnon), tes propres quêtes, la rétrospective du mois avec export du journal, jusqu'à 3 rappels par jour, l'arc narratif « Le Sentier ». Aucun avantage de progression. |
-| Description EN | One purchase, for life: all 6 worlds (font, colours, frames, companion voice), your own quests, the monthly look-back with journal export, up to 3 reminders a day, the “The Path” story arc. No progression advantage. |
+| Description FR | Un seul achat, à vie : l’aventure continue après les 7 jours d’essai, avec tout Cairn. Les 6 mondes, tes propres quêtes, jusqu'à 3 rappels par jour, l'arc narratif « Le Sentier ». Ni abonnement, ni pub. |
+| Description EN | One purchase, for life: the adventure goes on after the 7-day trial, with everything in Cairn. All 6 worlds, your own quests, up to 3 reminders a day, the “The Path” story arc. No subscription, no ads. |
 
 Le même ID sert pour App Store Connect (produit non consommable) le jour d’un
 build iOS.
@@ -72,13 +72,14 @@ signé, piste de test fermée, avec un compte de testeur de licence :
 
 - [ ] `npm i` + `npx cap sync` + AAB signé uploadé sur une piste de test
 - [ ] Le produit apparaît avec son prix dans la boutique (`billing.listProducts`)
-- [ ] Achat → les 6 thèmes se débloquent, le thème cliqué s’active, l’onglet « Mes quêtes », la rétrospective et les rappels en plus se déverrouillent (`state.complete`)
+- [ ] Essai (D20) : jours 1 à 7 joués, tout est ouvert (mondes, « Mes quêtes », rappels en plus) ; ligne « Essai gratuit · jour X sur 7 » sur l’accueil
+- [ ] 8e jour joué sans achat → panneau « Fin du prologue », aucune quête, thème de départ, **aucune notification** ; journal, carte, personnage, rétrospective et export accessibles
+- [ ] Achat depuis la pause → les quêtes du jour apparaissent tout de suite, rappels replanifiés (`state.complete`)
 - [ ] Fermer / rouvrir l’app → toujours débloqué (`getPurchases` au lancement)
 - [ ] « Restaurer mes achats » sur un autre appareil / après réinstall → OK
 - [ ] Acquittement (`acknowledgePurchase`) effectif — sinon Google rembourse
       sous 3 jours
 - [ ] Annulation d’achat → message neutre, rien de débloqué
-- [ ] Essai 24 h d’un thème (sans achat) → thème appliqué, retour à « nordique » à l’expiration
 - [ ] Rappels : 3 notifications à 3 heures différentes, permissions Android OK (`SCHEDULE_EXACT_ALARM` refusé sur l’appareil de test : vérifier la ponctualité)
 - [ ] Revérifier les noms d’événements (`purchasesUpdated` / `setPurchases`) et
       la forme des payloads contre le plugin installé (commentaires
@@ -117,8 +118,8 @@ Version actuelle : `versionCode 2` / `versionName "1.1"` (`android/app/build.gra
 ## Textes listing (brouillon)
 
 **Titre :** Cairn  
-**Court FR :** Ta vie quotidienne en quêtes RPG — sans culpabiliser, sans pub.  
-**Court EN :** Everyday life as RPG quests — guilt-free, ad-free.  
+**Court FR :** Ta vie quotidienne en quêtes RPG. 7 jours gratuits, puis un seul achat.  
+**Court EN :** Everyday life as RPG quests. 7 days free, then one purchase.  
 **Long FR :**  
 Cairn est ton compagnon d’aventure. Chaque jour, trois petites quêtes dans le monde
 réel : dire un mot gentil, changer de trajet, observer, créer. Tu acceptes, tu
@@ -128,13 +129,14 @@ ignores ou tu valides sur l’honneur — ignorer ne coûte jamais rien.
 • Des événements, des mini-arcs secrets, un compagnon qui te répond  
 • Aucun classement, aucun compte, aucune pub : tout reste sur ton téléphone
 
-**Cairn Complet** — un seul achat, à vie, jamais d’avantage de progression :  
+**7 jours d’essai complet et gratuit**, avec tout Cairn. Ensuite, **Cairn Complet** :
+un seul achat, à vie, pour continuer l’aventure. Ni abonnement, ni pub. Sans
+achat, ton journal, ta carte et ton personnage restent consultables pour toujours.  
 • 6 mondes complets (police, couleurs, cadres, voix du compagnon)  
 • Tes propres quêtes  
-• La rétrospective du mois, avec export de ton journal  
 • Jusqu’à 3 rappels par jour  
 • « Le Sentier », un arc narratif exclusif en 7 étapes  
-Chaque thème s’essaie gratuitement 24 h. 16+.
+16+.
 
 **Long EN :**  
 Cairn is your adventure companion. Every day, three small real-world quests: say
@@ -145,16 +147,17 @@ on the honor system — skipping never costs you anything.
 • Events, secret mini-arcs, a companion that talks back  
 • No rankings, no account, no ads: everything stays on your phone
 
-**Cairn Complete** — one purchase, for life, never a progression advantage:  
+**A full, free 7-day trial** with everything in Cairn. After that, **Cairn Complete**:
+one purchase, for life, to keep the adventure going. No subscription, no ads.
+Without it, your journal, map and character stay yours to read, forever.  
 • 6 full worlds (font, colours, frames, companion voice)  
 • Your own quests  
-• The monthly look-back, with journal export  
 • Up to 3 reminders a day  
 • “The Path”, an exclusive 7-step story arc  
-Every theme can be tried free for 24 h. Ages 16+.
+Ages 16+.
 
-**Notes de version 1.1 (FR) :** Cairn Complet : tes propres quêtes, rétrospective du mois et export du journal, jusqu’à 3 rappels par jour, « Le Sentier » (arc narratif exclusif), 6 mondes à essayer 24 h gratuitement. Boutique refaite.  
-**Release notes 1.1 (EN):** Cairn Complete: your own quests, monthly look-back and journal export, up to 3 reminders a day, “The Path” (exclusive story arc), 6 worlds to try free for 24 h. Redesigned shop.
+**Notes de version 1.1 (FR) :** 7 jours d’essai complet et gratuit, puis Cairn Complet (achat unique) pour continuer. Nouveau : tes propres quêtes, rétrospective du mois et export du journal, jusqu’à 3 rappels par jour, « Le Sentier » (arc narratif exclusif). Boutique refaite.  
+**Release notes 1.1 (EN):** A full, free 7-day trial, then Cairn Complete (one-time purchase) to keep going. New: your own quests, monthly look-back and journal export, up to 3 reminders a day, “The Path” (exclusive story arc). Redesigned shop.
 
 ## Captures d'écran
 

@@ -1441,8 +1441,11 @@ input[type="range"] { width: 100%; accent-color: var(--seal); margin: 12px 0 4px
 .retro .set-actions { margin-top: 12px; }
 
 /* Carte « Cairn Complet » de l'accueil (D19) : discrète, écartable, une seule fois */
-.shop-offer { margin: 10px 0 12px; border-color: var(--gold); }
-.shop-offer p { margin: 0 0 8px; }
+/* Essai de 7 jours (D20) */
+.trial-line { margin: -4px 0 10px; }
+.trial-over { margin: 10px 0 14px; border-color: var(--gold); text-align: center; }
+.trial-over h3 { margin: 0 0 8px; }
+.trial-over p { margin: 0 0 10px; }
 .shop-actions { display: inline-flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
 .shop-card-foot { flex-wrap: wrap; }
 
