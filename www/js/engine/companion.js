@@ -73,6 +73,18 @@ export function companionLineForState(state, lang = 'fr', now = new Date()) {
     }
   }
 
+  // Épreuve de passage (D21) : validée aujourd'hui, ou en attente (sans pression).
+  const passedToday = (state.journal || []).slice(-6)
+    .some((e) => e.kind === 'epreuve' && e.date === todayStr(now));
+  if (passedToday && C.ordealDone) {
+    const lines = C.ordealDone[lang] || C.ordealDone.fr;
+    return lines[seed % lines.length];
+  }
+  if (state.ordeal && C.ordealWaiting && seed % 2 === 0) {
+    const lines = C.ordealWaiting[lang] || C.ordealWaiting.fr;
+    return lines[(seed >> 1) % lines.length];
+  }
+
   // Retour après absence : ligne d'accueil dédiée, jamais un reproche (Phase 1.3).
   if (isComebackDay(state, now)) {
     const lines = C.comeback && (C.comeback[lang] || C.comeback.fr);

@@ -283,7 +283,18 @@ test('aventure en pause après l’essai (D20) : panneau de fin de prologue, sou
   const paused = renderAdventure({ ...base, trialEnded: true, quests: [] });
   assert.match(paused, /class="panel trial-over"/);
   assert.match(paused, /Léa, tu as atteint la crête/);
-  assert.match(paused, /5 quêtes vécues/);
+  assert.match(paused, /class="retro-stats"/, 'récap chiffré du prologue');
+  assert.match(paused, /<b>5<\/b><span>/, 'quêtes vécues dans le récap');
+  const rich = renderAdventure({
+    ...base, trialEnded: true, quests: [],
+    inventory: [{ item: { fr: '🥖 Pain légendaire', en: '🥖 Legendary bread' }, date: '2026-09-02' }],
+    skills: { ...base.skills, social: 300 },
+    history: { ...base.history, familleCompleted: { social: 4, chaos: 1 }, ordealsDone: ['o_pont'] },
+  });
+  assert.match(rich, /Premier souvenir :<\/span> 🥖 Pain légendaire/);
+  assert.match(rich, /Épreuve franchie :<\/span> Le pont/);
+  assert.match(rich, /Ce que tu as le plus vécu :<\/span> .*Social/);
+  assert.match(rich, /Ton style :/);
   assert.match(paused, /data-action="open-shop"/);
   assert.doesNotMatch(paused, /Essai gratuit · jour/);
 
@@ -297,4 +308,25 @@ test('aventure en pause après l’essai (D20) : panneau de fin de prologue, sou
 
   const owner = renderAdventure({ ...base, complete: true, quests: [] });
   assert.doesNotMatch(owner, /trial-line|trial-over/, 'rien pour un acheteur');
+});
+
+test('épreuves (D21) : le compagnon réagit, le journal propose le partage', async () => {
+  const { companionLineForState } = await import('../www/js/engine/companion.js');
+  const { renderJournal } = await import('../www/js/ui/screens/journal.js');
+  const { defaultState } = await import('../www/js/state/defaults.js');
+  const { voiceFor } = await import('../www/js/data/themes.js');
+  const now = new Date(2026, 8, 21, 10);
+  const q = { id: 'x', famille: 'social', xp: 50, status: 'proposed', text: { fr: 'x', en: 'x' } };
+  const base = { ...defaultState(), onboarded: true, name: 'Léa', quests: [q], theme: 'cyberpunk' };
+  const V = voiceFor('cyberpunk').ctx;
+  // épreuve en attente : la réplique d'attente sort une fois sur deux (seed pair)
+  const waiting = companionLineForState({ ...base, ordeal: { id: 'o_pont', skipped: [] }, seeds: { companion: 0 } }, 'fr', now);
+  assert.ok(V.ordealWaiting.fr.includes(waiting), waiting);
+  // épreuve passée aujourd'hui : réaction dédiée
+  const entry = { id: '2026-09-21~epreuve~0', date: '2026-09-21', kind: 'epreuve', title: { fr: 'Le pont', en: 'The bridge' }, text: { fr: 'Souvenir.', en: 'Memory.' }, souvenir: { fr: '🌉 Pont', en: '🌉 Bridge' }, level: 5 };
+  const done = companionLineForState({ ...base, journal: [entry, { date: '2026-09-21', kind: 'chapitre', text: { fr: 'c', en: 'c' } }] }, 'fr', now);
+  assert.ok(V.ordealDone.fr.includes(done), done);
+  // journal : bouton de partage sur l'entrée d'épreuve
+  const html = renderJournal({ ...base, journal: [entry] });
+  assert.match(html, /data-action="share-ordeal" data-id="2026-09-21~epreuve~0"/);
 });

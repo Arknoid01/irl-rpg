@@ -37,6 +37,27 @@ export default {
 
   voice: {
     ctx: {
+      // Épreuves de passage (D21)
+      ordealWaiting: {
+        fr: [
+          'Une épreuve t’attend dans l’ombre. Elle est patiente, bien plus que les loups.',
+          'Ce niveau réclame son épreuve. Elle attendra ton heure, pas une de plus.',
+        ],
+        en: [
+          'A trial waits in the shadows. It is patient, far more than the wolves.',
+          'This level asks for its trial. It will wait for your hour, not a moment sooner.',
+        ],
+      },
+      ordealDone: {
+        fr: [
+          'L’épreuve est derrière toi. Ta lame est plus sûre qu’hier.',
+          'Passage franchi. Les vieux récits parleront peut-être de toi.',
+        ],
+        en: [
+          'The trial is behind you. Your blade is surer than yesterday.',
+          'Threshold crossed. The old tales may speak of you yet.',
+        ],
+      },
       allDone: {
         fr: [
           'Les contrats du jour sont honorés. Repose-toi — ou relis le registre.',

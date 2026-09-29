@@ -7,6 +7,10 @@ import { questCardHtml } from '../components/questCard.js';
 import { eventCardHtml } from '../components/eventCard.js';
 import { ordealCardHtml } from '../components/ordealCard.js';
 import { hasAccess, inTrial, trialDay, TRIAL_DAYS } from '../../engine/access.js';
+import { computeStyle } from '../../engine/progression.js';
+import { FAMILIES } from '../../data/taxonomy.js';
+import { STYLE_DEFAULT } from '../../data/titles.js';
+import { ORDEAL_BY_ID } from '../../data/ordeals.js';
 
 // Accueil : les aventures d'abord (ROADMAP Phase 0). Ordre = jour → le
 // compagnon plante le décor → les 3 propositions → l'événement → un résumé
@@ -88,16 +92,44 @@ function trialLineHtml(state) {
 }
 
 // Fin de l'essai sans achat (D20) : l'aventure est en pause. Le journal, le
-// personnage et la carte restent accessibles par les onglets.
+// personnage et la carte restent accessibles par les onglets. Le panneau
+// montre ce que le joueur a construit pendant son prologue, au moment de décider.
 function pausedHtml(state) {
   return `
     <section class="panel trial-over">
       <p class="retro-kicker">🏔 ${i18n.t('trial_over_kicker')}</p>
       <h3>${i18n.t('trial_over_title', { name: esc(state.name) })}</h3>
-      <p>${i18n.t('trial_over_body', { n: state.history?.totalCompleted || 0 })}</p>
+      ${prologueRecapHtml(state)}
+      <p>${i18n.t('trial_over_body')}</p>
       <p class="tiny muted">${i18n.t('trial_over_keep')}</p>
       <button class="btn primary full" data-action="open-shop">${i18n.t('trial_over_cta')}</button>
     </section>
     ${heroCardHtml(state)}
   `;
+}
+
+/** Récap du prologue (7 jours d'essai) : chiffres + ce qui le rend personnel. */
+export function prologueRecapHtml(state) {
+  const h = state.history || {};
+  const stats = [
+    [h.totalCompleted || 0, i18n.t('retro_quests')],
+    [h.daysPlayed || 0, i18n.t('retro_days')],
+    [h.bestStreak || 0, i18n.t('retro_streak')],
+    [state.level || 1, i18n.t('level')],
+  ];
+  const lines = [];
+  const style = computeStyle(state);
+  if (style && style !== STYLE_DEFAULT) lines.push([i18n.t('recap_style'), i18n.loc(style)]);
+  const fams = Object.entries(h.familleCompleted || {}).sort((a, b) => b[1] - a[1]);
+  if (fams.length && FAMILIES[fams[0][0]]) {
+    const f = FAMILIES[fams[0][0]];
+    lines.push([i18n.t('recap_family'), `${f.icon} ${i18n.loc(f.label)}`]);
+  }
+  const first = (state.inventory || [])[0];
+  if (first && first.item) lines.push([i18n.t('recap_first_souvenir'), i18n.loc(first.item)]);
+  const lastOrdeal = ORDEAL_BY_ID[(h.ordealsDone || []).slice(-1)[0]];
+  if (lastOrdeal) lines.push([i18n.t('recap_ordeal'), i18n.loc(lastOrdeal.title)]);
+  return `
+      <div class="retro-stats">${stats.map(([n, l]) => `<div><b>${n}</b><span>${esc(l)}</span></div>`).join('')}</div>
+      ${lines.length ? `<ul class="recap-lines">${lines.map(([k, v]) => `<li><span class="muted">${esc(k)}</span> ${esc(v)}</li>`).join('')}</ul>` : ''}`;
 }

@@ -114,6 +114,7 @@ function memoryEntryHtml(e, today) {
       <p class="journal-entry-body">${body}</p>
       ${souvenir}
       ${coda}
+      ${e.kind === 'epreuve' ? `<button class="btn ghost small" data-action="share-ordeal" data-id="${esc(e.id)}">${i18n.t('ordeal_share')}</button>` : ''}
     </article>`;
 }
 

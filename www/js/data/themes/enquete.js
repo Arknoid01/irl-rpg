@@ -36,6 +36,27 @@ export default {
 
   voice: {
     ctx: {
+      // Épreuves de passage (D21)
+      ordealWaiting: {
+        fr: [
+          'Une affaire décisive attend sur ton bureau. Le dossier ne s’envolera pas.',
+          'Il manque une pièce au dossier. Ton compagnon te la laisse, quand tu veux.',
+        ],
+        en: [
+          'A deciding case waits on your desk. The file isn’t going anywhere.',
+          'One piece is missing from the file. Your companion leaves it to you, whenever you like.',
+        ],
+      },
+      ordealDone: {
+        fr: [
+          'Affaire classée. Un chapitre de plus au registre.',
+          'Tu as résolu l’affaire. Ton compagnon referme le dossier avec un sourire.',
+        ],
+        en: [
+          'Case closed. One more chapter in the ledger.',
+          'You cracked the case. Your companion closes the file with a smile.',
+        ],
+      },
       emptyDay: {
         fr: [
           'Aucune piste ouverte. On peut relancer le dossier quand tu veux.',

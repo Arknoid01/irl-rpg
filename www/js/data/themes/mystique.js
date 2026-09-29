@@ -36,6 +36,27 @@ export default {
 
   voice: {
     ctx: {
+      // Épreuves de passage (D21)
+      ordealWaiting: {
+        fr: [
+          'Un rite d’initiation t’attend. Les astres ont tout leur temps.',
+          'Le cercle est tracé pour ton épreuve. Il ne s’efface pas.',
+        ],
+        en: [
+          'An initiation rite awaits you. The stars have all the time in the world.',
+          'The circle is drawn for your trial. It will not fade.',
+        ],
+      },
+      ordealDone: {
+        fr: [
+          'Initiation accomplie. Une lueur de plus brille à ton nom.',
+          'Le rite est passé. Ton compagnon voit ton aura changer.',
+        ],
+        en: [
+          'Initiation complete. One more glow shines by your name.',
+          'The rite is done. Your companion sees your aura shift.',
+        ],
+      },
       emptyDay: {
         fr: [
           'Aucun présage en cours. On peut interroger le ciel quand tu veux.',

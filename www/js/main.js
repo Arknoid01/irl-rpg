@@ -16,6 +16,9 @@ import { playEffects, closeOverlay, showToast } from './ui/feedback.js';
 import { startOnboarding } from './ui/onboarding.js';
 import { openSettings } from './ui/settings.js';
 import { syncDailyReminder, shareText } from './platform/notifications.js';
+import { shareImage } from './platform/shareImage.js';
+import { renderOrdealCard } from './ui/shareCard.js';
+import { themeText } from './ui/themeText.js';
 import { syncStatusBar } from './platform/statusbar.js';
 import { QUESTS } from './data/quests.js';
 import { setMuseumFilter, selectMuseumItem } from './ui/components/charBits.js';
@@ -177,6 +180,34 @@ async function dispatch(action, args = {}) {
         i18n.t('retro_share_title'),
       );
       if (res === 'copied') showToast(i18n.t('set_copied'));
+      break;
+    }
+
+    case 'share-ordeal': {
+      // Carte image d'une épreuve passée (D21), dessinée sur l'appareil.
+      const e = state.journal.find((x) => x.id === args.id && x.kind === 'epreuve');
+      if (!e) break;
+      try {
+        const b64 = await renderOrdealCard({
+          brand: i18n.t('app_name'),
+          kicker: themeText('ordealLabel', 'ordeal_badge'),
+          levelLabel: i18n.t('level'),
+          level: e.level || state.level,
+          title: i18n.loc(e.title),
+          text: i18n.loc(e.text),
+          item: i18n.loc(e.souvenir),
+          name: state.name,
+          tagline: i18n.t('ordeal_share_tagline'),
+        });
+        const res = await shareImage(b64, {
+          fileName: `cairn-niveau-${e.level || state.level}.png`,
+          title: i18n.t('app_name'),
+          text: i18n.t('ordeal_share_text', { title: i18n.loc(e.title), n: e.level || state.level }),
+        });
+        if (res === 'downloaded') showToast(i18n.t('ordeal_share_saved'));
+      } catch {
+        showToast(i18n.t('ordeal_share_error'));
+      }
       break;
     }
 

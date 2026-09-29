@@ -40,6 +40,10 @@ export function levelUpOverlay(level, opts = {}) {
   const lootLine = opts.lootLabel
     ? `<p class="levelup-loot">${i18n.t('levelup_loot', { item: opts.lootLabel })}</p>`
     : '';
+  // Après une épreuve (D21) : la partager en image, si le joueur le souhaite.
+  const shareBtn = opts.shareEntryId
+    ? `<button class="btn ghost" data-action="share-ordeal" data-id="${esc(opts.shareEntryId)}">${i18n.t('ordeal_share')}</button>`
+    : '';
   ov.innerHTML = `
     <div class="levelup" role="dialog" aria-live="assertive">
       <div class="levelup-seal" aria-hidden="true">✦</div>
@@ -47,6 +51,7 @@ export function levelUpOverlay(level, opts = {}) {
       <div class="levelup-number">${level}</div>
       <div class="levelup-sub">${themeText('levelUpLine', 'levelup_sub')}</div>
       ${lootLine}
+      ${shareBtn}
       <button class="btn primary" data-action="close-overlay">${i18n.t('levelup_close')}</button>
     </div>`;
   showOverlay(ov);
@@ -90,6 +95,7 @@ function questCeremonyOverlay(state, { xp, first }, onClose) {
 function playRemaining(effects) {
   let lastLevel = null;
   let lootAtLevel = null;
+  let ordealEntry = null;
   for (const fx of effects || []) {
     switch (fx.type) {
       case 'xp': enqueueToast(i18n.t('toast_xp', { n: fx.amount })); break;
@@ -106,6 +112,7 @@ function playRemaining(effects) {
       case 'arc-clue': enqueueToast(i18n.t('toast_arc_clue')); break;
       case 'arc-done': celebrate(); enqueueToast(i18n.t('toast_arc_done')); break;
       case 'ordeal-ready': tapLight(); enqueueToast(i18n.t('toast_ordeal_ready')); break;
+      case 'ordeal-done': ordealEntry = fx.entryId || null; break;
       case 'streak': if (fx.broke) enqueueToast(i18n.t('streak_break_ok')); break;
       case 'theme-unlocked':
         enqueueToast(i18n.t('toast_theme_unlocked', { label: i18n.loc(THEMES[fx.theme]?.label) }));
@@ -117,7 +124,9 @@ function playRemaining(effects) {
     }
   }
   if (lastLevel != null) {
-    setTimeout(() => levelUpOverlay(lastLevel, { lootLabel: lootAtLevel || undefined }), 600);
+    setTimeout(() => levelUpOverlay(lastLevel, {
+      lootLabel: lootAtLevel || undefined, shareEntryId: ordealEntry || undefined,
+    }), 600);
   }
 }
 

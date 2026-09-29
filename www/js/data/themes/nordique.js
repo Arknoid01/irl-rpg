@@ -23,6 +23,27 @@ export default {
   voice: {
     // Répliques contextuelles de l'écran Aventure (engine/companion.js).
     ctx: {
+      // Épreuves de passage (D21)
+      ordealWaiting: {
+        fr: [
+          'Une épreuve t’attend au bord du chemin. Rien ne presse : elle sera encore là demain.',
+          'Ton compagnon a posé une pierre sur le sentier : ton épreuve. Quand tu voudras.',
+        ],
+        en: [
+          'A trial waits by the side of the path. No rush: it will still be there tomorrow.',
+          'Your companion has set a stone on the path: your trial. Whenever you like.',
+        ],
+      },
+      ordealDone: {
+        fr: [
+          'Épreuve passée. Le cairn compte une pierre de plus, et c’est toi qui l’as posée.',
+          'Tu as franchi le passage. Ton compagnon hoche la tête : il le savait.',
+        ],
+        en: [
+          'Trial passed. The cairn has one more stone, and you placed it.',
+          'You crossed the threshold. Your companion nods: they knew you would.',
+        ],
+      },
       allDone: {
         fr: [
           'Les pages du jour sont remplies. Repose-toi — ou feuillette le journal.',

@@ -37,6 +37,27 @@ export default {
 
   voice: {
     ctx: {
+      // Épreuves de passage (D21)
+      ordealWaiting: {
+        fr: [
+          'Boss détecté sur ton secteur. Il ne bouge pas : engage quand tu veux.',
+          'Un boss t’attend en fin de niveau. Ton compagnon garde la sauvegarde au chaud.',
+        ],
+        en: [
+          'Boss detected in your sector. It isn’t moving: engage when you like.',
+          'A boss waits at the end of the level. Your companion keeps the save warm.',
+        ],
+      },
+      ordealDone: {
+        fr: [
+          'Boss à terre. Niveau débloqué, log mis à jour.',
+          'Tu as grillé le boss. Le réseau s’en souviendra.',
+        ],
+        en: [
+          'Boss down. Level unlocked, log updated.',
+          'You fried the boss. The net will remember.',
+        ],
+      },
       allDone: {
         fr: [
           'Les pistes du jour sont traitées. Coupe le flux — ou relis le log.',

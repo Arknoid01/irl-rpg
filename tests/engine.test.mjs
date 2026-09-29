@@ -1718,7 +1718,10 @@ test('épreuves de passage (D21) : dès le niveau 3, choisies par famille, l’X
   assert.equal(t.ordeal, null);
   assert.deepEqual(t.history.levelFam, {});
   assert.ok(t.history.ordealsDone.includes(o.id));
-  assert.ok(t.journal.some((e) => e.kind === 'epreuve' && e.title === o.title));
+  const ep = t.journal.find((e) => e.kind === 'epreuve' && e.title === o.title);
+  assert.ok(ep);
+  assert.equal(ep.level, t.level, 'le niveau atteint est gardé pour la carte à partager');
+  assert.equal(r.effects.find((e) => e.type === 'ordeal-done').entryId, ep.id);
   assert.ok(t.inventory.some((x) => x.source === 'ordeal' && x.kind === 'relic'));
   assert.equal(r.effects.filter((e) => e.type === 'levelup').length, t.level - 3);
   assert.ok(!r.effects.some((e) => e.type === 'xp'));

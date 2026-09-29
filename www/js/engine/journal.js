@@ -11,7 +11,7 @@ import { FAMILIES } from '../data/taxonomy.js';
 import { daysBetween, todayStr } from './dates.js';
 
 export function addEntry(s, {
-  date, text, kind = 'note', title, souvenir, coda,
+  date, text, kind = 'note', title, souvenir, coda, level,
 }) {
   if (!s.journal) s.journal = [];
   const entry = {
@@ -26,6 +26,7 @@ export function addEntry(s, {
   if (title) entry.title = title;
   if (souvenir) entry.souvenir = souvenir;
   if (coda) entry.coda = coda;
+  if (level) entry.level = level; // épreuve de passage : niveau atteint (D21)
   s.journal.push(entry);
 }
 

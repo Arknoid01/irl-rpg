@@ -371,11 +371,12 @@ export function completeOrdeal(state, _args, ctx) {
     source: 'ordeal', famille, id: `ordeal_${o.id}_${s.level}`,
   };
   if (addLoot(s, loot)) effects.push({ type: 'loot', item: loot.item, kind: loot.kind });
-  addEntry(s, { date: today, kind: 'epreuve', title: o.title, text: o.memory, souvenir: o.item });
+  addEntry(s, { date: today, kind: 'epreuve', title: o.title, text: o.memory, souvenir: o.item, level: s.level });
+  const entryId = s.journal[s.journal.length - 1].id;
   applyLevelLoot(s, effects, today);
   applyRegionReveals(s, effects, today);
 
-  effects.push({ type: 'ordeal-done', id: o.id, level: s.level });
+  effects.push({ type: 'ordeal-done', id: o.id, level: s.level, entryId });
   return { state: s, effects };
 }
 

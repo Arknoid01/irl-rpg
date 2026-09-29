@@ -36,6 +36,27 @@ export default {
 
   voice: {
     ctx: {
+      // Épreuves de passage (D21)
+      ordealWaiting: {
+        fr: [
+          'Test de qualification en attente. Le créneau reste ouvert : décolle quand tu veux.',
+          'La tour annonce ton test. Aucune fenêtre de tir imposée.',
+        ],
+        en: [
+          'Qualification test pending. The slot stays open: take off when you like.',
+          'The tower announces your test. No launch window imposed.',
+        ],
+      },
+      ordealDone: {
+        fr: [
+          'Test validé. Nouvelle qualification inscrite au carnet de vol.',
+          'Qualification obtenue. La tour te félicite, commandant.',
+        ],
+        en: [
+          'Test passed. New rating logged in your flight book.',
+          'Rating earned. The tower congratulates you, commander.',
+        ],
+      },
       emptyDay: {
         fr: [
           'Aucun cap défini. On peut en tracer un quand tu veux.',

@@ -36,6 +36,27 @@ export default {
 
   voice: {
     ctx: {
+      // Épreuves de passage (D21)
+      ordealWaiting: {
+        fr: [
+          'Épreuve de survie au programme. Pas d’urgence : les ruines ne partent nulle part.',
+          'Ton compagnon a marqué ton épreuve sur la carte. À toi de choisir le jour.',
+        ],
+        en: [
+          'Survival trial on the list. No hurry: the ruins aren’t going anywhere.',
+          'Your companion marked your trial on the map. You pick the day.',
+        ],
+      },
+      ordealDone: {
+        fr: [
+          'Épreuve encaissée. Tu es plus solide qu’hier, survivant.',
+          'Tu as tenu. Une encoche de plus sur le bâton de marche.',
+        ],
+        en: [
+          'Trial weathered. You’re tougher than yesterday, survivor.',
+          'You held on. One more notch on the walking stick.',
+        ],
+      },
       emptyDay: {
         fr: [
           'Aucune mission en cours. On peut en trouver quand tu veux.',
