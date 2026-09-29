@@ -55,6 +55,14 @@ export default {
   event_badge: 'Event',
   event_ignore: 'Ignore',
   event_accept: 'Take it on',
+  // Épreuves de passage (D21)
+  ordeal_badge: 'Rite of passage',
+  ordeal_reward: 'Level {n}',
+  ordeal_why: 'Picked from what you lived most this level. No rush: your XP keeps adding up while it waits.',
+  ordeal_reroll: 'Another trial',
+  ordeal_done: 'Trial complete',
+  ordeal_bar: 'Trial waiting',
+  toast_ordeal_ready: 'A rite of passage awaits you',
   reward: 'Reward',
 
   q_ignore: 'Ignore',

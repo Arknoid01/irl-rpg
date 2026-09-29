@@ -5,6 +5,7 @@ import { esc } from '../dom.js';
 import { heroCardHtml } from '../components/charBits.js';
 import { questCardHtml } from '../components/questCard.js';
 import { eventCardHtml } from '../components/eventCard.js';
+import { ordealCardHtml } from '../components/ordealCard.js';
 import { hasAccess, inTrial, trialDay, TRIAL_DAYS } from '../../engine/access.js';
 
 // Accueil : les aventures d'abord (ROADMAP Phase 0). Ordre = jour → le
@@ -64,6 +65,7 @@ export function renderAdventure(state) {
     <p class="day-kicker">${i18n.t('day_kicker', { n: dayNo })}</p>
     ${trialLineHtml(state)}
     <p class="companion-line">${esc(line)}</p>
+    ${ordealCardHtml(state)}
     <div class="section-label">
       <span>${themeText('questsHeading', 'quests_today')}</span>
     </div>

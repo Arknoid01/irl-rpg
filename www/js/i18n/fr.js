@@ -55,6 +55,14 @@ export default {
   event_badge: 'Événement',
   event_ignore: 'Ignorer',
   event_accept: 'Relever le défi',
+  // Épreuves de passage (D21)
+  ordeal_badge: 'Épreuve de passage',
+  ordeal_reward: 'Niveau {n}',
+  ordeal_why: 'Choisie d’après ce que tu as le plus vécu ce niveau-ci. Rien ne presse : ton XP continue de s’accumuler en attendant.',
+  ordeal_reroll: 'Autre épreuve',
+  ordeal_done: 'Épreuve accomplie',
+  ordeal_bar: 'Épreuve en attente',
+  toast_ordeal_ready: 'Une épreuve de passage t’attend',
   reward: 'Récompense',
 
   q_ignore: 'Ignorer',

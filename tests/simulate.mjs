@@ -10,6 +10,7 @@ import { checkNoPenalty } from '../www/js/engine/philosophy.js';
 import { computeStyle } from '../www/js/engine/progression.js';
 import { i18n, loc } from '../www/js/i18n/index.js';
 import { TITLES } from '../www/js/data/titles.js';
+import { xpToNext } from '../www/js/data/taxonomy.js';
 
 const DAYS = Number(process.argv[2]) || 45;
 const SEED = Number(process.argv[3]) || 20260904;
@@ -49,6 +50,7 @@ step('onboarding', () => game.finishOnboarding(state, {
 
 let completedTotal = 0;
 let pausedDays = 0;
+let ordealsDone = 0;
 let boughtOn = null;
 let ignoredTotal = 0;
 let eventsDone = 0;
@@ -95,6 +97,22 @@ for (let d = 0; d < DAYS; d++) {
       step(`day ${d} complete ${q.id}`, () => game.completeQuest(state, { id: q.id }, ctx));
       completedTotal++;
     }
+  }
+
+  // Épreuve de passage (D21) : validée le plus souvent, parfois changée,
+  // parfois laissée en attente quelques jours (l'XP doit continuer de monter).
+  if (state.ordeal) {
+    const r = rng();
+    if (r < 0.2) step(`day ${d} reroll ordeal`, () => game.rerollOrdeal(state));
+    if (r < 0.75) {
+      const lvl = state.level;
+      step(`day ${d} ordeal`, () => game.completeOrdeal(state, {}, ctx));
+      if (state.level <= lvl) violations.push(`day ${d} : épreuve validée sans montée`);
+      ordealsDone++;
+    }
+  }
+  if (state.level >= 3 && state.xp >= xpToNext(state.level) && !state.ordeal) {
+    violations.push(`day ${d} : barre pleine sans épreuve`);
   }
 
   if (state.event && rng() < 0.5) {
@@ -146,6 +164,7 @@ console.log('─'.repeat(56));
 console.log(`  Simulation Cairn — ${DAYS} jours, seed ${SEED}`);
 console.log('─'.repeat(56));
 console.log(`  Niveau final ............ ${state.level}  (${state.xp} XP en cours)`);
+console.log(`  Épreuves passées ........ ${ordealsDone}${state.ordeal ? ` · en attente : ${state.ordeal.id}` : ''}  (${[...new Set(state.history.ordealsDone)].length} différentes : ${state.history.ordealsDone.join(", ")})`);
 console.log(`  Essai / achat ........... pause ${pausedDays} j, achat au jour ${boughtOn ?? '—'}${state.complete ? '' : ' (non acheté)'}`);
 console.log(`  Compétences ............. ${Object.entries(state.skills).map(([k, v]) => `${k} ${v}`).join(', ')}`);
 console.log(`  Style ................... ${loc(computeStyle(state), 'fr')}`);

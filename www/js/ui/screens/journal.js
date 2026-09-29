@@ -9,6 +9,7 @@ const KIND_ICON = {
   fragment: '📖',
   moment: '✨',
   evenement: '⚔',
+  epreuve: '🏔',
   chapitre: '⚜',
   decouverte: '🗺',
   jour: '📔',

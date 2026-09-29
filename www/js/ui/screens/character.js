@@ -26,7 +26,7 @@ export function renderCharacter(state) {
       <div class="adv-name">${esc(state.name)}</div>
       <div class="adv-becoming">${i18n.t('level')} ${state.level} · <b>${esc(i18n.loc(style))}</b></div>
       <div class="bar-row">
-        <div class="bar-label"><span>${i18n.t('xp')}</span><span>${p.xp} / ${p.need}</span></div>
+        <div class="bar-label"><span>${i18n.t('xp')}</span><span>${p.ordeal ? i18n.t('ordeal_bar') : `${p.xp} / ${p.need}`}</span></div>
         ${pctBar(p.pct, 'xp', `${i18n.t('xp')} ${p.xp}/${p.need}`)}
       </div>
       <p class="adv-word">${esc(line)}</p>

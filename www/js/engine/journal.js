@@ -31,7 +31,7 @@ export function addEntry(s, {
 
 // Types d'entrées « ressenties » (par opposition aux entrées de structure :
 // chapitre, jour, découverte, indice).
-export const FELT_KINDS = new Set(['evenement', 'moment', 'fragment', 'revelation']);
+export const FELT_KINDS = new Set(['evenement', 'epreuve', 'moment', 'fragment', 'revelation']);
 
 const MEMORABLE_CHANCE = 0.38;
 const EVENT_CODA_CHANCE = 0.34;

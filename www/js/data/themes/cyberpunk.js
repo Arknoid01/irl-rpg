@@ -24,6 +24,7 @@ export default {
   ui: {
     questsHeading: { fr: 'Missions du jour', en: 'Today’s missions' },
     eventLabel: { fr: 'Incident', en: 'Incident' },
+    ordealLabel: { fr: 'Boss de niveau', en: 'Level boss' },
     allDone: {
       fr: 'Toutes les missions du jour sont bouclées 🏆',
       en: 'Every mission today is closed 🏆',

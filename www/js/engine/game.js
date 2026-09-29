@@ -4,9 +4,10 @@
 
 import { drawDaily } from './draw.js';
 import {
-  gainXp, gainSkills, bumpStreak, checkTitles,
+  gainXp, gainSkills, bumpStreak, checkTitles, levelUp,
 } from './progression.js';
-import { skillDeltasFor, FAMILY_KEYS } from '../data/taxonomy.js';
+import { openOrdealIfDue, currentOrdeal, pickOrdeal } from './ordeals.js';
+import { skillDeltasFor, FAMILY_KEYS, xpToNext } from '../data/taxonomy.js';
 import { todayStr } from './dates.js';
 import {
   addEntry, maybeMemorable, eventEntry, eventCoda, levelChapterEntry, regionRevealEntry,
@@ -226,6 +227,7 @@ export function completeQuest(state, { id }, ctx) {
   // Historique
   s.history.totalCompleted += 1;
   s.history.familleCompleted[q.famille] = (s.history.familleCompleted[q.famille] || 0) + 1;
+  countLevelFamily(s, q.famille);
   s.history.recentFamilles.push(q.famille);
   s.history.recentFamilles = s.history.recentFamilles.slice(-RECENT_FAMILLES_MEMORY);
   if (!q.gentle && !q.custom) {
@@ -285,6 +287,7 @@ export function completeQuest(state, { id }, ctx) {
     effects.push({ type: 'discovery', key });
   }
 
+  openOrdealIfDue(s, effects);
   effects.push({ type: 'quest-done', xp: q.xp, first: wasFirst });
   return { state: s, effects };
 }
@@ -306,6 +309,7 @@ export function completeEvent(state, _args, ctx) {
     gainSkills(s, effects, skillDeltasFor({ famille: ev.famille, xp: Math.round(ev.xp * 0.6) }));
     checkTitles(s, effects);
     s.history.familleCompleted[ev.famille] = (s.history.familleCompleted[ev.famille] || 0) + 1;
+    countLevelFamily(s, ev.famille);
   }
   bumpStreak(s, effects, today);
   recordMonth(s, today, ev.xp, ev.famille);
@@ -328,8 +332,63 @@ export function completeEvent(state, _args, ctx) {
 
   applyMilestones(s, effects, recordEventMilestones(s, ev, now), now);
 
+  openOrdealIfDue(s, effects);
   effects.push({ type: 'event-done', xp: ev.xp, item: ev.item });
   return { state: s, effects };
+}
+
+/* ─────────────── Épreuve de passage (D21) ─────────────── */
+
+function countLevelFamily(s, famille) {
+  if (!famille) return;
+  if (!s.history.levelFam) s.history.levelFam = {};
+  s.history.levelFam[famille] = (s.history.levelFam[famille] || 0) + 1;
+}
+
+/**
+ * Épreuve validée : monte d'un niveau, puis de tous les niveaux dont l'XP
+ * accumulée pendant l'attente remplit déjà la barre. Pas d'XP en plus.
+ */
+export function completeOrdeal(state, _args, ctx) {
+  const { now } = ctxDefaults(ctx);
+  const s = clone(state);
+  const o = currentOrdeal(s);
+  if (!o || !hasAccess(s)) return { state: s, effects: [] };
+  const effects = [];
+  const today = todayStr(now);
+  const famille = o.familles[0];
+  noteComebackReturn(s, now, today);
+
+  do { levelUp(s, effects); } while (s.xp >= xpToNext(s.level));
+  s.ordeal = null;
+  s.history.ordealsDone = [...(s.history.ordealsDone || []), o.id].slice(-60);
+
+  for (const f of o.familles) gainSkills(s, effects, skillDeltasFor({ famille: f, xp: 60 }));
+  bumpStreak(s, effects, today);
+  recordMonth(s, today, 0, famille);
+  const loot = {
+    item: o.item, date: today, from: o.title, kind: 'relic',
+    source: 'ordeal', famille, id: `ordeal_${o.id}_${s.level}`,
+  };
+  if (addLoot(s, loot)) effects.push({ type: 'loot', item: loot.item, kind: loot.kind });
+  addEntry(s, { date: today, kind: 'epreuve', title: o.title, text: o.memory, souvenir: o.item });
+  applyLevelLoot(s, effects, today);
+  applyRegionReveals(s, effects, today);
+
+  effects.push({ type: 'ordeal-done', id: o.id, level: s.level });
+  return { state: s, effects };
+}
+
+/** « Autre épreuve » : à volonté, en parcourant les candidates puis en rebouclant. */
+export function rerollOrdeal(state) {
+  const s = clone(state);
+  if (!s.ordeal) return { state: s, effects: [] };
+  let skipped = [...(s.ordeal.skipped || []), s.ordeal.id];
+  let next = pickOrdeal(s, skipped);
+  if (!next || skipped.includes(next.id)) { skipped = [s.ordeal.id]; next = pickOrdeal(s, skipped); }
+  if (!next || next.id === s.ordeal.id) return { state: s, effects: [] };
+  s.ordeal = { id: next.id, skipped };
+  return { state: s, effects: [{ type: 'ordeal-reroll', id: next.id }] };
 }
 
 export function dismissEvent(state) {

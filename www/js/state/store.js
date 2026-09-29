@@ -5,6 +5,7 @@ import { THEME_KEYS, DEFAULT_THEME } from '../data/themes.js';
 import { normalizeInventory } from '../engine/inventory.js';
 import { FAMILY_KEYS } from '../data/taxonomy.js';
 import { COLLECTION_THEMES } from '../platform/billing.js';
+import { ORDEAL_BY_ID } from '../data/ordeals.js';
 
 export const STORAGE_KEY = 'irlrpg_save_v2';
 const LEGACY_KEY_V1 = 'irlrpg_save_v1';
@@ -119,6 +120,16 @@ export function normalize(state) {
     s.notifications = { enabled: !!s.notifications.enabled, hour: h, extra: seen.sort((a, b) => a - b).slice(0, 2) };
   }
   s.level = Math.max(1, Math.round(s.level) || 1);
+  // Épreuves de passage (D21)
+  s.ordeal = s.ordeal && ORDEAL_BY_ID[s.ordeal.id]
+    ? { id: s.ordeal.id, skipped: (Array.isArray(s.ordeal.skipped) ? s.ordeal.skipped : []).filter((id) => ORDEAL_BY_ID[id]) }
+    : null;
+  {
+    const lf = s.history.levelFam && typeof s.history.levelFam === 'object' && !Array.isArray(s.history.levelFam) ? s.history.levelFam : {};
+    s.history.levelFam = {};
+    for (const f of FAMILY_KEYS) if (Math.round(lf[f]) > 0) s.history.levelFam[f] = Math.round(lf[f]);
+  }
+  s.history.ordealsDone = (Array.isArray(s.history.ordealsDone) ? s.history.ordealsDone : []).filter((id) => typeof id === 'string');
   s.xp = Math.max(0, Math.round(s.xp) || 0);
   s.inventory = normalizeInventory(s.inventory).slice(0, 200);
   // Essai de thème 24 h et carte d'offre (D19) remplacés par l'essai de 7 jours (D20).

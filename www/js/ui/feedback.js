@@ -105,6 +105,7 @@ function playRemaining(effects) {
       case 'region': enqueueToast(i18n.t('toast_region')); break;
       case 'arc-clue': enqueueToast(i18n.t('toast_arc_clue')); break;
       case 'arc-done': celebrate(); enqueueToast(i18n.t('toast_arc_done')); break;
+      case 'ordeal-ready': tapLight(); enqueueToast(i18n.t('toast_ordeal_ready')); break;
       case 'streak': if (fx.broke) enqueueToast(i18n.t('streak_break_ok')); break;
       case 'theme-unlocked':
         enqueueToast(i18n.t('toast_theme_unlocked', { label: i18n.loc(THEMES[fx.theme]?.label) }));

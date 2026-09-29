@@ -22,7 +22,8 @@ export function defaultState() {
     notifications: { enabled: false, hour: 9, extra: [] }, // extra : rappels en plus (Complet, D19)
 
     level: 1,
-    xp: 0,
+    xp: 0,                 // peut dépasser la barre quand une épreuve attend (D21)
+    ordeal: null,          // épreuve de passage en attente : { id, skipped: [] } (D21)
     skills: { curiosite: 0, social: 0, audace: 0, creativite: 0, discipline: 0, chaos: 0 },
     titles: [],
 
@@ -55,6 +56,8 @@ export function defaultState() {
       lastMilestone: null,  // { key, date } — dernier jalon, pour la voix du compagnon
       comebacks: 0,         // nombre de retours après absence (KPI rétention, local)
       lastComebackDate: null, // dédup du compteur ci-dessus
+      levelFam: {},         // famille -> quêtes/événements vécus pendant le niveau (épreuves, D21)
+      ordealsDone: [],      // ids des épreuves passées (anti-répétition)
       months: {},           // 'YYYY-MM' -> { done, xp, activeDays, lastDay, bestStreak, fam } (rétrospective, D19)
     },
 

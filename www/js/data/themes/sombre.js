@@ -24,6 +24,7 @@ export default {
   ui: {
     questsHeading: { fr: 'Contrats du jour', en: 'Today’s contracts' },
     eventLabel: { fr: 'Affaire', en: 'Matter' },
+    ordealLabel: { fr: 'Épreuve du sang', en: 'Trial by blood' },
     allDone: {
       fr: 'Tous les contrats du jour sont honorés 🏆',
       en: 'Every contract today is settled 🏆',

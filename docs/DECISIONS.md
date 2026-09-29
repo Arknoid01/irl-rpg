@@ -916,3 +916,36 @@ envie d'acheter. Pas de produit séparé pour l'instant ; les extensions payante
 **Encore ouvert.** Le pot de soutien (D19 §3). Les sauvegardes existantes de
 plus de 7 jours (testeurs) passent en pause au prochain jour : accepté, puisque
 rien n'est encore publié.
+
+## D21 — Épreuves de passage pour monter de niveau (2026-09-29)
+
+**Idée (Yannick).** Monter de niveau ne voulait presque rien dire (cf. D20 :
+le niveau ne verrouille rien). Désormais, à partir du **niveau 3**, quand la
+barre d'XP est pleine, une **épreuve de passage** apparaît ; la valider fait
+monter de niveau. Elle est **choisie d'après ce que le joueur a vécu pendant
+le niveau** : pas plus dure qu'une quête, mais plus originale et marquante.
+
+**Règle.**
+- Niveaux 1→2→3 libres (trop tôt pour une épreuve, jours 2–3).
+- Familles comptées pendant le niveau (`history.levelFam`, quêtes et
+  événements). Famille dominante → une de ses 3 épreuves ; si les deux
+  premières sont proches (≥ 60 %), un **duo** (6 duos). Rotation par niveau,
+  épreuves déjà passées en fin de liste (`history.ordealsDone`).
+- Validation : +1 niveau, **plus tous les niveaux en retard d'un coup**,
+  cérémonie de niveau, entrée de journal `epreuve`, relique au musée, un peu
+  de compétence. **Aucune XP en plus** (pas de débordement).
+- Libellé habillé par thème (`ordealLabel` : « Boss de niveau » en cyberpunk,
+  « Affaire décisive » en enquête…).
+
+**Garde-fous (validés par Yannick).**
+1. **L'XP n'est jamais bloquée** : elle continue de s'accumuler au-delà de la
+   barre pendant que l'épreuve attend.
+2. **« Autre épreuve » à volonté**, et un **repli sûr** sur chaque épreuve.
+3. **Aucune limite de temps, aucune relance.**
+
+**Contenu.** `data/ordeals.js` : 24 épreuves bilingues (3 × 6 familles + 6
+duos), premier jet à relire par Yannick (c'est sa voix, comme Le Sentier).
+
+**Simulation.** Rythme d'XP inchangé : niveau 12 en 45 jours, 9 épreuves,
+toutes différentes. Pendant l'essai (D20), un joueur en passe 0 à 1 ;
+l'épreuve attend l'achat si l'aventure est en pause.

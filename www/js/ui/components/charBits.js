@@ -31,7 +31,7 @@ export function heroCardHtml(state) {
   return `
   <div class="prog-strip">
     <span class="prog-hero">${esc(state.name)} · <b>${i18n.t('level')} ${state.level}</b></span>
-    <span class="prog-xp">${pctBar(p.pct, 'xp', `${i18n.t('xp')} ${p.xp}/${p.need}`)}</span>
+    <span class="prog-xp">${pctBar(p.pct, 'xp', p.ordeal ? i18n.t('ordeal_bar') : `${i18n.t('xp')} ${p.xp}/${p.need}`)}</span>
     <span class="prog-streak">🔥 ${i18n.t('streak_days', { n: state.streak })}</span>
     <button class="linkbtn" data-action="goto" data-id="character">${i18n.t('see_character')} →</button>
   </div>`;

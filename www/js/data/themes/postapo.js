@@ -23,6 +23,7 @@ export default {
   ui: {
     questsHeading: { fr: 'Missions du jour', en: 'Today’s runs' },
     eventLabel: { fr: 'Alerte', en: 'Alert' },
+    ordealLabel: { fr: 'Épreuve de survie', en: 'Survival trial' },
     allDone: {
       fr: 'Toutes les missions du jour sont faites 🏆',
       en: 'All of today’s runs are done 🏆',

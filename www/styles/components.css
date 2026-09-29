@@ -446,6 +446,19 @@
 .event-title { font-family: var(--font-display); font-size: 1.05rem; margin: 6px 0; color: var(--text); }
 .event-reward { font-size: .82rem; color: var(--gold); margin: 8px 0 10px; }
 
+/* Épreuve de passage (D21) : doré, plus solennel qu'un événement. */
+.ordeal-panel {
+  border: 2px solid color-mix(in srgb, var(--gold) 70%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 14%, transparent);
+  margin: 10px 0 14px;
+}
+.ordeal-badge {
+  font-family: var(--font-display);
+  font-size: .72rem; text-transform: uppercase;
+  color: var(--gold); letter-spacing: .08em; font-weight: 700;
+}
+.ordeal-panel .tiny { margin: 0 0 10px; }
+
 .journal-entry {
   background: rgba(255, 250, 235, .5);
   color: var(--text);

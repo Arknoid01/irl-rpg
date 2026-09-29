@@ -1646,3 +1646,90 @@ test('billing natif (D19) : enregistre le produit avant buy(), signale un produi
     assert.deepEqual(await getBilling().purchase(), { ok: false, cancelled: true });
   } finally { delete globalThis.window; }
 });
+
+test('épreuves de passage (D21) : dès le niveau 3, choisies par famille, l’XP n’est jamais bloquée', async () => {
+  const { ORDEALS, ORDEAL_BY_ID } = await import('../www/js/data/ordeals.js');
+  const { ordealCandidates } = await import('../www/js/engine/ordeals.js');
+  const { xpToNext, FAMILY_KEYS } = await import('../www/js/data/taxonomy.js');
+  const { checkNoPenalty } = await import('../www/js/engine/philosophy.js');
+  const now = new Date(2026, 8, 21, 10);
+  const quest = (id, famille, xp) => ({ id, famille, xp, effort: 'moyen', registre: 'quete', audace: 1, contexte: [], text: { fr: id, en: id }, status: 'accepted' });
+
+  // contenu : bilingue, repli sûr partout, 3 épreuves par famille au moins
+  for (const o of ORDEALS) {
+    for (const k of ['title', 'text', 'safe_fallback', 'memory', 'item']) {
+      assert.ok(o[k].fr && o[k].en, `${o.id}.${k} bilingue`);
+    }
+    assert.ok(o.familles.every((f) => FAMILY_KEYS.includes(f)), o.id);
+  }
+  for (const f of FAMILY_KEYS) {
+    assert.ok(ORDEALS.filter((o) => o.familles.length === 1 && o.familles[0] === f).length >= 3, f);
+  }
+
+  // niveaux 1 à 3 : montée libre, sans épreuve
+  let s = { ...defaultState(), onboarded: true, quests: [quest('a', 'social', 2000)] };
+  let r = game.completeQuest(s, { id: 'a' }, { now });
+  assert.equal(r.state.level, 3, 'monte librement jusqu’au niveau 3');
+  assert.ok(r.state.xp >= xpToNext(3), 'le surplus reste en XP');
+  assert.ok(r.state.ordeal, 'barre pleine au niveau 3 : épreuve ouverte');
+  assert.ok(r.effects.some((e) => e.type === 'ordeal-ready'));
+  assert.deepEqual(checkNoPenalty(s, r.state), []);
+
+  // l'XP continue de s'accumuler pendant l'attente, le niveau ne bouge pas
+  s = { ...r.state, quests: [quest('b', 'social', 900)] };
+  r = game.completeQuest(s, { id: 'b' }, { now });
+  assert.equal(r.state.level, 3);
+  assert.equal(r.state.xp, s.xp + 900);
+  assert.equal(r.state.ordeal.id, s.ordeal.id, 'la même épreuve attend');
+
+  // choix par famille dominante du niveau ; duo si deux familles sont proches
+  const base = { ...defaultState(), level: 5 };
+  const pick = (levelFam) => ordealCandidates({ ...base, history: { ...base.history, levelFam } })[0];
+  assert.deepEqual(pick({ social: 5, chaos: 1 }).familles, ['social']);
+  assert.equal(pick({ social: 5, chaos: 4 }).id, 'o_complice');
+  assert.deepEqual(pick({ exploration: 3 }).familles, ['exploration']);
+  assert.ok(pick({}), 'toujours une épreuve, même sans historique');
+  // une épreuve déjà passée recule dans la liste
+  const first = pick({ quotidien: 3 });
+  const after = ordealCandidates({ ...base, history: { ...base.history, levelFam: { quotidien: 3 }, ordealsDone: [first.id] } })[0];
+  assert.notEqual(after.id, first.id);
+
+  // « Autre épreuve » : change à chaque fois, à volonté, sans jamais bloquer
+  s = r.state;
+  const seen = new Set([s.ordeal.id]);
+  for (let i = 0; i < 40; i++) {
+    const before = s.ordeal.id;
+    s = game.rerollOrdeal(s).state;
+    assert.notEqual(s.ordeal.id, before);
+    seen.add(s.ordeal.id);
+  }
+  assert.ok(seen.size >= 6, 'on parcourt plusieurs épreuves');
+
+  // validation : montée + niveaux en retard d'un coup, pas d'XP en plus
+  const o = ORDEAL_BY_ID[s.ordeal.id];
+  const xpBefore = s.xp;
+  r = game.completeOrdeal(s, {}, { now });
+  const t = r.state;
+  assert.ok(t.level >= 4);
+  assert.ok(t.xp < xpToNext(t.level), 'plus de barre pleine après validation');
+  let spent = 0;
+  for (let L = 3; L < t.level; L++) spent += xpToNext(L);
+  assert.equal(t.xp, xpBefore - spent, 'aucune XP gagnée ni perdue');
+  assert.equal(t.ordeal, null);
+  assert.deepEqual(t.history.levelFam, {});
+  assert.ok(t.history.ordealsDone.includes(o.id));
+  assert.ok(t.journal.some((e) => e.kind === 'epreuve' && e.title === o.title));
+  assert.ok(t.inventory.some((x) => x.source === 'ordeal' && x.kind === 'relic'));
+  assert.equal(r.effects.filter((e) => e.type === 'levelup').length, t.level - 3);
+  assert.ok(!r.effects.some((e) => e.type === 'xp'));
+  assert.deepEqual(checkNoPenalty(s, t), []);
+  assert.equal(game.completeOrdeal(t, {}, { now }).effects.length, 0, 'rien à valider');
+
+  // aventure en pause (D20) : l'épreuve attend l'achat
+  assert.equal(game.completeOrdeal({ ...s, trialEnded: true }, {}, { now }).state.level, 3);
+
+  // sauvegarde : épreuve inconnue ou corrompue retirée
+  assert.equal(normalize({ ordeal: { id: 'nope' } }).ordeal, null);
+  assert.deepEqual(normalize({ ordeal: { id: 'o_pont', skipped: ['o_table', 'zz'] } }).ordeal, { id: 'o_pont', skipped: ['o_table'] });
+  assert.deepEqual(normalize({ history: { levelFam: { social: 2, nope: 4, chaos: -1 } } }).history.levelFam, { social: 2 });
+});

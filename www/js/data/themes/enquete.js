@@ -23,6 +23,7 @@ export default {
   ui: {
     questsHeading: { fr: 'Pistes du jour', en: 'Today’s leads' },
     eventLabel: { fr: 'Développement', en: 'Development' },
+    ordealLabel: { fr: 'Affaire décisive', en: 'Deciding case' },
     allDone: {
       fr: 'Toutes les pistes du jour sont suivies 🏆',
       en: 'Every lead today has been followed 🏆',

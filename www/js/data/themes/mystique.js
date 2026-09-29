@@ -23,6 +23,7 @@ export default {
   ui: {
     questsHeading: { fr: 'Présages du jour', en: 'Today’s omens' },
     eventLabel: { fr: 'Signe', en: 'Sign' },
+    ordealLabel: { fr: 'Épreuve d’initiation', en: 'Initiation rite' },
     allDone: {
       fr: 'Tous les présages du jour sont accomplis 🏆',
       en: 'Every omen today has been fulfilled 🏆',

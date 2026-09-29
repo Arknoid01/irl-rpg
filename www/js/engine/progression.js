@@ -6,17 +6,27 @@ import { xpToNext, SKILL_KEYS, TRAIT_TIERS } from '../data/taxonomy.js';
 import { TITLES, STYLES, STYLE_PAIRS, STYLE_DEFAULT } from '../data/titles.js';
 import { yesterdayStr } from './dates.js';
 
+// Épreuves de passage (D21) : à partir de ce niveau, la montée demande une
+// épreuve. L'XP continue de s'accumuler au-delà de la barre ; rien n'est perdu.
+export const ORDEAL_FROM_LEVEL = 3;
+
 export function gainXp(s, effects, amount) {
   if (!amount) return;
   s.xp += amount;
   effects.push({ type: 'xp', amount });
   let need = xpToNext(s.level);
-  while (s.xp >= need) {
-    s.xp -= need;
-    s.level += 1;
-    effects.push({ type: 'levelup', level: s.level });
+  while (s.xp >= need && s.level < ORDEAL_FROM_LEVEL) {
+    levelUp(s, effects);
     need = xpToNext(s.level);
   }
+}
+
+/** Monte d'un niveau (la barre doit être pleine) ; repart d'un niveau vierge. */
+export function levelUp(s, effects) {
+  s.xp -= xpToNext(s.level);
+  s.level += 1;
+  s.history.levelFam = {};
+  effects.push({ type: 'levelup', level: s.level });
 }
 
 export function gainSkills(s, effects, deltas) {
@@ -68,7 +78,10 @@ export function elanDuJour(s) {
 
 export function xpProgress(s) {
   const need = xpToNext(s.level);
-  return { xp: s.xp, need, pct: Math.min(100, Math.round((s.xp / need) * 100)) };
+  return {
+    xp: s.xp, need, pct: Math.min(100, Math.round((s.xp / need) * 100)),
+    ordeal: !!s.ordeal, // barre pleine, épreuve en attente (D21)
+  };
 }
 
 /**

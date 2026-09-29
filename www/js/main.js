@@ -221,6 +221,8 @@ async function dispatch(action, args = {}) {
     case 'ignore-quest': apply(game.ignoreQuest(state, { id: args.id })); break;
     case 'complete-quest': apply(game.completeQuest(state, { id: args.id })); break;
     case 'complete-event': apply(game.completeEvent(state, {})); break;
+    case 'complete-ordeal': apply(game.completeOrdeal(state, {})); break;
+    case 'reroll-ordeal': apply(game.rerollOrdeal(state)); break;
     case 'dismiss-event': apply(game.dismissEvent(state)); break;
 
     case 'share-quest': {

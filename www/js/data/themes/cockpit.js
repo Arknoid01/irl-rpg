@@ -23,6 +23,7 @@ export default {
   ui: {
     questsHeading: { fr: 'Objectifs du jour', en: 'Today’s objectives' },
     eventLabel: { fr: 'Incident', en: 'Incident' },
+    ordealLabel: { fr: 'Test de qualification', en: 'Qualification test' },
     allDone: {
       fr: 'Tous les objectifs du jour sont atteints 🏆',
       en: 'All of today’s objectives met 🏆',

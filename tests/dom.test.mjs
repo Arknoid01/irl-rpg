@@ -287,6 +287,14 @@ test('aventure en pause après l’essai (D20) : panneau de fin de prologue, sou
   assert.match(paused, /data-action="open-shop"/);
   assert.doesNotMatch(paused, /Essai gratuit · jour/);
 
+  const withOrdeal = renderAdventure({ ...base, level: 3, ordeal: { id: 'o_pont', skipped: [] }, quests: [] });
+  assert.match(withOrdeal, /class="panel ordeal-panel"/);
+  assert.match(withOrdeal, /Le pont/);
+  assert.match(withOrdeal, /Niveau 4/);
+  assert.match(withOrdeal, /data-action="reroll-ordeal"/);
+  assert.match(withOrdeal, /data-action="complete-ordeal"/);
+  assert.doesNotMatch(renderAdventure({ ...base, trialEnded: true, ordeal: { id: 'o_pont', skipped: [] }, quests: [] }), /ordeal-panel/, 'pas d’épreuve pendant la pause');
+
   const owner = renderAdventure({ ...base, complete: true, quests: [] });
   assert.doesNotMatch(owner, /trial-line|trial-over/, 'rien pour un acheteur');
 });
