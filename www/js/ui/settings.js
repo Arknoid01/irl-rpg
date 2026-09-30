@@ -1,17 +1,19 @@
-// Réglages — feuille (sheet) à onglets : Aventure · Thèmes · Général.
+// Réglages — feuille (sheet) à onglets : Aventure · Mes quêtes · Mondes · Général.
 // Le sélecteur de langue reste toujours visible, au-dessus des onglets.
-// L'onglet « Thèmes » a absorbé l'ancienne boutique (ui/shop.js) : sélection
-// de thème + achat unique « Collection des Mondes » (D17). La boutique ne
-// connaît que l'interface billing { listProducts, purchase, restore } —
-// impl « dev » (déblocage local) sur le web, impl native sur appareil.
+// La même feuille porte une seconde vue, « Cairn Complet » (ui/offer.js, D20) :
+// ce qu'on achète, ce qu'on garde, comment marche l'essai. On l'ouvre seule
+// (`view: 'offer'`, depuis l'accueil) ou depuis un onglet (retour possible).
+// L'achat ne connaît que l'interface billing { listProducts, purchase, restore }
+// — impl « dev » (déblocage local) sur le web, impl native sur appareil.
 
 import { i18n, LANGS } from '../i18n/index.js';
 import { FAMILIES, FAMILY_KEYS } from '../data/taxonomy.js';
 import { PREFERABLE_FAMILIES } from '../data/quests.js';
 import { THEMES, THEME_KEYS, companionLineFor } from '../data/themes.js';
 import { getBilling, COLLECTION_PRODUCT } from '../platform/billing.js';
-import { hasAccess, inTrial, trialDay, TRIAL_DAYS } from '../engine/access.js';
+import { hasAccess, inTrial } from '../engine/access.js';
 import { $, esc, hideOverlay, showOverlay } from './dom.js';
+import { offerHtml, CAIRN_SVG } from './offer.js';
 
 const PREVIEW_XP = 120;
 const TABS = ['adventure', 'custom', 'themes', 'general'];
@@ -21,9 +23,10 @@ const TABS = ['adventure', 'custom', 'themes', 'general'];
  * @param {() => object} opts.getState
  * @param {(action: string, args?: object) => void} opts.dispatch  applique + persiste + re-render global
  * @param {() => void} opts.close
- * @param {string} [opts.tab]  onglet initial ('adventure' | 'themes' | 'general')
+ * @param {string} [opts.tab]  onglet initial ('adventure' | 'custom' | 'themes' | 'general')
+ * @param {'settings'|'offer'} [opts.view]  'offer' ouvre directement la page Cairn Complet
  */
-export function openSettings({ getState, dispatch, close, tab } = {}) {
+export function openSettings({ getState, dispatch, close, tab, view: initialView } = {}) {
   const ov = $('#overlay');
 
   // Un seul jeu d'écouteurs à la fois : si la feuille est déjà montée (ré-ouverte
@@ -32,6 +35,9 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
 
   const billing = getBilling();
   let activeTab = TABS.includes(tab) ? tab : 'adventure';
+  let view = initialView === 'offer' ? 'offer' : 'settings';
+  const standaloneOffer = view === 'offer'; // ouverte seule : pas de retour aux réglages
+  let pendingTheme = null;    // monde cliqué avant d'ouvrir l'offre : activé après l'achat
   let collectionPrice = null; // prix affichable de la Collection (string) ou null
   let busy = false;           // un achat / une restauration est en cours
   let error = false;          // le dernier achat a échoué : false | 'failed' | 'unavailable'
@@ -107,59 +113,29 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
     if (usable(key, s)) {
       return `<button class="btn ghost small" data-shop="activate" data-v="${key}"${busy ? ' disabled' : ''}>${i18n.t('shop_activate')}</button>`;
     }
-    // Verrouillé : l'achat débloque tout ; on rappelle le thème cliqué pour
-    // l'activer tout de suite après.
-    return `<button class="btn primary small" data-shop="unlock" data-v="${key}"${busy ? ' disabled' : ''}>${i18n.t('shop_locked')}</button>`;
+    // Verrouillé (essai terminé) : on montre d'abord ce que contient l'achat ;
+    // le monde cliqué sera activé juste après.
+    return `<button class="btn primary small" data-shop="offer" data-v="${key}">${i18n.t('shop_locked')}</button>`;
   }
 
-  // Un cairn : des pierres empilées, la marque de l'app. Couleur = `currentColor`.
-  const CAIRN_SVG = `<svg class="shop-cairn" viewBox="0 0 64 64" aria-hidden="true">
-    <ellipse cx="32" cy="52" rx="24" ry="8" fill="currentColor" opacity=".95"/>
-    <ellipse cx="31" cy="38" rx="17" ry="6.5" fill="currentColor" opacity=".8"/>
-    <ellipse cx="33" cy="26" rx="11" ry="5" fill="currentColor" opacity=".65"/>
-    <ellipse cx="32" cy="16" rx="6" ry="3.6" fill="currentColor" opacity=".5"/>
-  </svg>`;
-
-  function perksHtml() {
-    const yes = (k) => `<li class="ok"><span class="shop-tick">✓</span>${i18n.t(k)}</li>`;
-    return `<ul class="shop-perks">
-      ${yes('shop_perk_adventure')}${yes('shop_perk_themes')}${yes('shop_perk_custom')}${yes('shop_perk_remind')}${yes('shop_perk_arc')}
-    </ul>`;
-  }
-
-  function heroHtml(s) {
+  // En tête de l'onglet Mondes : où en est l'accès, et un lien vers l'offre.
+  function offerBannerHtml(s) {
     if (s.complete) {
-      return `<section class="shop-hero owned">
-        ${CAIRN_SVG}
-        <h3>${i18n.t('shop_owned_title')}</h3>
-        <p class="tiny">${i18n.t('shop_owned_sub')}</p>
-      </section>`;
+      return `<p class="offer-owned-line tiny">${i18n.t('shop_owned_title')}</p>`;
     }
-    const price = collectionPrice ? ` · ${collectionPrice}` : '';
-    // Où en est l'essai (D20) : pendant, ou terminé.
-    const day = trialDay(s);
-    const status = inTrial(s)
-      ? i18n.t(day >= TRIAL_DAYS ? 'shop_trial_last' : 'shop_trial_status', { n: TRIAL_DAYS - day + 1 })
-      : i18n.t('shop_trial_over');
-    return `<section class="shop-hero">
+    return `<button class="offer-banner" data-shop="offer">
       ${CAIRN_SVG}
-      <p class="shop-kicker">${i18n.t('shop_hero_kicker')}</p>
-      <p class="shop-trial-status tiny">${status}</p>
-      <h3>${i18n.t('shop_hero_title')}</h3>
-      <p class="shop-sub">${i18n.t('shop_hero_sub')}</p>
-      ${perksHtml()}
-      <button class="btn primary shop-cta" data-shop="unlock" data-v=""${busy ? ' disabled' : ''}>${i18n.t('shop_cta')}${price}</button>
-      ${error ? `<p class="shop-error tiny">${i18n.t(error === 'unavailable' ? 'shop_purchase_unavailable' : 'shop_purchase_error')}</p>` : ''}
-      <ul class="shop-trust">
-        <li>${i18n.t('shop_trust_once')}</li><li>${i18n.t('shop_trust_noads')}</li>
-        <li>${i18n.t('shop_trust_fair')}</li><li>${i18n.t('shop_trust_local')}</li>
-      </ul>
-    </section>`;
+      <span class="offer-banner-text">
+        <strong>${i18n.t('shop_hero_kicker')}</strong>
+        <span class="tiny">${i18n.t(inTrial(s) ? 'offer_banner_trial' : 'offer_banner_over')}</span>
+        <span class="tiny offer-banner-link">${i18n.t('offer_see')}</span>
+      </span>
+    </button>`;
   }
 
   function themesPanelHtml(s) {
     return `
-      ${heroHtml(s)}
+      ${offerBannerHtml(s)}
       <div class="shop-worlds-head">
         <h3>${i18n.t('shop_worlds')}</h3>
         <span class="tiny muted">${i18n.t('shop_swipe')}</span>
@@ -171,16 +147,12 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
             <div class="shop-card-foot">
               <div>
                 <h3>${i18n.loc(THEMES[k].label)}</h3>
-                ${k !== 'nordique' && !s.complete ? `<span class="tiny muted">${i18n.t('shop_in_complete')}</span>` : ''}
+                ${k !== 'nordique' && !s.complete ? `<span class="tiny muted">${i18n.t(inTrial(s) ? 'shop_in_trial' : 'shop_in_complete')}</span>` : ''}
               </div>
               ${themeStatusHtml(k, s)}
             </div>
           </div>`).join('')}
-      </div>
-      <div class="shop-foot">
-        <button class="btn ghost small" data-shop="restore"${busy ? ' disabled' : ''}>${i18n.t('shop_restore')}</button>
-      </div>
-      ${billing.real ? '' : `<p class="tiny muted">${i18n.t('shop_unlock_dev_note')}</p>`}`;
+      </div>`;
   }
 
   function generalPanelHtml(s) {
@@ -199,7 +171,7 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
         <span>${i18n.t('set_notif_extra')} ${i + 1}</span>
         <input type="number" min="6" max="22" value="${(s.notifications.extra || [])[i] ?? ''}" placeholder="${esc(i18n.t('set_notif_extra_none'))}" data-set="notif-extra" />
       </label>`).join('') : `
-      <button class="btn ghost small" data-set="cq-shop">${i18n.t('set_notif_extra_locked')}</button>`}
+      <button class="btn ghost small" data-shop="offer">${i18n.t('set_notif_extra_locked')}</button>`}
 
       <h3>${i18n.t('set_data')}</h3>
       <p class="tiny muted">${i18n.t('set_data_body')}</p>
@@ -219,13 +191,11 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
   // Quêtes perso (Cairn Complet, D19 ; ouvertes pendant l'essai, D20).
   function customPanelHtml(s) {
     if (!hasAccess(s)) {
-      const price = collectionPrice ? ` · ${collectionPrice}` : '';
       return `
         <div class="shop-collection panel">
           <h3>${i18n.t('cq_locked_title')}</h3>
           <p class="tiny muted">${i18n.t('cq_locked_desc')}</p>
-          <button class="btn primary" data-shop="unlock" data-v="Q"${busy ? ' disabled' : ''}>${i18n.t('shop_unlock_collection')}${price}</button>
-          ${error ? `<p class="shop-error tiny">${i18n.t(error === 'unavailable' ? 'shop_purchase_unavailable' : 'shop_purchase_error')}</p>` : ''}
+          <button class="btn primary" data-shop="offer">${i18n.t('offer_see')}</button>
         </div>`;
     }
     const playedToday = s.quests.some((q) => q.custom);
@@ -257,6 +227,7 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
 
   function render() {
     const s = getState();
+    if (view === 'offer') { renderOffer(s); return; }
     const panel = activeTab === 'themes' ? themesPanelHtml(s)
       : activeTab === 'custom' ? customPanelHtml(s)
       : activeTab === 'general' ? generalPanelHtml(s)
@@ -271,6 +242,19 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
         ${tabBarHtml()}
         <div class="set-panel">${panel}</div>
         <button class="btn primary full" data-set="close">${i18n.t('set_close')}</button>
+      </div>`;
+    showOverlay(ov, ['sheet-mode']);
+  }
+
+  function renderOffer(s) {
+    ov.innerHTML = `
+      <div class="sheet settings-sheet offer-sheet" role="dialog">
+        <div class="sheet-head">
+          ${standaloneOffer ? '' : `<button class="linkbtn offer-back" data-shop="back">${i18n.t('offer_back')}</button>`}
+          <h2>${i18n.t('shop_hero_kicker')}</h2>
+          <button class="iconbtn" data-set="close" aria-label="${i18n.t('set_close')}">✕</button>
+        </div>
+        <div class="set-panel">${offerHtml(s, { price: collectionPrice, busy, error, devNote: !billing.real })}</div>
       </div>`;
     showOverlay(ov, ['sheet-mode']);
   }
@@ -305,7 +289,6 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
       dispatch('setPrefFamilies', { prefFamilies: list });
       return;
     }
-    if (k === 'cq-shop') { activeTab = 'themes'; render(); return; }
     if (k === 'cq-add') {
       const f = { text: $('#cq-text').value, famille: $('#cq-fam').value, effort: $('#cq-eff').value };
       if (editingId) { const id = editingId; editingId = null; dispatch('updateCustomQuest', { id, ...f }); } else dispatch('addCustomQuest', f);
@@ -327,17 +310,22 @@ export function openSettings({ getState, dispatch, close, tab } = {}) {
     const k = el.dataset.shop;
 
     if (k === 'activate') { dispatch('setTheme', { theme: el.dataset.v }); return; }
+    if (k === 'offer') { pendingTheme = el.dataset.v || null; error = false; view = 'offer'; render(); return; }
+    if (k === 'back') { view = 'settings'; error = false; render(); return; }
 
     if (k === 'unlock') {
-      const theme = el.dataset.v; // '' depuis la bannière, une clé depuis une carte
       busy = true; error = false; render();
       const res = await billing.purchase();
       busy = false;
       if (res.ok) {
-        // Un seul achat débloque les 6. On active le thème cliqué s'il y en a
-        // un (sinon rien ne semble se passer à l'écran — retour de test réel).
+        // Un seul achat débloque tout. Si l'offre a été ouverte depuis un monde
+        // verrouillé, on l'active et on y revient (sinon rien ne semble se passer
+        // à l'écran — retour de test réel).
+        const theme = pendingTheme;
+        pendingTheme = null;
+        if (theme && !standaloneOffer) { view = 'settings'; activeTab = 'themes'; }
         dispatch('unlockCollection');
-        if (theme && theme !== 'Q') dispatch('setTheme', { theme });
+        if (theme) dispatch('setTheme', { theme });
         else render();
       } else if (res.error) {
         error = res.unavailable ? 'unavailable' : 'failed'; render();

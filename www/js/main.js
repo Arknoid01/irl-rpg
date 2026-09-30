@@ -277,7 +277,7 @@ async function dispatch(action, args = {}) {
       });
       break;
 
-    // La boutique vit désormais dans l'onglet « Thèmes » des réglages.
+    // Page « Cairn Complet » (D20) : ce qu'on achète et comment marche l'essai.
     case 'open-shop':
       settingsOpen = true;
       openSettings({
@@ -285,6 +285,7 @@ async function dispatch(action, args = {}) {
         dispatch,
         close: () => { settingsOpen = false; closeOverlay(); render(); },
         tab: 'themes',
+        view: 'offer',
       });
       break;
 

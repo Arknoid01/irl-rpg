@@ -153,47 +153,54 @@ test('parcours complet dans le DOM', async () => {
   assert.equal(ignoredQuest.status, 'ignored');
 });
 
-test('réglages : onglet Boutique — essai en cours, puis un achat débloque tout (D17/D20)', async () => {
+test('réglages : onglet Mondes + page Cairn Complet — essai, puis un achat débloque tout (D17/D20)', async () => {
   await click('[data-action="open-settings"]');
   await click('[data-set="tab"][data-v="themes"]');
   assert.ok($('.settings-sheet'), 'feuille de réglages affichée');
-  assert.ok($('.set-tab.active') && /Boutique/.test($('.set-tab.active').textContent), 'onglet Boutique actif');
+  assert.ok($('.set-tab.active') && /Mondes/.test($('.set-tab.active').textContent), 'onglet Mondes actif');
   assert.equal($$('.shop-card').length, 7, 'les 7 thèmes sont listés');
   assert.ok($('.shop-status.active'), 'un thème actif est marqué');
-  assert.ok($('.shop-hero:not(.owned) .shop-cta'), 'héros « Cairn Complet » avec bouton d’achat tant que non débloqué');
-  assert.equal($$('.shop-perks li.ok').length, 5, 'cinq avantages livrés');
-  assert.equal($$('.shop-perks li.soon').length, 0, 'plus aucun « Bientôt » : tout ce qui est promis est livré');
-  assert.match($('.shop-trial-status').textContent, /Essai gratuit en cours/, 'état de l’essai affiché');
+  assert.equal($('.shop-cta'), null, 'pas d’achat dans l’onglet Mondes : juste un lien vers l’offre');
+  assert.match($('.offer-banner').textContent, /Pendant ton essai, tous les mondes sont ouverts/);
   assert.ok($('[data-shop="activate"][data-v="cyberpunk"]'), 'pendant l’essai, tous les mondes s’activent');
-  assert.equal($('[data-shop="unlock"][data-v="cyberpunk"]'), null);
+  assert.equal($('[data-shop="offer"][data-v="cyberpunk"]'), null);
+  assert.ok([...$$('.shop-card-foot .tiny')].some((n) => /Ouvert pendant l’essai/.test(n.textContent)));
   // Plus de vidéo : chaque carte a un aperçu live (mini-page thémée).
   assert.equal($('video'), null, 'aucun aperçu vidéo');
   assert.equal($$('.shop-preview .page').length, 7, 'chaque thème a un aperçu live rendu');
 
-  // Acheter Cairn Complet (les 6 mondes à vie), puis activer cyberpunk.
+  // La page Cairn Complet explique l'offre avant l'achat.
+  await click('.offer-banner');
+  assert.ok($('.offer-sheet'), 'page Cairn Complet ouverte');
+  assert.ok($('[data-shop="back"]'), 'retour aux réglages possible');
+  assert.equal($$('.shop-perks:not(.offer-keeps) li').length, 5, 'cinq choses débloquées');
+  assert.equal($$('.offer-keeps li').length, 4, 'ce qui reste gratuit à vie est listé');
+  assert.equal($$('.offer-how li').length, 3, 'le fonctionnement de l’essai est expliqué');
+  assert.equal($$('.offer-stone').length, 7, 'les 7 jours de l’essai');
+  assert.match($('.shop-trial-status').textContent, /Essai gratuit en cours/, 'état de l’essai affiché');
+  assert.ok([...$$('.tiny.muted')].some((n) => /démo locale|local demo/i.test(n.textContent)),
+    'note « démo locale » affichée tant que l’achat réel n’est pas branché');
+
+  // Acheter Cairn Complet : la page passe en « à toi ».
   await click('.shop-cta');
+  assert.equal($('.shop-cta'), null, 'bouton d’achat retiré une fois débloqué');
+  assert.ok($('.shop-hero.owned'), 'héros passe en état « à toi »');
+  const saved = JSON.parse(window.localStorage.getItem('irlrpg_save_v2'));
+  for (const k of ['sombre', 'cyberpunk', 'enquete', 'mystique', 'postapo', 'cockpit']) {
+    assert.ok(saved.unlockedThemes.includes(k), `${k} débloqué par Cairn Complet`);
+  }
+  // Restaurer : présent, ne casse rien.
+  await click('[data-shop="restore"]');
+  await tick();
+  assert.ok($('.offer-sheet'), 'la page tient après une restauration');
+
+  // Retour à l'onglet Mondes, activer cyberpunk.
+  await click('[data-shop="back"]');
+  assert.ok($('.offer-owned-line'), 'Mondes : Complet affiché comme acquis');
   await click('[data-shop="activate"][data-v="cyberpunk"]');
   assert.equal(window.document.documentElement.dataset.theme, 'cyberpunk', 'thème appliqué au document');
   assert.match($('.section-label span').textContent, /Missions du jour/, 'vocab cyberpunk sur l’écran');
-
-  const saved = JSON.parse(window.localStorage.getItem('irlrpg_save_v2'));
-  assert.equal(saved.theme, 'cyberpunk');
-  for (const k of ['sombre', 'cyberpunk', 'enquete', 'mystique', 'postapo', 'cockpit']) {
-    assert.ok(saved.unlockedThemes.includes(k), `${k} débloqué par la Collection`);
-  }
-  assert.equal($('.shop-cta'), null, 'bouton d’achat retiré une fois débloqué');
-  assert.ok($('.shop-hero.owned'), 'héros passe en état « à toi »');
-  assert.ok($('[data-shop="activate"][data-v="mystique"]'), 'les autres thèmes passent à « activer »');
-
-  // Restaurer : présent, ne casse rien.
-  assert.ok($('[data-shop="restore"]'), 'bouton restaurer présent');
-  await click('[data-shop="restore"]');
-  await tick();
-  assert.ok($('.settings-sheet'), 'l’onglet Thèmes tient après une restauration');
-  assert.ok(
-    $('.tiny.muted') && [...$$('.tiny.muted')].some((n) => /démo locale|local demo/i.test(n.textContent)),
-    'note « démo locale » affichée tant que l’achat réel n’est pas branché',
-  );
+  assert.equal(JSON.parse(window.localStorage.getItem('irlrpg_save_v2')).theme, 'cyberpunk');
 
   // reviens à nordique pour ne pas polluer les tests suivants de ce fichier.
   await click('[data-shop="activate"][data-v="nordique"]');

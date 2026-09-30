@@ -917,6 +917,28 @@ envie d'acheter. Pas de produit séparé pour l'instant ; les extensions payante
 plus de 7 jours (testeurs) passent en pause au prochain jour : accepté, puisque
 rien n'est encore publié.
 
+### Addendum 2026-09-30 — interface cohérente avec l'essai : page « Cairn Complet »
+
+La boutique était restée un onglet des réglages, pensé pour D17/D19 (acheter
+des thèmes). Avec D20, ce qu'on achète, c'est la suite de l'aventure :
+- **Page dédiée « Cairn Complet »** (`ui/offer.js`, vue `offer` de la feuille
+  des réglages). Ouverte seule depuis l'accueil (« en savoir plus » de la ligne
+  d'essai, « Continuer l'aventure » du panneau de pause) ou depuis un onglet
+  (avec retour). Elle explique : les 7 jours de l'essai en pierres (posées /
+  aujourd'hui / à venir, un jour ne compte que joué), **ce que tu débloques**
+  (5 points), **ce qui reste à toi sans acheter** (journal, personnage, carte,
+  rétrospective + export), **comment ça marche** (7 jours ouverts → pause au
+  8e sans notification → un achat, on reprend où on en était), puis l'achat,
+  les garanties (pas d'abonnement, zéro pub, même XP pour tous, local) et
+  « Restaurer mes achats ».
+- **Onglet « Boutique » → « Mondes »** : ne sert plus qu'à choisir son thème.
+  Un encart renvoie vers la page Cairn Complet ; cartes « Ouvert pendant
+  l'essai » / « Inclus dans Complet » ; un monde verrouillé ouvre la page
+  d'offre et s'active juste après l'achat.
+- « Mes quêtes » et « Plusieurs rappels » verrouillés renvoient aussi vers la
+  page (fini l'achat direct sans explication, fini « la Collection »).
+- Chaînes mortes de D17 retirées (`shop_collection_*`, `shop_intro`…).
+
 ## D21 — Épreuves de passage pour monter de niveau (2026-09-29)
 
 **Idée (Yannick).** Monter de niveau ne voulait presque rien dire (cf. D20 :

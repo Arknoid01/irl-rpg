@@ -1407,7 +1407,33 @@ input[type="range"] { width: 100%; accent-color: var(--seal); margin: 12px 0 4px
 .shop-error { margin: 6px 2px 0; color: var(--danger); }
 .shop-foot { display: flex; justify-content: center; margin: 4px 0 10px; }
 
-/* Bannière « Collection des Mondes » (D17) */
+/* Page « Cairn Complet » (D20, ui/offer.js) */
+.offer-sheet .sheet-head { gap: 8px; }
+.offer-sheet .sheet-head h2 { flex: 1; }
+.offer-back { font-size: .85rem; white-space: nowrap; }
+.offer-h { margin: 18px 2px 8px; font-family: var(--font-display); font-size: 1.05rem; color: var(--text); }
+.offer-keeps .shop-tick { color: var(--text-dim); font-size: .7rem; }
+.offer-path { margin: 6px 0 0; padding-top: 12px; border-top: 1px dashed color-mix(in srgb, var(--gold) 45%, transparent); }
+.offer-path p { margin: 4px 0 0; }
+.offer-stones { display: flex; justify-content: center; align-items: flex-end; gap: 7px; margin-bottom: 4px; }
+.offer-stone { width: 22px; height: 12px; border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--gold) 55%, transparent); background: transparent; }
+.offer-stone.done { background: var(--gold); border-color: var(--gold); }
+.offer-stone.today { background: color-mix(in srgb, var(--gold) 45%, transparent); border-color: var(--gold);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 22%, transparent); }
+.offer-how { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; font-size: .9rem; color: var(--text); }
+.offer-how li::marker { color: var(--gold); font-weight: 700; }
+.offer-buy { margin: 18px 0 4px; }
+.offer-banner { display: flex; align-items: center; gap: 12px; width: 100%; margin: 2px 0 14px; padding: 10px 14px;
+  text-align: left; font: inherit; color: var(--text); cursor: pointer; border-radius: 12px;
+  border: 1px solid var(--gold); background: color-mix(in srgb, var(--gold) 8%, transparent); }
+.offer-banner .shop-cairn { width: 38px; height: 38px; margin: 0; flex: 0 0 auto; }
+.offer-banner-text { display: grid; gap: 2px; }
+.offer-banner-text strong { font-family: var(--font-display); color: var(--gold); }
+.offer-banner-link { color: var(--gold); font-weight: 600; }
+.offer-owned-line { margin: 0 2px 12px; color: var(--gold); text-align: center; }
+
+/* Encart « Cairn Complet » dans l'onglet Mes quêtes (essai terminé) */
 .shop-collection {
   text-align: center;
   margin: 10px 0 14px;
