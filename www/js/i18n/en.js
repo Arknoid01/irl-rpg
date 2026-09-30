@@ -309,7 +309,7 @@ export default {
   shop_trial_over: 'Your 7-day trial is over',
   shop_perk_adventure: 'The whole adventure, no limit: daily quests, events, arcs, map',
   toast_theme_unlocked: 'Theme unlocked: {label}',
-  toast_collection_unlocked: '🌍 Collection of Worlds unlocked — all 6 themes are yours.',
+  toast_collection_unlocked: '✦ Cairn Complete is yours — the adventure goes on.',
 
   // One-time coach mark — theme shop discovery
   cq_edit: 'Edit',

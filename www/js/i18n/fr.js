@@ -311,7 +311,7 @@ export default {
   shop_trial_over: 'Ton essai de 7 jours est terminé',
   shop_perk_adventure: 'Toute l’aventure, sans limite : quêtes du jour, événements, arcs, carte',
   toast_theme_unlocked: 'Thème débloqué : {label}',
-  toast_collection_unlocked: '🌍 Collection des Mondes débloquée — les 6 thèmes sont à toi.',
+  toast_collection_unlocked: '✦ Cairn Complet est à toi — l’aventure continue.',
 
   // Bulle d'aide unique — découverte de la boutique de thèmes
   cq_edit: 'Modifier',

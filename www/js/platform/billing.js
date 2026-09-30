@@ -1,8 +1,10 @@
-// Achat in-app — la « Collection des Mondes » (DECISIONS D12 + D17).
+// Achat in-app — « Cairn Complet » (DECISIONS D17 → D19 → D20).
 //
-// UN seul produit non consommable : `collection_des_mondes` (~6,99 €), qui
-// débloque les 6 thèmes payants d'un coup. Achat unique, à vie, jamais
-// pay-to-win (cosmétique pur).
+// UN seul produit non consommable : `collection_des_mondes` (id historique,
+// figé à la déclaration ; 5,99 € au lancement). Il fait continuer l'aventure
+// après les 7 jours d'essai et débloque tout : les 6 mondes payants, les quêtes
+// perso, les rappels en plus, l'arc « Le Sentier ». Achat unique, à vie, jamais
+// pay-to-win (aucune XP en plus).
 //
 // Plugin : `capacitor-plugin-cdv-purchase` (édition Capacitor de
 // cordova-plugin-purchase / Fovea). Il parle DIRECTEMENT à Google Play
@@ -21,7 +23,7 @@
 /** Identifiant du produit à déclarer en Play Console / App Store Connect. */
 export const COLLECTION_PRODUCT = 'collection_des_mondes';
 
-/** Thèmes débloqués par la Collection (tous les payants ; nordique est gratuit). */
+/** Thèmes débloqués par Cairn Complet (tous les payants ; nordique est gratuit). */
 export const COLLECTION_THEMES = ['sombre', 'cyberpunk', 'enquete', 'mystique', 'postapo', 'cockpit'];
 
 function nativePlugin() {
@@ -31,7 +33,7 @@ function nativePlugin() {
 }
 
 // ─── Impl « dev » : pas de store, déblocage direct et gratuit ────────────────
-// C'est l'état actuel de la boutique (bouton « Débloquer la Collection » sans
+// C'est l'état actuel de la page Cairn Complet (bouton d'achat sans
 // paiement) sur le web et tant que le store n'est pas branché.
 const devBilling = {
   mode: 'dev',

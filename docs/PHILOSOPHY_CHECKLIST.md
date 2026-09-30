@@ -46,10 +46,14 @@
 - `data/arcs.js` — les étapes de mini-arc sont toujours à effort léger,
   audace 2, avec un `safe_fallback` ; un arc jamais commencé ou abandonné ne
   coûte rien et ne s'affiche pas comme un manque (points 1, 5).
-- `platform/billing.js` (D17) — l'achat « Collection des Mondes » est
-  **cosmétique pur** : thèmes visuels + voix du compagnon, jamais de contenu
-  de jeu, d'XP, de quête ou d'avantage. Le jeu reste entièrement jouable et
-  complet sans (point 1). Le plugin parle direct au store — aucune donnée de
-  paiement chez nous ni un tiers (point 4).
+- `platform/billing.js` + `engine/access.js` (D20) — « Cairn Complet » est un
+  **achat unique** qui fait continuer l'aventure après 7 jours d'essai joués
+  (tout ouvert pendant l'essai). Jamais d'XP en plus, de quête plus rentable
+  ni d'avantage : on vend la suite, pas un raccourci. Sans achat, l'aventure
+  se met en pause **sans aucune notification**, et le journal, la carte, le
+  personnage, la rétrospective et l'export restent accessibles à vie (point 1).
+  La page `ui/offer.js` dit tout cela avant l'achat : pas de surprise. Le
+  plugin parle direct au store — aucune donnée de paiement chez nous ni un
+  tiers (point 4).
 - `DECISIONS.md` D3 — aucun classement, aucune comparaison de niveau.
 - `DECISIONS.md` D11 — aucune quête créée par le joueur (push, pas pull).

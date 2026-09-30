@@ -412,7 +412,7 @@ export function setTheme(state, { theme }) {
 
 /**
  * Déblocage d'un thème payant (D12). Le déblocage réel passe par
- * `unlockCollection` (achat unique « Collection des Mondes », D17) ; cette
+ * `unlockCollection` (achat unique « Cairn Complet », D17/D19/D20) ; cette
  * fonction reste utile pour la démo et les tests. Ne pas confondre avec un
  * achat validé par un store.
  */
@@ -426,8 +426,8 @@ export function unlockTheme(state, { theme }) {
 }
 
 /**
- * Débloque la « Collection des Mondes » — les 6 thèmes payants d'un coup
- * (D17). Appelé après un achat validé (`billing.purchase`) ou une
+ * Débloque « Cairn Complet » : les 6 thèmes payants, le droit `complete`
+ * (D19) et la reprise de l'aventure après l'essai (D20). Appelé après un achat validé (`billing.purchase`) ou une
  * restauration. Idempotent.
  */
 export function unlockCollection(state) {

@@ -50,8 +50,8 @@ reconstruire :
 | Collections de souvenirs (Éco §13, UX §12) | ✅ | musée + collection « Moments » (Phase 2.3) + « Découvertes » (Phase 2.4) + vitrines `???` (Phase 2.5) |
 | Page « Mon aventure » (Éco §14, UX §10-11) | ✅ | écran Personnage recadré « qui je deviens » : identité + style en tête, traits qualitatifs, « Ton chemin », chronique, collections (Phase 2.1-2.2) |
 | Retour après absence (Éco §15) | ✅ | toast `streak_break_ok` + tirage allégé, quêtes neuves, événement d'accueil et ligne compagnon dédiée quand `daysAway >= 3` (Phase 1.3) |
-| Gratuit à vie · pas d'abo · pas de pub | ✅ | = D12 |
-| Thèmes payants (Éco §17) | ✅ | 1 gratuit + 6 payants (police, palette, texture, cadres, **voix**, cérémonie, effet), vendus en **bundle** « Collection des Mondes » (D17). Achat réel : plugin branché, vérif appareil en attente (Phase 4.2) |
+| Essai 7 jours puis achat unique · pas d'abo · pas de pub | ✅ | D12 → **D20** (essai de 7 jours joués, puis « Cairn Complet » ; page d'offre dédiée `ui/offer.js`) |
+| Thèmes payants (Éco §17) | ✅ | 1 gratuit + 6 payants (police, palette, texture, cadres, **voix**, cérémonie, effet), inclus dans **« Cairn Complet »** (D17 → D19/D20), choisis dans l'onglet « Mondes ». Achat réel : plugin branché, vérif appareil en attente (Phase 4.2) |
 | Carte du Monde à révélation progressive (UX §15-16) | ✅ | `X/10 révélés`, brume, régions par famille + polish révélation (phrase « pas encore prêtes », encart « tu viens de révéler… », Phase 2.6) |
 | Hiérarchie de l'accueil (UX §3-4, §20) | ❌ | l'accueil montre hero card (nom/niveau/XP/élan/série/titres) **avant** les quêtes → Phase 0 |
 | « Élan du jour » en % (UX §5) | ❌ | affiché `elan%` → à passer en `0/3 aventures` + phrase |

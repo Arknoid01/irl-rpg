@@ -71,7 +71,8 @@ build iOS.
 signé, piste de test fermée, avec un compte de testeur de licence :
 
 - [ ] `npm i` + `npx cap sync` + AAB signé uploadé sur une piste de test
-- [ ] Le produit apparaît avec son prix dans la boutique (`billing.listProducts`)
+- [ ] Le produit apparaît avec son prix sur la page « Cairn Complet » (`billing.listProducts`)
+- [ ] Depuis un monde verrouillé (après l’essai) : la page s’ouvre, l’achat active ce monde
 - [ ] Essai (D20) : jours 1 à 7 joués, tout est ouvert (mondes, « Mes quêtes », rappels en plus) ; ligne « Essai gratuit · jour X sur 7 » sur l’accueil
 - [ ] 8e jour joué sans achat → panneau « Fin du prologue », aucune quête, thème de départ, **aucune notification** ; journal, carte, personnage, rétrospective et export accessibles
 - [ ] Achat depuis la pause → les quêtes du jour apparaissent tout de suite, rappels replanifiés (`state.complete`)
@@ -131,7 +132,7 @@ ignores ou tu valides sur l’honneur — ignorer ne coûte jamais rien.
 
 **7 jours d’essai complet et gratuit**, avec tout Cairn. Ensuite, **Cairn Complet** :
 un seul achat, à vie, pour continuer l’aventure. Ni abonnement, ni pub. Sans
-achat, ton journal, ta carte et ton personnage restent consultables pour toujours.  
+achat, ton journal, ta carte, ton personnage et ta rétrospective restent consultables pour toujours.  
 • 6 mondes complets (police, couleurs, cadres, voix du compagnon)  
 • Tes propres quêtes  
 • Jusqu’à 3 rappels par jour  
@@ -149,20 +150,20 @@ on the honor system — skipping never costs you anything.
 
 **A full, free 7-day trial** with everything in Cairn. After that, **Cairn Complete**:
 one purchase, for life, to keep the adventure going. No subscription, no ads.
-Without it, your journal, map and character stay yours to read, forever.  
+Without it, your journal, map, character and look-back stay yours to read, forever.  
 • 6 full worlds (font, colours, frames, companion voice)  
 • Your own quests  
 • Up to 3 reminders a day  
 • “The Path”, an exclusive 7-step story arc  
 Ages 16+.
 
-**Notes de version 1.1 (FR) :** 7 jours d’essai complet et gratuit, puis Cairn Complet (achat unique) pour continuer. Nouveau : tes propres quêtes, rétrospective du mois et export du journal, jusqu’à 3 rappels par jour, « Le Sentier » (arc narratif exclusif). Boutique refaite.  
-**Release notes 1.1 (EN):** A full, free 7-day trial, then Cairn Complete (one-time purchase) to keep going. New: your own quests, monthly look-back and journal export, up to 3 reminders a day, “The Path” (exclusive story arc). Redesigned shop.
+**Notes de version 1.1 (FR) :** 7 jours d’essai complet et gratuit, puis Cairn Complet (achat unique) pour continuer. Nouveau : tes propres quêtes, rétrospective du mois et export du journal, jusqu’à 3 rappels par jour, « Le Sentier » (arc narratif exclusif). Nouvelle page « Cairn Complet » qui explique l’essai et l’achat.  
+**Release notes 1.1 (EN):** A full, free 7-day trial, then Cairn Complete (one-time purchase) to keep going. New: your own quests, monthly look-back and journal export, up to 3 reminders a day, “The Path” (exclusive story arc). New “Cairn Complete” page explaining the trial and the purchase.
 
 ## Captures d'écran
 
 Générées dans `resources/store/` (1080×2400, thème nordique sauf indication) :
-accueil, boutique, mes quêtes, rétrospective, un thème payant.
+accueil, page Cairn Complet (`02-cairn-complet.png`), mes quêtes, rétrospective, un thème payant.
 
 ## Avant soumission
 
